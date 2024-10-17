@@ -1,0 +1,233 @@
+<div class="pt-2 pl-4 pr-4">
+    <div class="d-flex align-items-end justify-content-between ft-500 p-2 ft-12
+        text-center font-weight-normal pr-4">
+        <div class="ft-14 font-weight-bold pl-2">{{selectedFilters?
+            statusTextMapping[selectedFilters]: "All Documents"}}</div>
+        <div *ngIf="dataset && dataset.length">Showing {{showingItemCount}} of
+            {{itemsCount}}</div>
+    </div>
+
+    <div class="uploads-container__cards" *ngIf="dataset && dataset.length">
+        <div *ngFor="let uploadItem of dataset
+            | paginate
+            : {
+            itemsPerPage: itemsPerPage,
+            currentPage: pageNumber,
+            totalItems: itemsCount
+            };
+            let i= index" class="custom-card card">
+            <div class="uploads-container__header d-flex
+                justify-content-between">
+                <div class="d-flex justify-content-around">
+                    <div class="uploads-container__header-size file-name
+                        font-weight-bold">
+                        {{ uploadItem?.documentType | uppercase }}
+                    </div>
+                    <span class="uploads-container__header-vertical-line"
+                        *ngIf="uploadItem.pages && uploadItem.pages.length"></span>
+                    <div class="uploads-container__header-size"
+                        *ngIf="uploadItem.pages && uploadItem.pages.length">
+                        Pages:
+                        <span>{{ uploadItem?.pages?.length }}
+                        </span>
+                    </div>
+                </div>
+                <div ngbDropdown class="pointer">
+                    <img [src]="imgSrc.dotMenuIcon" style="width: 15px;
+                        height:
+                        15px;" id="dropdownBasic1" ngbDropdownToggle />
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                        <!-- <button ngbDropdownItem (click)="openAlertModel(uploadItem.documentId)">
+                            <img src="imgSrc.deleteIcon" width="12" height="12" /><span class="px-2 ft-12">Delete</span>
+                            </button> -->
+                        <button [disabled]="uploadItem?.status === 'FAILED'
+                            ||
+                            ACTIONS_VISIBILITY === 0" ngbDropdownItem
+                            title="Download Report"
+                            (click)="openDialog(uploadItem.documentId)"
+                            *ngIf="uploadItem?.resultDownloadLink">
+                            <img
+                                [src]="imgSrc.downloadIcon"
+                                width="12"
+                                height="12"
+                                />
+                            <span class="px-2 ft-12">Download Report</span>
+                        </button>
+                        <button [disabled]="ACTIONS_VISIBILITY ===0"
+                            ngbDropdownItem
+                            (click)="getDocumentDataByDocId(uploadItem?.documentId,
+                            i)">
+                            <img [src]="imgSrc.refreshIcon" width="12"
+                                height="12" />
+                            <span class="px-2 ft-12">Refresh</span>
+                        </button>
+
+                        <!-- <button ngbDropdownItem title="{{uploadItem?.documentId}}" (click)="copyToClipboard(uploadItem?.documentId)">
+              <img [src]="imgSrc.infoIcon" width="12" height="12" />
+              <span class="px-2 ft-12">Copy Document Id</span>
+            </button> -->
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="d-flex justify-content-around align-items-center" style="height:80px">
+                <img src="{{getVendorLogo(uploadItem.vendor[0]?.logo)}}" width="70" height="70" alt="img" style="border-radius: 50px;" class="vendor-logo" (error)="defaultIcon($event)" />
+                <div class="uploads-container__vender-name font-weight-bold pl-3" *ngIf="uploadItem.vendor && uploadItem.vendor[0] && uploadItem.vendor[0].name;else showNA">
+                    {{ uploadItem?.vendor[0]?.name}}
+                </div>
+            </div> -->
+            <div class="d-flex justify-content-around align-items-center"
+                style="height:80px">
+                <img src="{{getVendorLogo(uploadItem.vendorId)}}" width="70"
+                    height="70" alt="img" style="border-radius: 50px;"
+                    class="vendor-logo" (error)="defaultIcon($event)" />
+                <div class="uploads-container__vender-name font-weight-bold
+                    pl-3" *ngIf="uploadItem.vendorId;else showNA">
+                    {{ uploadItem?.vendorId}}
+                </div>
+            </div>
+            <div class="d-flex justify-content-between
+                align-items-baseline">
+                <!-- <div class="ft-10 text-overflow-3">
+                    Document ID<br>
+                    <span class="font-weight-bold" *ngIf="uploadItem.documentId;else showNA">
+            {{ uploadItem?.documentId}}
+          </span>
+                </div> -->
+                <div class="ft-10 text-overflow-3">
+                    File Name<br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem.fileName;else showNA">
+                        {{ uploadItem?.fileName}}
+                    </span>
+                </div>
+                <div class="ft-10 pt-2">
+                    Submitted Date<br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem.submittedOn;else showNA">
+                        {{ epochToMili(uploadItem?.submittedOn) }}<!--| date-->
+                    </span>
+                </div>
+                <!-- <div class=" ft-10 pt-2">
+          Last Updated<br>
+          <span class="font-weight-bold" *ngIf="uploadItem.lastUpdatedOn;else showNA">
+            {{ epochToMili(uploadItem?.lastUpdatedOn)  }}
+          </span>
+        </div> -->
+            </div>
+            <div class="d-flex justify-content-between" style="display: none
+                !important;">
+                <div class="ft-10 pt-2">
+
+                    Total Amount<br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem.totalAmount; else showNA">
+                        {{uploadItem?.currency}} {{ uploadItem?.totalAmount
+                        }}
+                    </span>
+                </div>
+                <div class="ft-10 pt-2">
+
+                    Invoice Number<br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem.invoiceNumber; else showNA">
+                        {{ uploadItem?.invoiceNumber }}
+                    </span>
+                </div>
+                <div class="ft-10 pt-2">
+
+                    Invoice Date <br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem.totalAmount; else showNA">
+                        {{ uploadItem?.invoiceDate }}<!--| date-->
+                    </span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="ft-10 pt-2">
+                    Last Updated<br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem.lastUpdatedOn;else showNA">
+                        {{ epochToMili(uploadItem?.lastUpdatedOn) }}<!--| date-->
+                    </span>
+                </div>
+                <div class="ft-10 pt-2">
+
+                    STP<br>
+                    <span class="font-weight-bold"
+                        *ngIf="getBooleanFlag(uploadItem?.stp); else
+                        showNA">
+                        {{getBooleanFlag(uploadItem?.stp)}}
+                    </span>
+                </div>
+                <div class="ft-10 pt-2">
+                    Extraction Confidence<br>
+                    <span class="font-weight-bold"
+                        *ngIf="uploadItem?.overall_score>=0; else showNA">
+                        <!-- </span>*ngIf="uploadItem.overall_score; else showNA"> -->
+                        {{ uploadItem?.overall_score | decimalPretty}}%
+                    </span>
+                </div>
+                <div class="ft-10 pt-2"></div>
+            </div>
+
+            <div class="uploads-container__readyfolder d-flex
+                justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div [ngClass]="uploadItem.status"
+                        class="uploads-container__readyfolder--ready-for-review
+                        pl-1 ft-10 text-overflow-2"
+                        tooltipClass="my-custom-class"
+                        ngbTooltip="{{(uploadItem?.status |
+                        underScoreToSpacePipe)}} {{(getStageName(uploadItem)
+                        |
+                        underScoreToSpacePipe) }}{{uploadItem?.statusMsg}}">
+                        {{ uploadItem?.status | underScoreToSpacePipe}}</div>
+                </div>
+                <!-- {{(uploadItem?.rpaStage | underScoreToSpacePipe) }} -->
+                <!-- {{(uploadItem?.status | underScoreToSpacePipe)}},  -->
+                <!--*ngIf="uploadItem.status === 'FAILED' && uploadItem.stage!=='RPA'"-->
+                <!-- <div class="text-danger cursor-pointer d-flex">
+          <img [src]="imgSrc.warningIcon" />
+          <div class="uploads-container__readyfolder-status pl-1  ft-10 text-overflow-4 pr-2" placement="top"
+            tooltipClass="my-custom-class" ngbTooltip="{{ uploadItem?.statusMsg }}">
+            {{uploadItem?.statusMsg}}</div>
+        </div> -->
+                <div class="cursor d-flex" *ngIf="getButtonText(uploadItem)"
+                    [ngClass]="getButtonText(uploadItem)?.textClass"
+                    (click)="infoBox(uploadItem)">
+                    <img [src]="getButtonText(uploadItem)?.icon" width="16"
+                        />
+                    <div
+                        class="uploads-container__readyfolder--ready-for-review
+                        pl-1 ft-10 text-overflow-3"
+                        tooltipClass="my-custom-class"
+                        ngbTooltip="{{getButtonText(uploadItem)?.text}}">
+                        {{ getButtonText(uploadItem)?.text}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-end justify-content-start ft-500 p-2 ft-12
+        text-center font-weight-normal pr-4" *ngIf="dataset && dataset.length">Showing
+        {{showingItemCount}} of {{itemsCount}}
+    </div>
+
+    <!-- <div class="d-flex align-items-end justify-content-center p-3"
+        *ngIf="dataset && dataset.length">
+        <pagination-controls (pageChange)="setPageNumber($event); pageNumber=
+            $event" class="ft-14 font-weight-normal">
+        </pagination-controls>
+    </div> moved in uploads component on 05-12-2022 -->
+</div>
+
+<ng-template #showNA>
+    <span class="font-weight-bold">-NA-</span>
+</ng-template>
+
+<div *ngIf="isDownloadClicked">
+    <app-custom-diaog [docId]="documentId" (close)='closeDialog()'
+        (startDownload)="getResultDownload($event)">
+    </app-custom-diaog>
+</div>

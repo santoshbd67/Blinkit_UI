@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  paiges:
+    image: <image_id>
+    restart: always
+    volumes:
+      - /swgInsta/pAIges_home/pAIges_UI/swiggy/.env:/usr/src/.env
+      - /mnt/swginstaproddrive/:/usr/src/UI_data
+    ports:
+      - "80:80"

@@ -1,0 +1,88 @@
+@import "../../../assets/styles/scss/common.scss";
+.upload-file {
+    // margin-top: 3rem;
+    height: 100%;
+    border-radius: 0px;
+    box-shadow: 0px 12px 12px #ffffff29;
+    border: 1px solid #7c7c7c;
+    // width: 60vw;
+    .card {
+        width: 100%;
+        height: 100%;
+        .img-container {
+            height: 100%;
+            width: 100%;
+            .card-img-top {
+                max-width: 100%;
+                max-height: 180px;
+            }
+        }
+        .card-body {
+            .btn-file {
+                position: relative;
+                overflow: hidden;
+                background: transparent linear-gradient(270deg, #fc9220 0%, #df4c24 100%) 0% 0% no-repeat padding-box;
+                outline: none;
+                box-shadow: none;
+                border: none;
+                font-size: 12px;
+                width: 121px;
+                height: 40px;
+                margin-bottom: 15px;
+                cursor: pointer;
+                padding-top: 10px;
+            }
+            .btn-file input[type="file"] {
+                position: absolute;
+                top: 0;
+                right: 0;
+                min-width: 100%;
+                min-height: 100%;
+                font-size: 100px;
+                text-align: right;
+                filter: alpha(opacity=0);
+                opacity: 0;
+                outline: none;
+                cursor: inherit;
+                display: block;
+            }
+        }
+    }
+}
+
+.upload-error {
+    background: red;
+    color: white;
+    margin-top: 15px;
+}
+
+.info_msg {
+    text-align: left;
+    border-top: 1px solid lightgray;
+    padding-top: 20px;
+}
+
+.info_msg_rmPadding {
+    text-align: left;
+    border-top: 1px solid lightgray;
+}
+
+.close_icon {
+    margin-left: auto
+}
+
+.close_icon:hover {
+    cursor: pointer;
+}
+
+.close_icon img:hover {
+    color: red;
+}
+
+// .btn-file-success {
+//     background: transparent linear-gradient(270deg, #FC9220 0%, #DF4C24 100%) 0% 0% no-repeat padding-box;
+//     border: transparent;
+//     font-size: 14px;
+//     padding: 10px 15px;
+//     box-shadow: none;
+// }

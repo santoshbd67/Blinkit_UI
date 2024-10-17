@@ -1,0 +1,199 @@
+<!-- Main div -->
+<div class="filter-container row-col-12" [ngClass]="{ showFilters:
+  toggleFilter,hideFilters: !toggleFilter }">
+
+  <!-- header with Filter-name and close icon -->
+  <div class="filter-container__header d-flex justify-content-between">
+    <div class="filter-container__header-title">
+      SELECT FILTERS
+    </div>
+    <div class="filter-container__header-refid text-danger" style="margin-top: -10px;">
+      <span (click)="closeFilters()" class="pointer">
+        <img [src]="closeIcon" width="14" height="14" alt="" />
+      </span>
+    </div>
+  </div>
+
+  <!-- content area with multiple filters -->
+  <div class="filters-scroll">
+    <div class="p-4">
+
+      <!-- WHEN EXTRACTION TAB IS SELECTED -->
+      <div *ngIf="selectedTab.toLowerCase()=='extraction'">
+        <div *ngFor="let filters of availableFilters.extraction">
+
+          <!-- sla flag -->
+          <div *ngIf="filters.type=='radio' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="SLA Flag" class="heading mt-1"> SLA Flag</label>
+              <div>
+                <mat-radio-group aria-labelledby="filters-radio-group-label" class="filters-radio-group ml-3"
+                  [(ngModel)]="selectedSLA">
+                  <mat-radio-button class="filters-radio-button" *ngFor="let sla of slaflagList" [value]="sla">
+                    {{sla}}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendor Name -->
+          <div class="mt-3" *ngIf="filters.type=='searchAndSelect' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="Vendor" class="heading">Vendor Name</label>
+              <mat-form-field class="filters-chip-list">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let vendor of vendors" [selectable]="selectable" [removable]="removable"
+                    (removed)="remove(vendor)">
+                    {{vendor}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Search Vendors" #vendorInput [formControl]="vendorCtrl" [matAutocomplete]="auto"
+                    [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                  <mat-option *ngFor="let vendor of filteredVendors | async" [value]="vendor">
+                    {{vendor}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+            </div>
+          </div>
+
+          <!-- billingState Name -->
+          <div class="mt-3" *ngIf="filters.type=='searchAndSelect1' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="billingState" class="heading">Billing Unit</label>
+              <mat-form-field class="filters-chip-list ml-3">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let billingState of billingStates" [selectable]="selectable" [removable]="removable"
+                    (removed)="removeBillingState(billingState)">
+                    {{billingState}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Search Billing States" #billingStateInput [formControl]="billingStateCtrl"
+                    [matAutocomplete]="autoBillingUnit" [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="addBillingState($event)">
+                </mat-chip-list>
+                <mat-autocomplete #autoBillingUnit="matAutocomplete" (optionSelected)="selectedBillingState($event)">
+                  <mat-option *ngFor="let billingState of filteredBillingStates | async" [value]="billingState">
+                    {{billingState}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Document Type -->
+          <div class="mt-3" *ngIf="filters.type=='checkBox' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="DocumentType" class="heading">Document Type</label>
+              <section class="filtersDoc-section ml-3" [formGroup]="docTypesGroup">
+                <mat-checkbox class="filtersDoc-margin" formControlName={{docType}} (change)="onChange($event)"
+                  [value]="docType" *ngFor="let docType of documentTypes">
+                  {{docType}}
+                </mat-checkbox>
+              </section>
+            </div>
+          </div>
+          <hr *ngIf="filters.visibility==1">
+        </div>
+      </div>
+
+      <!-- WHEN POSTING TAB IS SELECTED -->
+      <div *ngIf="selectedTab.toLowerCase()=='posting'">
+        <div *ngFor="let filters of availableFilters.posting">
+
+          <!-- Posting Status -->
+          <div *ngIf="filters.type=='radio' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="Posting Status" class="heading mt-1">Posting Status</label>
+              <div>
+                <mat-radio-group aria-labelledby="filters-radio-group-label" class="filters-radio-group ml-0"
+                  [(ngModel)]="selectedPostingStatus">
+                  <mat-radio-button class="filters-radio-button" *ngFor="let postingStatus of postingStatusList"
+                    [value]="postingStatus">
+                    {{postingStatus}}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Type -->
+          <div class="mt-3" *ngIf="filters.type=='checkBox' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="DocumentType" class="heading">Document Type</label>
+              <section class="filtersDoc-section ml-3" [formGroup]="docTypesGroup">
+                <mat-checkbox class="filtersDoc-margin" formControlName={{docType}} (change)="onChange($event)"
+                  [value]="docType" *ngFor="let docType of documentTypes">
+                  {{docType}}
+                </mat-checkbox>
+              </section>
+            </div>
+          </div>
+
+          <!-- Vendor Name -->
+          <div class="mt-3" *ngIf="filters.type=='searchAndSelect' && filters.visibility==1">
+            <div class="d-flex">
+              <label for="Vendor" class="heading">Vendor Name</label>
+              <mat-form-field class="filters-chip-list">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let vendor of vendors" [selectable]="selectable" [removable]="removable"
+                    (removed)="remove(vendor)">
+                    {{vendor}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Search Vendors" #vendorInput [formControl]="vendorCtrl" [matAutocomplete]="auto"
+                    [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                  <mat-option *ngFor="let vendor of filteredVendors | async" [value]="vendor">
+                    {{vendor}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer with APPLY FILTERS/CLEAR button -->
+  <div class="filters-footer">
+    <div class="filter-container__tab-header view-container col-12
+      justify-content-star d-flex" style="border-top:#ccc 1px solid">
+
+      <!-- action button -->
+      <button type="button" (click)="applyFilters()" class="btn submit-button apply-filter h24 ft-12 py-0 px-2
+        d-inline-flex align-items-center">
+        <i class="fa fa-filter" aria-hidden="true"></i>
+        <span class="pr-2 ml-2">
+          APPLY FILTERS
+        </span>
+      </button>
+
+      <button type="button" (click)="clearFilters()" class="btn submit-button h24 ft-12 py-0 px-2
+        d-inline-flex align-items-center ml-2">
+        <span class="pr-2 icon-submit d-flex">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" ng-show="hoverEdit">
+            <g transform="translate(0)">
+              <g transform="translate(0 0)">
+                <path
+                  d="M8.672,48.371a.5.5,0,1,0,.707.707l3.449-3.45a.577.577,0,0,0,0-.757L9.379,41.422a.5.5,0,0,0-.707.707l2.621,2.621H.5a.5.5,0,0,0,0,1H11.293ZM14,38.25H4a2,2,0,0,0-2,2v2H3v-2a1,1,0,0,1,1-1H14a1,1,0,0,1,1,1v10a1,1,0,0,1-1,1H4a1,1,0,0,1-1-1v-2H2v2a2,2,0,0,0,2,2H14a2,2,0,0,0,2-2v-10A2,2,0,0,0,14,38.25Z"
+                  transform="translate(0 -38.25)" />
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span class="pr-2"> CLEAR </span>
+      </button>
+    </div>
+  </div>
+</div>

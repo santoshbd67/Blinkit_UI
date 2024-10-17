@@ -1,0 +1,66 @@
+<div class=" modal-header w-100 d-flex justify-content-between  p-3 ">
+  <h6 class="modal-title ft-600">{{mode}} Vendor</h6>
+  <button type="button" class="btn btn-close" (click)="dismissModal()"><img alt="" height="14" width="14"
+      src="../../../assets/images/cross-sign.png"></button>
+</div>
+<div class="d-flex modal-body p-3 mt-2">
+  <form class="w-100" #vendorForm="ngForm">
+    <div class="form-group col-12" *ngFor="let field of fields">
+      <label for="{{field.data}}" class="fw-500 ft-12">{{field.label}}</label>
+      <input type="{{field.type}}" class="form-control col-12" id="{{field.data}}" *ngIf="field.input"
+        [(ngModel)]="vendorData[field?.data]" name="{{field.data}}" [disabled]="field?.disabled"
+        [required]="field?.required" (keyup)="validateVendorId(field.data)">
+      <textarea class="form-control col-12" id="{{field.data}}" rows="{{field.rows}}" *ngIf="field.textarea"
+        name="{{field.data}}" [(ngModel)]="vendorData[field?.data]" [disabled]="field?.disabled"
+        [required]="field?.required"></textarea>
+      <div *ngIf="!(vendorData[field?.data].dirty || vendorData[field?.data].touched)" class="error-class">
+        <div *ngIf="!vendorData[field?.data]">
+          {{field?.label}} is required.
+        </div>
+      </div>
+      <div *ngIf="vendorForm.dirty && field.data ==='vendorId' && mode ==='Add'" class="error-class">
+        {{validVendorId?'':'Vendor Id not available'}}
+      </div>
+    </div>
+    <div class="form-group col-12">
+      <label class="fw-500 ft-12">Logo</label>
+      <div class="upload-btn">
+        <input type="file" #file style="display: none;" required (change)="uploadImage($event, 'assets')" />
+        <button type="file" class="btn btn-primary btn-file" (click)="file.click()">
+          Upload
+        </button>
+      </div>
+      <div>
+        <div>
+          <img src="{{vendorData?.logo}}" width="80" height="80" *ngIf="vendorData?.logo && !localCurrentFile">
+          <img [src]="localCurrentFile" width="80" height="80" *ngIf="localCurrentFile">
+        </div>
+      </div>
+      <label class="fw-500 ft-12">Sample Invoice Template</label>
+      <div class="upload-btn">
+        <input type="file" #invoiceFile style="display: none;" required
+          (change)="addSampleInvoice($event, 'sampleinvoices')" />
+        <button type="file" class="btn btn-primary btn-file" (click)="invoiceFile.click()">
+          Upload Invoice
+        </button>
+      </div>
+      <div>
+        <div>
+          <img src="../../../assets/images/icon-scan.png" width="80" height="80"
+            *ngIf="vendorData?.sampleInvoices && !sampleInvoiceLocalFile">
+
+          <img src="../../../assets/images/icon-scan.png" width="80" height="80" *ngIf="sampleInvoiceLocalFile">
+        </div>
+        <div *ngIf="vendorData?.sampleInvoices && sampleInvoiceURLFull">
+          <!-- <a href="{{getSampleInvoice(vendorData?.sampleInvoices)}}" target="blank">View Sample</a> -->
+          <a href="{{sampleInvoiceURLFull}}" target="blank">View Sample</a>
+        </div>
+        <div *ngIf="sampleInvoiceLocalFile">{{sampleInvoiceLocalFile}}</div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="d-flex justify-content-end modal-footer">
+  <button class="btn btn-save ft-14 mr-1 pl-4 pr-4" (click)="saveForm(vendorForm.valid)">Save</button>
+  <button class="btn add-list ft-14 ml-1 pl-4 pr-4" (click)="dismissModal()">Cancel</button>
+</div>

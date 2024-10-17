@@ -1,0 +1,69 @@
+<div class="modal-header fw-600">Vendors for user : {{ userData?.userName }}</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-6">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>
+              &nbsp;
+                <!-- <input
+                type="checkbox"
+                name="selectAll"
+                value="true" [ngModel]="selectAll" (ngModelChange)="checkAll()"
+              /> -->
+              <!-- <div class="custom-checkbox">
+                <span class="bigcheck">
+                  <label class="bigcheck mb-0"> -->
+                    <!-- <input
+                      type="checkbox"
+                      class="bigcheck"
+                      name="cheese"
+                      value="yes"
+                    /> -->
+                    <!-- <span class="bigcheck-target"></span>
+                  </label>
+                </span>
+              </div> -->
+            </th>
+            <th scope="col">#</th>
+            <th scope="col" sortable="name">Vendor Name</th>
+            <!-- <th scope="col" sortable="area" class="d-flex align-items-center">
+              <input type="checkbox" >
+                <span class="pl-2">Access</span>
+
+              <div class="ft-16 text-black ml-2">Access</div>
+            </th> -->
+            <!--[(ngModel)]="vendor.checked" name="access{{i}}" (ngModelChange)="addUserVendorMap()"-->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vendor of vendorList; let i = index">
+            <td>
+              <input
+                type="checkbox"
+                [ngModel]="vendor.checked"
+                name="access{{ i }}"
+                (ngModelChange)="addUserVendorMap(i)"
+              />
+            </td>
+            <th scope="row">{{ i + 1 }}</th>
+            <td>
+              {{ vendor?.name }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-6">
+      <h5>Selected Vendors</h5>
+      <ul>
+        <li *ngFor="let vendor of selectedVendors">{{ vendor?.name }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-outline" (click)="dismissModal()">Cancel</button>
+  <button class="btn btn-success" (click)="submit()">Done</button>
+</div>

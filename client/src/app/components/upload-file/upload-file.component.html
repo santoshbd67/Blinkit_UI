@@ -1,0 +1,149 @@
+<div class="upload-file d-flex justify-content-center align-items-center"
+    #uploadUI
+    *ngIf="showUpload && !isUploadFileLimitExceed">
+    <div class="card border-none p-5 m-0">
+
+        <div style="display: flex;">
+            <div style="width: 100%; font-weight: 500;" class="ft-16">Upload a
+                Document to continue.
+                <div style="float: right;" class="d-flex justify-content-end
+                    pointer" (click)="dismissModal(id)"><img
+                        src='../../../assets/images/cross-sign.png ' width="20"
+                        height="20" />
+                </div>
+            </div>
+        </div>
+        <div class="img-container"> <img class="card-img-top"
+                src="../../../assets/images/icon-upload.svg" alt="Card image
+                cap" /></div>
+        <div class="card-body text-center p-0">
+            <div style="width: 300px; margin:auto;">
+
+                <!-- <div [style.display]="isAdmin== true?'':'none'" class="form-group row">
+                    <label for="orgTypeSelect" class="col-sm-4 col-form-label">Org Type</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="orgTypeSelect" [(ngModel)]="orgTypeSelect">
+                <option *ngFor="let item of orgTypeOptions; let i=index" [ngValue]="item">{{item.orgType}}</option>
+              </select>
+                    </div>
+                </div> -->
+                <div class="form-group row">
+                    <label for="docTypeSelect" class="col-sm-4 col-form-label">Doc
+                        Type</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="docTypeSelect"
+                            [(ngModel)]="docTypeSelect">
+                            <option *ngFor="let item of docTypeOptions; let
+                                i=index" [ngValue]="item">{{item.docType}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="docTypeSelect" class="col-sm-4 col-form-label">Document</label>
+                    <div class="col-sm-8" style="text-align: left;">
+                        <input type="file" #file style="display: none;"
+                            (change)="upload(file.files, $event)"
+                            accept=".tiff,.pdf,.tif" />
+                        <button type="file" class="btn btn-primary btn-file"
+                            (click)="file.click();fileSizeError= false;">
+                            UPLOAD
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+            <div _ngcontent-wub-c24=""
+                [class]="consumtionMessageVisibility===1?'ft-12 info_msg':'ft-12
+                info_msg_rmPadding'">
+                <b *ngIf="consumtionMessageVisibility===1">For your trial
+                    version, please note:</b><br>
+                <b *ngIf="consumtionMessageVisibility===0">please note:</b><br>
+                <li *ngIf="consumtionMessageVisibility===1">You can upload a
+                    maximum of {{NO_OF_ALLOWED_PAGES}} pages every 24 hours.</li>
+                <li>Each file size cannot exceed {{MAX_FILE_SIZE}}MB.</li>
+                <li>Only pdf/tiff file formats are allowed.</li>
+                <li *ngIf="consumtionMessageVisibility===1">Once your daily
+                    limit is reached, please delete some files
+                    to continue uploading new files.</li>
+            </div>
+            <div *ngIf="fileSizeError" class="ft-16 upload-error">Error
+                uploading file: File size limit exceeded({{fileSizeInMB}}MB).
+                Maximum file size: {{MAX_FILE_SIZE}}MB</div>
+            <div *ngIf="filetypeError" class="ft-16 upload-error">This file type
+                is not allowed, Accepted file types are: pdf, tif, tiff.</div>
+            <!-- <div class="ft-16 light-gray">files or folders</div> -->
+        </div>
+    </div>
+</div>
+
+<div class="upload-file d-flex justify-content-center align-items-center"
+    #uploadStatus *ngIf="!showUpload && !isUploadFileLimitExceed">
+    <div class="card p-5">
+        <!-- on success of upload -->
+        <div class="d-flex justify-content-end pointer"
+            (click)="dismissModal(id)"><img
+                src='../../../assets/images/cross-sign.png ' width="20"
+                height="20" /></div>
+        <div *ngIf="completed && success" class="text-center">
+            <!-- <img src="https://tapp2data.blob.core.windows.net/assets/success.gif" style="height:200px;width:266px;"> -->
+            <img src="../../../assets/images/success.gif"
+                style="height:200px;width:266px;">
+
+        </div>
+        <div *ngIf="completed && !success" class="text-center">
+            <img src="../../../assets/images/error.png"
+                style="height:150px;width:150px;">
+        </div>
+        <div class="card-body text-center p-0">
+            <!-- on success of upload -->
+            <div class="pt-5 pl-5 pr-5" *ngIf="!(completed && !success)">
+                <div class="ft-14 pb-2"><span>{{completed?'Uploaded Successfully
+                        ':'Uploading '}}</span>FILE: {{currentFile?.name}} |
+                    SIZE: {{fileSize}} kb</div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar"
+                        [ngStyle]="{'width': percent}" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100">{{percent}}</div>
+                </div>
+                <div class="text-center pt-4" *ngIf="completed && success">
+                    <button (click)="checkUploadLimit()" class="btn
+                        btn-secondary btn-sm">Upload Another file</button>
+                </div>
+            </div>
+            <!-- on error while upload -->
+            <div class="pt-2 pl-5 pr-5" *ngIf="completed && !success">
+                <h4>Error Uploading File</h4>
+                <div class="text-center pt-2">
+                    <button (click)="checkUploadLimit()" class="btn
+                        btn-secondary">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="upload-file d-flex justify-content-center align-items-center"
+    *ngIf="isUploadFileLimitExceed">
+    <div class="card border-none p-5 m-0">
+        <div style="display: flex;">
+            <div>
+                <h4 class="customFont"> Oops, you have exceeded your daily
+                    upload limit of {{NO_OF_ALLOWED_PAGES}} pages 😢</h4>
+            </div>
+            <div class="close_icon" (click)="dismissModal(id)">
+                <img src='../../../assets/images/cross-sign.png ' width="20"
+                    height="20" />
+            </div>
+        </div>
+        <hr>
+        <div>
+
+            <p class="customFont">Please delete some files to start uploading
+                again. Or you can wait till tomorrow to upload again.</p>
+            <p class="customFont">If you need any help, please contact <span><a
+                        href={{ADMIN_EMAIL}} style="color: blue;
+                        text-decoration: underline; cursor: pointer;">{{ADMIN}}</a></span></p>
+        </div>
+    </div>
+</div>

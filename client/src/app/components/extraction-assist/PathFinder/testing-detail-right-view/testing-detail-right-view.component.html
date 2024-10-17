@@ -1,0 +1,56 @@
+<div class="invoice-form" #testingDocsDetailForm>
+  <!-- <div [ngClass]="{ 'col-sm-8': showSidebar, 'col-sm-12': !showSidebar }"> -->
+  <div>
+    <ngb-tabset type="pills" class="alluploads" #tabSet="ngbTabset">
+
+      <ngb-tab title="Header" id="header">
+        <ng-template ngbTabContent>
+          <div class="form-container" #headerItems>
+            <form class="p-4 mx-auto">
+                <div class="col-sm-12" *ngFor="let data of templateFields; let
+                  ind= index">
+                  <div class="form-group">
+
+                    <div class="ft-12 mb-3 d-flex justify-content-between
+                      margin-input-custom font-weight-bold">
+                      {{ transFormHeader(data?.fieldId) }}
+                    </div>
+
+                    <ng-template #headerContent><span class="my-custom-class">
+                        <b class="tipTitle">Extracted Value</b>
+                        <br /><span
+                          [innerHTML]="data?.fieldValue
+                          | suspiciousSymbolsPipe: data?.suspiciousSymbols"></span></span>
+                    </ng-template>
+
+                    <textarea readonly *ngIf="isTextArea(data) &&
+                      isTextArea(data).textarea" class="form-control
+                      custom-input-invoice-form" name="{{ data?.fieldId }}{{ ind
+                      }}"
+                      [(ngModel)]="data.editField" [ngbTooltip]="headerContent"
+                      data-html="true" tooltipClass="my-custom-class"
+                      placement="bottom"
+                      (focus)="setBoundingBoxData($event,data)"
+                      [disabled]="data.vendorMasterdata> 0">
+                    </textarea>
+
+                    <input type="text" readonly *ngIf="!(isTextArea(data) &&
+                      isTextArea(data).textarea)" class="form-control
+                      custom-input-invoice-form" name="{{ data?.fieldId }}{{ ind
+                      }}"
+                      [(ngModel)]="data.editField" [ngbTooltip]="headerContent"
+                      data-html="true" tooltipClass="my-custom-class"
+                      placement="bottom"
+                      (focus)="setBoundingBoxData($event,data)"
+                      [disabled]="data.vendorMasterdata> 0"
+                    />
+                  </div>
+                </div>
+            </form>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+
+</div>

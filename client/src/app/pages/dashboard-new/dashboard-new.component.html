@@ -1,0 +1,277 @@
+<app-header></app-header>
+
+<!-- Filters -->
+<div class="d-flex justify-content-between align-items-center upload-listname">
+
+  <!-- Tabs List-->
+  <div class="d-flex justify-content-start dashboard-tabs">
+    <div *ngFor="let tab of allTabs; let i= index" class="px-2"
+      [ngClass]="isConfigureMode && !tab.active?'disabled-div':''" (click)="highlightTab(i);switchTabs(tab);">
+      <a class="upload-listname_active" [ngClass]="{ active: tab.active }">
+        {{ tab.tab }}
+      </a>
+    </div>
+  </div>
+
+  <!-- All Filters -->
+  <div class="d-flex justify-content-end align-items-center filter-items">
+
+    <!-- Configure Graph Button -->
+    <button *ngIf="dashboardOptions[0].visibility=='1'" (click)="configureGraphs()"
+      class='btn btn-outline-success ft-12 ml-3 mr-2 my-2 d-flex align-items-center py-0 db-disabledGraph-btn'>
+      {{configure_btn_text}}
+    </button>
+
+    <!-- Other Graph Button -->
+    <div *ngIf="this.dashboardOptions[1].visibility=='1'" [ngClass]="isConfigureMode?'disabled-div':''">
+      <button (click)="showDisabledGraphs()"
+        class='btn btn-outline-success ft-12 mr-2 my-2 d-flex align-items-center py-0 db-disabledGraph-btn'>
+        {{dashboardOptions[1].name}}
+      </button>
+    </div>
+
+    <!-- Primary Filter -->
+    <div class="mr-1 date-range" [ngClass]="isConfigureMode?'disabled-div':''">
+      <select id="dropdown1" title="Primary Filter"
+        class="form-control status-list ft-12 pointer max-content text-capitalize" [(ngModel)]="selectedFilter"
+        (ngModelChange)="updatePrimaryFilter()" name="select1">
+        <option value="null">Select Filter</option>
+        <option *ngFor="let filter of filterParams" [ngValue]="filter.id">
+          {{filter?.name}}</option>
+      </select>
+    </div>
+
+    <!-- Sub Filter -->
+    <div class="ml-1 date-range" [ngClass]="isConfigureMode?'disabled-div':''"
+      *ngIf="!(['invoiceDate','submittedOn','search'].includes(selectedFilter))">
+      <select id="dropdown2"
+        [class]="!(selectedFilter && selectedFilter !== 'null')?'form-control status-list ft-12 max-content not_allowed':'form-control status-list ft-12 pointer max-content'"
+        [(ngModel)]="selectedFilterValue" (ngModelChange)="filterList()"
+        [title]="!(selectedFilter && selectedFilter !== 'null')?'Select Primary Filter First':''"
+        [disabled]="!(selectedFilter && selectedFilter !== 'null')">
+        <option disabled value="null">Select Value</option>
+        <option *ngFor="let value of filterValues[selectedFilter]" [value]="value.vendorId">
+          {{ value.name | underScoreToSpacePipe }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Range/Date Dropdown -->
+    <div class="ml-1 date-range" [ngClass]="isConfigureMode?'disabled-div ':''"
+      *ngIf="selectedFilter == 'invoiceDate' || selectedFilter == 'submittedOn'">
+      <select id="dropdown21" class="form-control status-list ft-12 pointer max-content"
+        [disabled]="!(selectedFilter && selectedFilter !== 'null')" [(ngModel)]="selectedDateType" #dateType>
+        <option *ngFor="let type of dateTypes" [value]="type">
+          {{ type | uppercase}}
+        </option>
+      </select>
+    </div>
+
+    <!-- DateRange  -->
+    <div class="ml-1 date-range date-range-width" [ngClass]="isConfigureMode?'disabled-div ':''"
+      *ngIf="(selectedFilter == 'invoiceDate' ||  selectedFilter == 'submittedOn') && selectedDateType === this.dateTypes[0]">
+      <div class="input-group input-cal flex-column">
+        <div class="input-group custom-date">
+          <input type="text" [(ngModel)]="rangetime" class="form-control date-picker ft-12 highligted-cal"
+            (click)="toggleDp()" disabled />
+          <ngb-datepicker *ngIf="toggleCal" #dp [maxDate]="maxDate" [markDisabled]="isDisabled"
+            (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+          </ngb-datepicker>
+          <ng-template #t let-date let-focused="focused">
+            <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+              [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate= date"
+              (mouseleave)="hoveredDate= null">
+              {{ date.day }}
+            </span>
+          </ng-template>
+          <div class="input-group-append input-cal__position">
+            <button class="btn btn-zindex outline box-shadow-0" (click)="toggleDp()">
+              <img src="../../../assets/images/calendar.svg" alt="Calendar" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Single Date -->
+    <div class="ml-1 date-range" [ngClass]="isConfigureMode?'disabled-div':''"
+      *ngIf="(selectedFilter == 'invoiceDate' || selectedFilter == 'submittedOn') && selectedDateType === this.dateTypes[1]">
+      <div class="input-group input-cal flex-column">
+        <div class="input-group custom-date">
+          <input readonly type="text" ngbDatepicker #d2="ngbDatepicker" [(ngModel)]="model2"
+            class="form-control date-picker ft-12 highligted-cal" name="datePickSingle"
+            (dateSelect)="onDateSelectionSingle($event)" />
+
+          <div class="input-group-append input-cal__position">
+            <button class="btn btn-zindex outline box-shadow-0" (click)="d2.toggle()">
+              <img src="../../../assets/images/calendar.svg" alt="Calendar" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Box -->
+    <div class="ml-1" *ngIf="selectedFilter == 'search'">
+      <div class="input-group input-cal flex-column">
+        <div class="input-group custom-date">
+          <input style="width: 270px;" type="text" [(ngModel)]="searchKey" class="form-control date-picker ft-12"
+            title="Search" placeholder="Search" (keyup.enter)="searchFilters()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Go Button -->
+    <div class="ml-3 mr-2 d-flex align-items-center custom-button py-0" *ngIf="(selectedFilter == 'search')"
+      (click)="searchFilters()">
+      <a class="ft-12 link" href="javascript:void(0)">Go</a>
+    </div>
+
+    <!-- More Filters Button -->
+    <div [ngClass]="isConfigureMode?'disabled-div':''">
+      <button (click)="moreFilters()" class="ml-3 mr-2 d-flex align-items-center custom-button py-0 custom-height"
+        matBadge={{badgeValue}} [matBadgeHidden]="badgeHidden" matBadgeColor="warn">
+        <img src="../../../assets/images/funnel.png" width="12" height="12" alt="Filter" />
+        <a class="ft-12 link ml-2" href="javascript:void(0)">More Filters</a>
+      </button>
+    </div>
+
+    <!-- Clear Button -->
+    <div class="ml-3 mr-2 d-flex align-items-center py-0 custom-button db-clear-btn"
+      [ngClass]="isConfigureMode?'disabled-div':''" (click)="clearFilter()">
+      <a class="ft-12 link" href="javascript:void(0)">Clear</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- summary + graphs -->
+<div class="dashboard-container-main ml-2">
+  <div class="card-body">
+
+    <!-- Summary Forever + Selection -->
+    <div class="summary-items">
+      <div *ngIf="summaryData && summaryData.length>0" class="card">
+        <div class="card-body">
+          <h6>Summary : <span class="text-purple">Selection</span>/<span class="text-orange">Lifetime</span>
+          </h6>
+          <!-- <hr class="dashboard-separator"> -->
+          <div class="grid-container">
+            <div class="grid-item" *ngFor="let data of summaryData; let i= index">
+              <h6 class="data-font-medium">{{data.name}}</h6>
+              <h4 *ngIf="data?.currentValue || data?.currentValue==0; else showNA" class="data-font-large-2">
+                {{data.currentValue}}</h4>
+              <h2 *ngIf="data?.foreverValue || data?.currentValue==0; else showNA" class="data-font-large">
+                {{data.foreverValue}}</h2>
+              <h6 class="data-font-medium" *ngIf="data.unit">{{data.unit}}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Graphs -->
+    <div *ngFor="let charts of mappedDashboardCharts; let i= index">
+      <!-- For 2 charts in a Row -->
+      <div *ngIf="charts.length==2" class="summary-items grid2">
+        <div *ngFor="let innerChart of charts" id="mydiv" class="card">
+
+          <!-- <pre *ngFor="let item of innerChart | keyvalue" > {{item.key}}:{{item.value}}</pre> -->
+
+          <div *ngIf="innerChart.viewType=='graph'" class="card-body"
+            [class]="!(innerChart.enabled)? 'disabled-graph' : ''" cdkDrag cdkDropList
+            (cdkDropListDropped)="drop2($event)" [cdkDropListData]="mappedDashboardCharts">
+            <app-chart-new [chartData]="" [chartConfig]="innerChart" cdkDrag>
+            </app-chart-new>
+          </div>
+
+          <div *ngIf="isConfigureMode">
+            <!-- disable button -->
+            <i title="Disable Graph" (click)="disableGraph(innerChart)" class="fa fa-times-circle icon-position"
+              aria-hidden="true"></i>
+
+            <!-- expand/collapse button -->
+            <button (click)="handleChangeSpan(innerChart,'Expand')" title="Expand Graph" *ngIf="charts[0].colSpan==1"
+              class="btn btn-outline-success expand-coll">
+              Expand
+            </button>
+            <button (click)="handleChangeSpan(innerChart,'Collapse')" title="Collapse Graph"
+              *ngIf="charts[0].colSpan==2" class="btn btn-outline-success expand-coll">
+              Collapse
+            </button>
+          </div>
+
+          <div *ngIf="innerChart.viewType=='table'">
+            <app-dashboard-new-table [chartConfig]="innerChart">
+            </app-dashboard-new-table>
+          </div>
+
+          <div *ngIf="!(innerChart.currentData)" class="no-graph-data">
+            <h4 class="text_center">No Data Found</h4>
+          </div>
+          <!-- <button *ngIf="!(innerChart.enabled)" class="btn
+                      btn-primary enable-btn" (click)="enableGraph(innerChart)"> Enable
+          </button> -->
+        </div>
+      </div>
+
+      <!-- For single chart in a Row -->
+      <div *ngIf="charts.length==1" [class]="(charts[0].colSpan==2) ? 'summary-items' :
+                  'summary-items grid2'">
+        <div class="card">
+          <div *ngIf="charts[0].viewType=='graph'" class="card-body"
+            [class]="!(charts[0].enabled)? 'disabled-graph' : ''" cdkDrag cdkDropList
+            (cdkDropListDropped)="drop2($event)" [cdkDropListData]="mappedDashboardCharts">
+            <app-chart-new [chartData]="" [chartConfig]="charts[0]" cdkDrag>
+            </app-chart-new>
+          </div>
+
+          <div *ngIf="isConfigureMode">
+            <i title="Disable Graph" (click)="disableGraph(charts[0])" class="fa fa-times-circle icon-position"
+              aria-hidden="true"></i>
+
+            <!-- expand/collapse button -->
+            <button (click)="handleChangeSpan(charts[0],'Expand')" title="Expand Graph" *ngIf="charts[0].colSpan==1"
+              class="btn btn-outline-success expand-coll">
+              Expand
+            </button>
+            <button (click)="handleChangeSpan(charts[0],'Collapse')" title="Collapse Graph" *ngIf="charts[0].colSpan==2"
+              class="btn btn-outline-success expand-coll">
+              Collapse
+            </button>
+          </div>
+
+          <div *ngIf="charts[0].viewType=='table'">
+            <app-dashboard-new-table [chartConfig]="charts[0]">
+            </app-dashboard-new-table>
+          </div>
+
+          <div *ngIf="!(charts[0].currentData)" class="no-graph-data">
+            <h4 class="text_center">No Data Found</h4>
+          </div>
+          <!-- <button *ngIf="!(charts[0].enabled)" class="btn btn-primary
+                      enable-btn" (click)="enableGraph(charts[0])"> Enable
+          </button> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Show Loader while getting documents -->
+    <div *ngIf="!isGraphsFetched">
+      <ngx-spinner [fullScreen]="false" type="line-scale" color="#fc9221" size="default">
+      </ngx-spinner>
+    </div>
+  </div>
+</div>
+
+<ng-container>
+  <div [ngClass]="{ 'modal-container-backdrop': toggleFilter }" (click)="closeSidePanel($event)"></div>
+  <app-dashboard-new-filters [toggleFilter]="toggleFilter" [selectedTab]="selectedTab"
+    [clearMainFiltersEmit]="clearMainFiltersEmit" (closeOutput)="closeSidePanel($event)"
+    (emitFilters)="setEmittedFilters($event)">
+  </app-dashboard-new-filters>
+</ng-container>
+
+<ng-template #showNA>
+  <span class="font-weight-bold">-NA-</span><br>
+</ng-template>

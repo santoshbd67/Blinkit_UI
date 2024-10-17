@@ -1,0 +1,455 @@
+<div class='pt-0 pl-1 pr-1'>
+    <div class="d-flex align-items-end justify-content-between ft-500 p-2 ft-12
+        text-center font-weight-normal pr-4 pl-0">
+        <div class="ft-14 font-weight-bold">
+            {{ selectedFilters ? statusTextMapping[selectedFilters] : "All
+            Documents" }}
+        </div>
+
+        <div class="d-flex">
+            <button title="Download All Documents" *ngIf="dataset && dataset.length" [disabled]="isDownloadAllDisabled"
+                [class]="isDownloadAllDisabled ? ' btn ft-10 download-all not_allowed' : 'btn ft-10 download-all enabled'"
+                type="button" (click)="downloadListViewFiles()">
+                <i class="fa fa-download" aria-hidden="true"></i> Download
+            </button>
+
+            <div *ngIf="dataset && dataset.length">
+                Showing {{ showingItemCount }} of {{ itemsCount }}
+            </div>
+        </div>
+    </div>
+
+    <div [class]="(dataset && dataset.length> 0 && !isBadgeDivShown &&
+        !isPostingTabShown)?
+        'scrolling-list' :
+        (isBadgeDivShown && !isPostingTabShown && dataset && dataset.length >
+        0)?
+        'scrolling-list-Badge':(isPostingTabShown && !isBadgeDivShown && dataset
+        && dataset.length> 0)
+        ?'scrolling-list-Posting':(isPostingTabShown &&
+        isBadgeDivShown && dataset && dataset.length> 0
+        )?'scrolling-list-PostingAndBadge':''">
+        <table class="table table-white vendor-upload-list
+            table-white-responsive" *ngIf="dataset && dataset.length">
+            <thead>
+                <tr>
+                    <th scope="col" class="ft-12">
+                        <div class="custom-check-box list-view-checkbox"
+                            *ngIf="selectedFilters == 'READY_FOR_EXTRACTION'">
+                            <label class="container">
+                                <input type="checkbox" [(ngModel)]="selectAll" (ngModelChange)="toggleSelect()" />
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </th>
+                    <th scope="col" class="ft-12 word-wrap">File Name</th>
+                    <th scope="col" class="ft-12 word-wrap">Vendor Name</th>
+                    <th scope="col" class="ft-12 word-wrap">Submitted Date</th>
+                    <th scope="col" class="ft-12 word-wrap">Last Updated</th>
+                    <th *ngIf="STP_AND_ACE_VISIBILITY==1" scope="col" class="ft-12 word-wrap">STP</th>
+                    <th *ngIf="STP_AND_ACE_VISIBILITY==1" scope="col" class="ft-12 word-wrap">ACE</th>
+                    <th *ngIf="STP_AND_ACE_VISIBILITY==1" scope="col" class="ft-12 word-wrap">Confidence</th>
+                    <th scope="col" class="ft-12 word-wrap">Document Type</th>
+                    <th scope="col" class="ft-12 word-wrap">Review Time </th>
+                    <th scope="col" class="ft-12 word-wrap">Status</th>
+                    <th *ngIf="!isDeletedTabSelected" scope="col" class="ft-12 word-wrap">Extraction Time
+                    </th>
+
+                    <th *ngIf="TAPP_CHANGES_VISIBILITY == '1'" scope="col" class="ft-12 word-wrap">Total Amount </th>
+                    <th *ngIf="TAPP_CHANGES_VISIBILITY == '1'" scope="col" class="ft-12 word-wrap">Invoice Number </th>
+                    <th *ngIf="TAPP_CHANGES_VISIBILITY == '1'" scope="col" class="ft-12 word-wrap">Invoice Date </th>
+                    <th *ngIf="TAPP_CHANGES_VISIBILITY == '1'" scope="col" class="ft-12 word-wrap">Stage </th>
+                    <th *ngIf="isReassignedTabSelected" scope="col" class="ft-12 word-wrap">Reassign Reason</th>
+                    <th *ngIf="TAPP_CHANGES_VISIBILITY == '1'" scope="col" class="ft-12 word-wrap">Status Message </th>
+                    <th *ngIf="TAPP_CHANGES_VISIBILITY == '1'" scope="col" class="ft-12 word-wrap">Comments</th>
+
+                    <!-- Apply condition on isPostingTabShown - when you want to show on Posting TAb
+                    Apply condition on showApproverFields - when you want to show on Approval TAb -->
+
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Posting Status</th>
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Approver Designation</th>
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Approver Email</th>
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Sent to Approval</th>
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Approval Status</th>
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Approver Comment</th>
+                    <th *ngIf="isPostingTabShown" scope="col" class="ft-12 word-wrap">Approved On</th>
+
+                    <th scope="col" class="ft-12 word-wrap" *ngIf="!multipleSelect && !isDeletedTabSelected">Actions
+                    </th>
+                    <th scope="col" class="ft-12 word-wrap" *ngIf="isDeletedTabSelected">Deleted Reason</th>
+                    <th scope="col" class="ft-12 word-wrap" *ngIf="isDeletedTabSelected">Deleted Time</th>
+                    <th> &nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-hover-data" *ngFor="let headerItem of dataset |
+                    paginate : {
+                    itemsPerPage: itemsPerPage,
+                    currentPage: pageNumber,
+                    totalItems: itemsCount
+                    };let i= index">
+                    <td>
+                        <div class="custom-check-box" *ngIf="selectedFilters ==
+                            'READY_FOR_EXTRACTION'">
+                            <label class="container">
+                                <input type="checkbox" [(ngModel)]="headerItem.selected"
+                                    (ngModelChange)="toggleSelectSingle(i)" />
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        &nbsp;
+                    </td>
+
+                    <!-- fileName -->
+                    <td class="ft-12">
+                        <div class="d-flex filename">
+                            <span *ngIf="headerItem?.fileName; else showNA">
+                                {{headerItem?.fileName}}
+                            </span>
+                            <i title="Download Original File" class="fa fa-download download-orginal" aria-hidden="true"
+                                (click)="downloadOriginalFile(headerItem?.documentId)"></i>
+                        </div>
+                    </td>
+
+                    <!-- vendorName -->
+                    <td class="ft-12">
+                        <div class="d-flex filename">
+                            <span *ngIf="headerItem?.vendorName; else showNA">
+                                {{headerItem?.vendorName}}
+                            </span>
+                        </div>
+                    </td>
+
+                    <!-- submittedOn -->
+                    <td class="ft-12" style="white-space: nowrap;">
+                        <span *ngIf="headerItem?.submittedOn; else showNA">
+                            {{epochToMili(headerItem?.submittedOn)}}
+                        </span>
+                    </td>
+
+                    <!-- lastUpdatedOn -->
+                    <td class="ft-12" style="white-space: nowrap;">
+                        <span *ngIf="headerItem?.lastUpdatedOn; else showNA">
+                            {{epochToMili(headerItem?.lastUpdatedOn) }}
+                        </span>
+                    </td>
+
+                    <!-- STP -->
+                    <td *ngIf="STP_AND_ACE_VISIBILITY==1" style="min-width: 50px;" class="ft-12">
+                        <span *ngIf="getBooleanFlag(headerItem?.stp); else
+                            showNA">
+                            {{ getBooleanFlag(headerItem?.stp)}}
+                        </span>
+                    </td>
+
+                    <!-- ACE -->
+                    <td *ngIf="STP_AND_ACE_VISIBILITY==1" style="min-width: 50px;" class="ft-12">
+                        <span *ngIf="getACEValue(headerItem?.ace); else showNA">
+                            {{ getACEValue(headerItem?.ace)}}
+                        </span>
+                    </td>
+
+                    <!-- Confidence -->
+                    <td *ngIf="STP_AND_ACE_VISIBILITY==1" class="ft-12">
+                        <span *ngIf="headerItem?.overall_score>= 0; else
+                            showNA">
+                            {{ headerItem?.overall_score | decimalPretty}}%
+                        </span>
+                    </td>
+
+                    <!-- Document Type -->
+                    <td class="ft-12">
+                        <span *ngIf="headerItem?.docType; else showNA">
+                            {{ headerItem?.docType }}
+                        </span>
+                    </td>
+
+                    <!-- Reviewed Time -->
+                    <td class="ft-12">
+                        <span *ngIf="headerItem?.totalReviewedTime; else
+                            showNA">
+                            {{ secondsToHms(headerItem?.totalReviewedTime)}}
+                        </span>
+                    </td>
+
+                    <!-- Status -->
+                    <td class="ft-12">
+                        <div *ngIf="headerItem?.status !==
+                            'EXTRACTION_INPROGRESS'">
+                            {{headerItem?.status | underScoreToSpacePipe}}
+                        </div>
+                        <div *ngIf="headerItem?.status ===
+                            'EXTRACTION_INPROGRESS'">
+                            EXTRACTION IN PROGRESS
+                        </div>
+                    </td>
+
+                    <!-- total extraction time -->
+                    <td class="ft-12" *ngIf="!isDeletedTabSelected">
+                        <span *ngIf="headerItem?.status !== 'NEW' &&
+                            headerItem?.status !== 'PRE_PROCESSING' &&
+                            headerItem?.status !== 'EXTRACTION_INPROGRESS'
+                            && headerItem?.status !== 'RPA_PROCESSING' &&
+                            headerItem?.status !== 'FAILED';else showNA">
+                            {{(headerItem?.extractionTime)/1000 |decimalPretty}}
+                            sec
+                        </span>
+                    </td>
+
+                    <!-- totalAmount -->
+                    <td *ngIf="TAPP_CHANGES_VISIBILITY == '1'" class="ft-12">
+                        <span *ngIf="headerItem?.totalAmount; else showNA">
+                            {{ headerItem?.totalAmount}}
+                        </span>
+                    </td>
+
+                    <!-- invoiceNumber -->
+                    <td *ngIf="TAPP_CHANGES_VISIBILITY == '1'" class="ft-12">
+                        <span *ngIf="headerItem?.invoiceNumber; else showNA">
+                            {{ headerItem?.invoiceNumber}}
+                        </span>
+                    </td>
+
+                    <!-- invoiceDate -->
+                    <td *ngIf="TAPP_CHANGES_VISIBILITY == '1'" class="ft-12">
+                        <span *ngIf="headerItem?.invoiceDate; else showNA">
+                            {{ headerItem?.invoiceDate}}
+                        </span>
+                    </td>
+
+                    <!-- stage -->
+                    <td *ngIf="TAPP_CHANGES_VISIBILITY == '1'" class="ft-12">
+                        <span *ngIf="headerItem?.stage; else showNA">
+                            {{ headerItem?.stage}}
+                        </span>
+                    </td>
+
+                    <!-- Reassign Msg -->
+                    <td *ngIf="isReassignedTabSelected && (headerItem?.status === 'REASSIGN')" class="ft-12">
+                        <span *ngIf="headerItem?.reassignReason; else showNA">
+                            <span *ngIf="headerItem?.reassignReason.length <= 35">
+                                {{headerItem?.reassignReason}}
+                            </span>
+                            <div *ngIf="headerItem?.reassignReason.length >= 35">
+                                <span>{{headerItem?.reassignReason.substring(0,35)}}
+                                    <i style="cursor: pointer;" class="fa fa-ellipsis-h" aria-hidden="true"
+                                        popoverTitle="Reassign Reason" ngbPopover="{{headerItem?.reassignReason}}"
+                                        triggers="manual" placement="top" #p="ngbPopover" (click)="p.open()"
+                                        title="{{headerItem?.reassignReason}}">
+                                    </i>
+                                </span>
+                            </div>
+                        </span>
+                    </td>
+
+                    <!-- statusMsg -->
+                    <td *ngIf="TAPP_CHANGES_VISIBILITY == '1'" class="ft-12">
+                        <span *ngIf="headerItem?.statusMsg; else showNA">
+                            <span *ngIf="headerItem?.statusMsg.length <= 35">
+                                {{headerItem?.statusMsg}}
+                            </span>
+                            <div *ngIf="headerItem?.statusMsg.length >= 35">
+                                <span>{{headerItem?.statusMsg.substring(0,35)}}
+                                    <i style="cursor: pointer;" class="fa fa-ellipsis-h" aria-hidden="true"
+                                        popoverTitle="Status Message" ngbPopover="{{headerItem?.statusMsg}}"
+                                        triggers="manual" placement="top" #p="ngbPopover" (click)="p.open()"
+                                        title="{{headerItem?.statusMsg}}">
+                                    </i>
+                                </span>
+                            </div>
+                        </span>
+                    </td>
+
+                    <!-- Comments -->
+                    <td *ngIf="TAPP_CHANGES_VISIBILITY == '1'" class="ft-12">
+                        <span *ngIf="headerItem?.comment; else showNA">
+                            <span *ngIf="headerItem?.comment.length <= 35">
+                                {{headerItem?.comment}}
+                            </span>
+                            <div *ngIf="headerItem?.comment.length >= 35">
+                                <span>{{headerItem?.comment.substring(0,35)}}
+                                    <i style="cursor: pointer;" class="fa fa-ellipsis-h" aria-hidden="true"
+                                        popoverTitle="Status Message" ngbPopover="{{headerItem?.comment}}"
+                                        triggers="manual" placement="top" #p="ngbPopover" (click)="p.open()"
+                                        title="{{headerItem?.comment}}">
+                                    </i>
+                                </span>
+                            </div>
+                        </span>
+                    </td>
+
+                    <!-- Posting Status -->
+                    <td *ngIf="isPostingTabShown" class="ft-12">
+                        <span *ngIf="headerItem?.postingStatus; else
+                            showNA">
+                            {{headerItem?.postingStatus}}
+                        </span>
+                    </td>
+
+                    <!-- approverDesignation -->
+                    <td *ngIf="isPostingTabShown" class="ft-12">
+                        <span *ngIf="headerItem?.approverDesignation; else
+                            showNA">
+                            {{headerItem?.approverDesignation}}
+                        </span>
+                    </td>
+
+                    <!-- approverEmail -->
+                    <td *ngIf="isPostingTabShown" class="ft-12">
+                        <span *ngIf="headerItem?.approverEmail; else showNA">
+                            {{headerItem?.approverEmail}}
+                        </span>
+                    </td>
+
+                    <!-- sentToApprovalOn -->
+                    <td *ngIf="isPostingTabShown" class="ft-12" style="white-space: nowrap;">
+                        <span *ngIf="headerItem?.sentToApprovalOn; else showNA">
+                            {{headerItem?.sentToApprovalOn}}
+                        </span>
+                    </td>
+
+                    <!-- approvalStatus -->
+                    <td *ngIf="isPostingTabShown" class="ft-12">
+                        <span *ngIf="headerItem?.approvalStatus; else showNA">
+                            {{headerItem?.approvalStatus}}
+                        </span>
+                    </td>
+
+                    <!-- approverComment -->
+                    <td *ngIf="isPostingTabShown" class="ft-12">
+                        <span *ngIf="headerItem?.approverComment; else showNA">
+                            <span *ngIf="headerItem?.approverComment.length <= 35">
+                                {{headerItem?.approverComment}}
+                            </span>
+                            <div *ngIf="headerItem?.approverComment.length >= 35">
+                                <span>{{headerItem?.approverComment.substring(0,35)}}
+                                    <i style="cursor: pointer;" class="fa fa-ellipsis-h" aria-hidden="true"
+                                        popoverTitle="Approver Comment" ngbPopover="{{headerItem?.approverComment}}"
+                                        triggers="manual" placement="top" #p="ngbPopover" (click)="p.open()"
+                                        title="{{headerItem?.approverComment}}">
+                                    </i>
+                                </span>
+                            </div>
+                        </span>
+                    </td>
+
+                    <!-- approvedOn -->
+                    <td *ngIf="isPostingTabShown" class="ft-12" style="white-space: nowrap;">
+                        <span *ngIf="headerItem?.approvedOn; else showNA">
+                            {{headerItem?.approvedOn}}
+                        </span>
+                    </td>
+
+                    <!-- flashing button  -->
+                    <td style="vertical-align: middle !important;" class="ft-12"
+                        *ngIf="!multipleSelect && !isDeletedTabSelected">
+                        <button [disabled]="headerItem?.status
+                            ==='EXTRACTION_INPROGRESS'" class="btn btn-success btn-table" *ngIf="getButtonText(headerItem) &&
+                            headerItem?.extraction_completed === 0  && headerItem.documentPurged !== 1" (click)="callInfoBox(headerItem)">
+                            {{ getButtonText(headerItem) }}
+                        </button>
+                        <button [disabled]="headerItem?.documentPurged
+                            ===1" class="btn btn-purged btn-table" *ngIf="headerItem.documentPurged === 1" (click)="callInfoBox(headerItem)">
+                            PURGED
+                        </button>
+                        <button [class]="headerItem?.status ==='FAILED' ? 'btn
+                            btn-success btn-table' : 'btn btn-success btn-table
+                            blink_me'" *ngIf="getButtonText(headerItem) &&
+                            headerItem?.extraction_completed === 1  && headerItem.documentPurged !== 1" (click)="callInfoBox(headerItem)">
+                            {{ getButtonText(headerItem) }}
+                        </button>
+                    </td>
+
+                    <!-- download, refresh, delete, copy, extraction time -->
+                    <td *ngIf="!isDeletedTabSelected" style="vertical-align:
+                        middle !important;" class="ft-12">
+                        <div class="d-flex justify-content-between">
+
+                            <!-- loading icon  -->
+                            <button
+                                *ngIf="(headerItem?.extraction_completed === 0) && (headerItem?.status === 'NEW' || headerItem?.status === 'EXTRACTION_INPROGRESS')"
+                                class="btn mr-1" style="width: 42px">
+                                <img [src]="imgSrc.loadingIcon" class="cursor-pointer" width="32" height="auto"
+                                    title="click me to see updated result" />
+                            </button>
+
+                            <!-- download icon -->
+                            <span *ngIf="userRole!=='approver'">
+                                <button [disabled]="(headerItem?.status === 'FAILED'|| ACTIONS_VISIBILITY === 0)"
+                                    *ngIf="(headerItem?.status !== 'NEW' && headerItem?.status !== 'EXTRACTION_INPROGRESS')"
+                                    [class]="(headerItem?.status === 'FAILED' || ACTIONS_VISIBILITY ===0) ? 'btn not_allowed' : 'btn mr-1 cursor-pointer'"
+                                    style="width: 42px" (click)="openDialog(headerItem?.documentId)">
+                                    <img [src]="imgSrc.downloadIcon" width="16" height="16" title="Download Result" />
+                                </button>
+
+                            </span>
+
+                            <!-- refresh icon -->
+                            <button *ngIf="userRole!=='approver'" [disabled]="ACTIONS_VISIBILITY ===0" [class]="ACTIONS_VISIBILITY ===0 ? 'btn mr-1
+                                not_allowed':'btn mr-1'" (click)="getDocumentDataByDocId(headerItem?.documentId,i)">
+                                <img [src]="imgSrc.refreshIcon" width="16" height="16" title="Refresh" />
+                            </button>
+
+                            <!-- delete icon -->
+                            <button *ngIf="userRole!=='approver'" [disabled]="headerItem?.status === 'REVIEW_COMPLETED' ||
+                                headerItem?.status === 'EXTRACTION_INPROGRESS'||
+                                ACTIONS_VISIBILITY ===0" (click)="openAlertModel(headerItem?.documentId)" [class]="headerItem?.status ===
+                                'REVIEW_COMPLETED'|| headerItem?.status ===
+                                'EXTRACTION_INPROGRESS' || ACTIONS_VISIBILITY===0?'btn
+                                ml-1 not_allowed':'btn ml-1'">
+                                <img [src]="imgSrc.deleteIcon" width="16" height="16" title="Delete" />
+                            </button>
+
+                            <!-- Comments icon -->
+                            <button *ngIf="TAPP_CHANGES_VISIBILITY == '0'"
+                                [class]="headerItem?.comment? 'btn mr-1 comment':'btn mr-1'" popoverTitle="Comment"
+                                ngbPopover="{{headerItem?.comment}}" triggers="manual" placement="left" #p="ngbPopover"
+                                (click)="p.open()" title="{{headerItem?.comment}}">
+                                <img [src]="imgSrc.commentIcon" width="16" height="16" />
+                            </button>
+
+                            <!-- info icon -->
+                            <button class="btn mr-1" title="{{headerItem?.documentId}}">
+                                <img [src]="imgSrc.infoIcon" class="cursor-pointer" width="16" height="16" title="Info"
+                                    (click)="dataService.copyToClipboard(headerItem?.documentId)" />
+                            </button>
+                        </div>
+                    </td>
+
+                    <!-- deleteReason -->
+                    <td scope="col" class="ft-12" *ngIf="isDeletedTabSelected" style="height: 50px;"> {{
+                        headerItem?.deleteReason }}
+                    </td>
+
+                    <!-- deleteTime    -->
+                    <td scope="col" class="ft-12" *ngIf="isDeletedTabSelected">
+                        {{headerItem?.deleteTime }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- <div class="d-flex align-items-end justify-content-center p-1"
+        *ngIf="dataset && dataset.length">
+        <pagination-controls
+            (pageChange)="setPageNumber($event);pageNumber=$event"
+            class="ft-14 font-weight-normal">
+        </pagination-controls>
+    </div> -- moved in uploads component on 05-12-2022-->
+</div>
+
+<ng-template #showNA>
+    <span class="font-weight-bold">-NA-</span>
+</ng-template>
+
+<div *ngIf="isDownloadClicked">
+    <app-custom-diaog [docId]="documentId" (close)='closeDialog()' (startDownload)="getResultDownload($event)">
+    </app-custom-diaog>
+</div>
+
+<div *ngIf="isReviewerDialogOpened">
+    <app-reviewer-dialog [bodyContent]="dataService.reviewerBody" (onCancel)="closeReviewerDialog($event)"
+        (onActionPressed)="onActionPressedForReviewer($event)">
+    </app-reviewer-dialog>
+</div>

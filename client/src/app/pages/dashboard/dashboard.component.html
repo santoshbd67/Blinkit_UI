@@ -1,0 +1,276 @@
+<app-header></app-header>
+<!--<router-outlet></router-outlet> -->
+
+<div class="dashboard-container-main">
+    <!-- Header div with showing Quota: and Refresh Icon  -->
+    <div class="dashboard-container d-flex justify-content-between
+        align-items-center topFixed">
+        <div *ngIf="consumtionMessageVisibility==1" class="container-title">
+            <div class="d-flex">
+                <div class="ft-14 fw-400 pl-2 pt-2">
+                    <!-- <b>Subscriber:</b> {{organizationConfiguration?.orgName}} •
+                    <b>ID:</b> {{organizationConfiguration?.orgID}} •
+                    <b>Expiry:</b> {{organizationConfiguration?.expiry}} • -->
+                    <!-- <b>Quota:</b> {{(dashboardStats?.totalProcessed?.totalPageCount) | decimalPretty}} of {{organizationConfiguration?.pageQuota | number: '1.0'}} pages consumed. -->
+                    <b>Quota:</b> {{(consumedPages) }} of {{NO_OF_ALLOWED_PAGES
+                    | number: '1.0'}} pages consumed.
+                </div>
+                <div class="mt-1" ngbTooltip="Refresh"
+                    tooltipClass="my-custom-tooltip" placement="right">
+                    <button (click)="clickOnRefresh()" class="btn btn-menu">
+                        <img src="../../../assets/images/refreshing.png"
+                            width="12" height="12" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forever Summary Div-->
+    <div class="overall-container">
+        <div>
+            <h6>Forever Summary</h6>
+        </div>
+        <div class="grid-container grid6">
+            <!-- historic  -->
+            <div class="card">
+                <div class="card-body card-customize">
+                    <div class="text">
+                        <img src="../../../assets/images/icon-submit.svg"
+                            width="16" class="float-left mr-2">Documents
+                        Submitted
+                        <div class="card-title mb-0 text-right ft-18">
+                            <!-- {{dashboardStatsHistory?.totalDocumentsSubmitted | dashboardStatsPipe : 'integer'}} -->
+                            {{(dashboardStats?.totalProcessed?.totalDocumentsSubmitted)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body card-customize">
+                    <div class="text">
+                        <img src="../../../assets/images/icon-rpa.svg"
+                            width="16" class="float-left mr-2">Documents
+                        Processed
+                        <div class="card-title mb-0 text-right ft-18">
+                            <!-- {{dashboardStatsHistory?.totalDocumentsProcessed | dashboardStatsPipe : 'integer'}} -->
+                            {{(dashboardStats?.totalProcessed?.totalDocumentsProcessed)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body card-customize">
+                    <div class="text">
+                        <img src="../../../assets/images/vendor.png" width="16"
+                            class="float-left mr-2"> Average Page Count (per
+                        Doc)
+                        <div class="card-title mb-0 text-right ft-18"
+                            *ngIf="dashboardStats?.globalAverages?.avgPageCount!=null">
+                            {{dashboardStats?.globalAverages?.avgPageCount |
+                            number: '1.0'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body card-customize">
+                    <div class="text">
+                        <img src="../../../assets/images/icon-processing.png"
+                            width="16" class="float-left mr-2"> Average
+                        Confidence
+                        <div class="card-title mb-0 text-right ft-18">
+                            {{(dashboardStats?.globalAverages?.avgConfidence) |
+                            decimalPretty}}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body card-customize">
+                    <div class="text">
+                        <img src="../../../assets/images/icon-manual.png"
+                            width="16" class="float-left mr-2">STP%
+                        <div class="card-title mb-0 text-right ft-18">
+                            <!-- {{dashboardStatsHistory?.totalCorrectionTime | dashboardStatsPipe : 'time'}} -->
+                            {{(dashboardStatsHistory?.totalSTP /
+                            dashboardStatsHistory?.totalDocumentsProcessed) *
+                            100 | number: '1.0' }}%
+                            <!-- {{dashboardStats?.summaries?.totalSTP/dashboardStats?.summaries?.totalDocumentsProcessed *100 | decimalPretty}}% -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body card-customize">
+                    <div class="text">
+                        <img src="../../../assets/images/icon-manual.png"
+                            width="16" class="float-left mr-2">Field Level
+                        Accuracy
+                        <div class="card-title mb-0 text-right ft-18">
+                            <!-- {{dashboardStatsHistory?.avgAccuracy | decimalPretty }}% -->
+                            {{dashboardStats?.summaries?.avgAccuracy | number:
+                            '1.0' }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="dashboard-separator">
+
+    <!-- Current Summary Div-->
+    <div id="current_summary">
+        <div class="overall-container">
+            <h6>Current Summary</h6>
+        </div>
+
+        <!-- filters -->
+        <div class="d-flex sort__btn sort__btn--position justify-content-end
+            pr-3">
+            <div class="d-flex align-items-center pr-3 filter-dashboard">
+
+                <!-- Org Types Filter -->
+                <!-- <div class="d-flex mr-1">
+                    <select class="form-control status-list ft-12 pointer
+                        text-capitalize outline custom-card"
+                        [(ngModel)]="orgTypeSelect"
+                        (ngModelChange)="filterDashBoardStats()">
+                        <option selected value="">all orgs</option>
+                        <option *ngFor="let item of orgTypeOptions; let i=index"
+                            [ngValue]="item.orgTypeId">{{item.orgType}}</option>
+                    </select>
+                </div> -->
+                <!-- Doc Types filter -->
+                <div class="d-flex mr-1">
+                    <select class="form-control status-list ft-12 pointer
+                        text-capitalize outline custom-card"
+                        [(ngModel)]="docTypeSelect"
+                        (ngModelChange)="filterDashBoardStats()">
+                        <option selected value="">all docs</option>
+                        <option *ngFor="let item of docTypeOptions; let i=index"
+                            [ngValue]="item.docTypeId">{{item.docType}}</option>
+                    </select>
+                </div>
+
+                <!-- Time Based Filter -->
+                <div class="d-flex mr-1">
+                    <select class="form-control status-list ft-12 pointer
+                        text-capitalize outline custom-card"
+                        [(ngModel)]="selectedPeriodValue"
+                        (ngModelChange)="filterDashBoardStats()"
+                        [class.ng-hover]="this.selectedPeriodValue">
+                        <option *ngFor="let item of masterDataOfSelectPeriod"
+                            [value]="item.value">{{ item.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Vendor Based Filter -->
+                <!-- <div class="d-flex ml-1" style="display:none !important">
+                    <select class="form-control status-list ft-12 pointer
+                        text-capitalize outline custom-card"
+                        [(ngModel)]="selectedVendorValue"
+                        (ngModelChange)="filterDashBoardStats()">
+                        <option selected value="">all vendor</option>
+                        <option *ngFor="let item of vendorList | orderBy:'name'"
+                            [value]="item.vendorId">{{ item.name }}
+                        </option>
+                    </select>
+                </div> -->
+                <!-- Clear Filter Button -->
+                <div class="ml-3 mr-2 d-flex custom-button padding-custom p-1">
+                    <a class="ft-12 link clear-filter pointer clear"
+                        (click)="clearFilters()" href="javascript:void(0)">Clear</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- tabs -->
+        <ngb-tabset type="pills" class="alluploads dashboard-position
+            dashboard-tabs">
+            <ngb-tab title="Dashboard">
+                <ng-template ngbTabContent>
+                    <!-- Dashboard -->
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h6 class="mb-3">Summary <span
+                                    *ngIf="selectedPeriodValue">for
+                                    {{selectedPeriodValue |
+                                    underScoreToSpacePipe |
+                                    lowercase}} </span>
+                                <span *ngIf="selectedVendorValue"> for
+                                    {{getVendorName(selectedVendorValue)?.name}}
+                                </span>
+                            </h6>
+
+                            <div class="summary-items grid2">
+
+                                <!-- DOCUMENTS PROCESSED Chart -->
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="row">
+                                            <div class="col col-2 label">Document
+                                                Processed</div>
+                                            <div class="col col-2 data">{{dashboardStats?.summaries?.totalDocumentsProcessed}}</div>
+                                            <div class="col col-2 label">Pages
+                                                Processed</div>
+                                            <div class="col col-2 data">{{dashboardStats?.summaries?.totalPageCount}}</div>
+                                            <div class="col col-2 label">Average
+                                                Processing Time</div>
+                                            <div class="col col-2 data">{{(dashboardStats?.summaries?.totalProcessingTime/dashboardStats?.summaries?.totalDocumentsProcessed)
+                                                / (1000) | number: '1.0'}}
+                                                sec/doc</div>
+                                        </div>
+                                        <!-- <hr> -->
+                                        <app-chart [chartData]="noOfDocsVsDays"
+                                            [chartConfig]="dashboardConfig.dashboardCharts[4]">
+                                        </app-chart>
+
+                                    </div>
+                                </div>
+
+                                <!-- AVERAGE CONFIDENCE AND STP Chart -->
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col col-2 label">Average
+                                                Confidence</div>
+                                            <div class="col col-2 data">{{dashboardStats?.summaries?.avgAccuracy
+                                                | number: '1.0'}}%</div>
+                                            <div class="col col-2 label">STP%</div>
+                                            <div class="col col-2 data">{{dashboardStats?.summaries?.totalSTP/dashboardStats?.summaries?.totalDocumentsProcessed
+                                                *100 | number: '1.0'}}%</div>
+                                            <div class="col col-2 label">Average
+                                                pages per document</div>
+                                            <div class="col col-2 data">{{dashboardStats?.summaries?.totalPageCount/dashboardStats?.summaries?.totalDocumentsProcessed
+                                                | number: '1.0'}}</div>
+                                        </div>
+                                        <app-chart
+                                            [chartData]="averageConfidenceAndSTP"
+                                            [chartConfig]="dashboardConfig.dashboardCharts[0]">
+                                        </app-chart>
+                                    </div>
+                                </div>
+
+                                <!-- Field Level Accuracy Chart -->
+                                <div class="card">
+                                    <div class="card-body">
+                                        <app-chart
+                                            [chartData]="accuracyVrsInvoicesData"
+                                            [chartConfig]="dashboardConfig.dashboardCharts[1]">
+                                        </app-chart>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

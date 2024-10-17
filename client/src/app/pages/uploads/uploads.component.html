@@ -1,0 +1,334 @@
+<div class="p-0 m-0 h-100">
+  <app-header></app-header>
+
+  <!-- header with tabs,upload button, filters, Show/Hide and refresh button -->
+  <div class="d-flex justify-content-between align-items-center upload-listname
+    upload-container">
+
+    <!-- Tab filters + Upload Button + Consumption Limit-->
+    <div class="d-flex justify-content-start upload-tabs">
+      <!-- tabs list -->
+      <div *ngFor="let tab of allTabs; let i= index" [class]="(userRole==='approver' && !tab.enabled)? 'px-2 disabledTabs' :
+        'px-2'" (click)="parentClicked(i); setMainTabFilter(tab.route,
+        tab.RPA);switchTabs()">
+        <a class="upload-listname_active" [ngClass]="{ active: tab.active }">
+          {{ tab.tab }}
+        </a>
+      </div>
+
+      <!-- Upload Button  -->
+      <!-- If UPLOAD_VISIBILITY is 1 in config, then Upload would be shown to everyone except reviewer and approver. -->
+      <!-- If UPLOAD_VISIBILITY is 0 in config, then Upload would be shown to admin and viewer only -->
+      <!-- If UPLOAD_VISIBILITY is neither 0/1 in config, then Upload won't be shown to anyone -->
+
+      <div *ngIf="UPLOAD_BUTTON_VISIBILITY == 1 && userRole !=='reviewer' && userRole !=='approver' && UI_VIEW == 0" class="px-2">
+        <a class="upload-listname_active blink" (click)="openUploadModal()">+Upload</a>
+      </div>
+      <div *ngIf="UPLOAD_BUTTON_VISIBILITY == 0 && (userRole=='admin' || userRole=='viewer') && UI_VIEW == 0" class="px-2">
+        <a class="upload-listname_active blink" (click)="openUploadModal()">+Upload</a>
+      </div>
+      <button *ngIf="UI_VIEW == 1" type="button" class="btn btn-menu px-2 py-0 ft-12 blink" (click)="openUploadModal()" title="Upload">
+        <img src="../../../assets/images/uploadIcon.png" class="cursor-pointer" width="30"  />
+      </button>
+      <!-- Daily Upload Consumption Limit -- DO NOT REMOVE THIS CODE-->
+      <!-- <div *ngIf="consumtionMessageVisibility == 1 && userRole!=='reviewer' && userRole !=='approver'">
+        Consumed {{consumedPages}}/{{totalPages}} of daily limit.
+      </div>
+      <div *ngIf="consumtionMessageVisibility == 0 && (userRole=='admin' || userRole=='viewer')">
+        Consumed {{consumedPages}}/{{totalPages}} of daily limit.
+      </div> -->
+
+      <!-- Consumption Limit -->
+      <div *ngIf="(userRole=='admin' || userRole=='clientadmin') && UI_VIEW == 0">Consumption:
+        <span style="font-weight: bold;"> {{CONSUMPTION_DATA}} </span>
+        {{CONSUMPTION_UNIT}}
+      </div>
+      <div *ngIf="(userRole=='admin' || userRole=='clientadmin') && UI_VIEW == 1">
+        <span style="font-weight: bold;"> {{CONSUMPTION_DATA}} </span>
+      </div>
+    </div>
+
+    <!-- Filter & list view, card view switching -->
+    <div class="justify-content-end align-items-center d-flex filter-items">
+      <div class="d-flex" *ngIf="isShown">
+        <!-- Primary Filter -->
+        <div class="mr-1">
+          <select id="dropdown1" title="Primary Filter"
+            class="form-control status-list ft-12 pointer max-content text-capitalize" [(ngModel)]="selectedFilter"
+            (ngModelChange)="updatePrimaryFilter()" name="select1">
+            <option value="null">Select Filter</option>
+            <option *ngFor="let filter of filterParams" [ngValue]="filter.id">
+              {{filter?.name}}
+            </option>
+          </select>
+        </div>
+
+        <!-- Sub Filter -->
+        <div class="ml-1"
+          *ngIf="!(['invoiceDate','submittedOn','search','vendorNameSearch','overall_score','documentType','priorityRanking'].includes(selectedFilter))">
+          <select id="dropdown2"
+            [class]="!(selectedFilter && selectedFilter !=='null')?'form-control status-list ft-12 max-content not_allowed':'form-control status-list ft-12 pointer max-content'"
+            [(ngModel)]="selectedFilterValue" (ngModelChange)="filterList()"
+            [title]="!(selectedFilter && selectedFilter !== 'null')?'Select Primary Filter First':''"
+            [disabled]="!(selectedFilter && selectedFilter !== 'null')">
+            <option disabled value="null">Select Value</option>
+            <option *ngFor="let value of filterValues[selectedFilter]" [value]="value.vendorId">
+              {{ value.name | underScoreToSpacePipe }}
+            </option>
+          </select>
+        </div>
+
+        <div class="ml-1" *ngIf="selectedFilter == 'invoiceDate' ||
+          selectedFilter == 'submittedOn'">
+          <select id="dropdown21" class="form-control status-list ft-12 pointer
+            max-content" [disabled]="!(selectedFilter && selectedFilter !== 'null')" [(ngModel)]="selectedDateType"
+            #dateType>
+            <option *ngFor="let type of dateTypes" [value]="type">{{
+              type | uppercase
+              }}</option>
+          </select>
+        </div>
+
+        <!-- documentType -->
+        <div class="ml-1 d-flex" *ngIf="selectedFilter == 'documentType'">
+          <ng-multiselect-dropdown #multiSelect title="Select document Types" class="custom_dropdown custom-button"
+            [placeholder]="'select'" [settings]="dropdownSettings_DocumentType" [data]="dropdownListOfDocumentType"
+            [(ngModel)]="selectedItemsInDocumentType" (onSelect)="onItemSelectInDocumentType($event)"
+            (onDeSelect)="onItemDeSelectDocumentType($event)" (onSelectAll)="onSelectAllInDocumentType($event)"
+            (onDeSelectAll)="onDeSelectAllDocumentType($event)">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <!-- PriorityRanking -->
+        <div class="ml-1 d-flex" *ngIf="selectedFilter == 'priorityRanking'">
+          <ng-multiselect-dropdown #multiSelect title="Select Priority Rankings" class="custom_dropdown custom-button"
+            [placeholder]="'select'" [settings]="dropdownSettings_PriorityRanking" [data]="dropdownListOfPriorityRanking"
+            [(ngModel)]="selectedItemsInPriorityRanking" (onSelect)="onItemSelectInPriorityRanking($event)"
+            (onDeSelect)="onItemDeSelectPriorityRanking($event)" (onSelectAll)="onSelectAllInPriorityRanking($event)"
+            (onDeSelectAll)="onDeSelectAllPriorityRanking($event)">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <!-- DateRange  -->
+        <div class="ml-1" *ngIf="(selectedFilter == 'invoiceDate' ||
+          selectedFilter == 'submittedOn') &&
+          selectedDateType === this.dateTypes[0]">
+          <div class="input-group input-cal flex-column">
+            <div class="input-group custom-date" style="min-width:200px;">
+              <!-- <label class="m-0 p-2">Date Range</label> -->
+              <input type="text" [(ngModel)]="rangetime" class="form-control
+                date-picker ft-12" (click)="toggleDp()" disabled />
+              <ngb-datepicker *ngIf="toggleCal" #dp (select)="onDateSelection($event)" [displayMonths]="2"
+                [dayTemplate]="t" outsideDays="hidden">
+              </ngb-datepicker>
+              <ng-template #t let-date let-focused="focused">
+                <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date)
+                  || isInside(date)" (mouseenter)="hoveredDate= date" (mouseleave)="hoveredDate= null">
+                  {{ date.day }}
+                </span>
+              </ng-template>
+              <div class="input-group-append input-cal__position">
+                <button class="btn btn-zindex outline box-shadow-0" (click)="toggleDp()">
+                  <img src="../../../assets/images/calendar.svg" alt="Calendar" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Date -->
+        <div class="ml-1" *ngIf="(selectedFilter == 'invoiceDate' ||
+          selectedFilter == 'submittedOn') &&
+          selectedDateType === this.dateTypes[1]">
+          <div class="input-group input-cal flex-column">
+            <div class="input-group custom-date">
+
+              <input readonly type="text" ngbDatepicker #d2="ngbDatepicker" [(ngModel)]="model2"
+                class="form-control date-picker ft-12" name="datePickSingle"
+                (dateSelect)="onDateSelectionSingle($event)" />
+
+              <div class="input-group-append input-cal__position">
+                <button class="btn btn-zindex outline box-shadow-0" (click)="d2.toggle()">
+                  <img src="../../../assets/images/calendar.svg" alt="Calendar" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="ml-1" *ngIf="selectedFilter == 'search'">
+          <div class="input-group input-cal flex-column">
+            <div class="input-group custom-date">
+              <!-- <label class="m-0 p-2 "></label> -->
+              <input style="width: 270px;" type="text" [(ngModel)]="searchKey" class="form-control date-picker ft-12"
+                title="Search DocumentId, InvoiceNumber or FileName"
+                placeholder="Search DocumentId, InvoiceNumber or FileName." (keyup.enter)="searchFilters()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Box for vendorName -->
+        <div class="ml-1" *ngIf="selectedFilter == 'vendorNameSearch'">
+          <div class="input-group input-cal flex-column">
+            <div class="input-group custom-date">
+              <!-- <label class="m-0 p-2 "></label> -->
+              <input style="width: 200px;" type="text" [(ngModel)]="vendorNameSearchKey"
+                class="form-control date-picker ft-12" title="Search vendorName." placeholder="Search Vendor Name."
+                (keyup.enter)="searchFilters()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Go Button -->
+        <div class="ml-3 mr-2 d-flex align-items-center custom-button py-0" *ngIf="(selectedFilter == 'search' ||selectedFilter
+          =='vendorNameSearch')" (click)="searchFilters()">
+          <a class="ft-12 link" href="javascript:void(0)">Go</a>
+        </div>
+
+        <!-- extraction confidence -->
+        <div class="ml-1" *ngIf="selectedFilter == 'overall_score'">
+          <select id="accuracyType" class="form-control status-list ft-12
+            pointer" [disabled]="!(selectedFilter && selectedFilter !== 'null')" [(ngModel)]="selectedAccuracyType"
+            #accuracyType>
+            <option value="range">Range</option>
+            <option value="value">Value</option>
+          </select>
+        </div>
+
+        <!-- overall_score -->
+        <div class="ml-1" *ngIf="selectedFilter == 'overall_score'">
+          <div class="input-group input-cal flex-column" *ngIf="selectedAccuracyType =='value'">
+            <div class="input-group custom-date">
+              <input type="text" [(ngModel)]="accuracySingle" class="form-control date-picker ft-12" placeholder="extraction
+                confidence" />
+            </div>
+          </div>
+          <div class="input-group input-cal flex-column" *ngIf="selectedAccuracyType =='range'">
+            <div class="input-group custom-date">
+              <input type="number" [(ngModel)]="accuracyFrom" class="form-control date-picker ft-12"
+                placeholder="from" />
+              <input type="number" [(ngModel)]="accuracyTo" class="form-control
+                date-picker ft-12" placeholder="to" />
+            </div>
+          </div>
+        </div>
+
+        <div class="ml-3 mr-2 d-flex align-items-center custom-button py-0" *ngIf="selectedFilter == 'overall_score' && ((selectedAccuracyType
+          =='value' && accuracySingle)||(selectedAccuracyType=='range' &&
+          accuracyTo))" (click)="filterList()">
+          <a class="ft-12 link" href="javascript:void(0)">Go</a>
+        </div>
+
+        <!-- Clear Button -->
+        <div (click)="clearFilter()" class="ml-3 mr-2 d-flex align-items-center
+          custom-button py-0">
+          <a class="ft-12 link" href="javascript:void(0)">Clear</a>
+        </div>
+      </div>
+
+      <!-- Show/Hide Filters Button -->
+      <div class="pointer d-flex align-items-center custom-button
+        padding-custom" [class.ng-hover]="this.isShown" (click)="toggleShow()">
+        <span class="pr-1 pl-1">
+          <span class="ft-12" *ngIf="isShown" title="hide filter">Hide</span>
+          <span class="ft-12" *ngIf="!isShown" title="show filter">Show</span>
+        </span>
+        <img src="../../../assets/images/funnel.png" width="16" height="16" alt="Filter" />
+      </div>
+
+      <!-- View Change Button - List/Card View -->
+      <div class="justify-content-end d-flex align-items-center custom-button
+        py-0">
+        <app-sorting-button [currentViewType]="currentViewType" (toShow)="setCurrentView($event)" class="justify-content-end
+          align-items-center d-flex">
+        </app-sorting-button>
+      </div>
+
+      <!-- Refresh Button -->
+      <div class="justify-content-end d-flex align-items-center custom-button
+        padding-custom" title="Refresh">
+        <button type="button" class="btn btn-menu px-2 py-0 ft-12" (click)="fetchDocuments()" title="Refresh">
+          <img src="../../../assets/images/refreshing.png" class="cursor-pointer" width="16" height="16" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badge to show current filter -->
+  <div class="filter flex-wrap d-flex justify-content-evenly pl-3 mb-1 mt-1">
+    <div [class]="(filter.allowDelete) ? 'badge-space':''" class="filter-container" *ngFor="let filter of selectedFiltersList; let
+      i= index">
+      <button type="button" class="btn filter-btn innershadow px-3">
+        {{ filter?.key }} : {{ filter?.value }}
+      </button>
+      <span class="btn-span-position cursor-pointer" *ngIf="!filter.allowDelete">
+        <img src="../../../assets/images/delete-button.svg" width="14px" (click)="deleteFilter(filter)" height="14px" />
+      </span>
+    </div>
+  </div>
+
+  <!-- RPA Tabs - Processed/Processing/Failed/Approval -->
+  <div [class]="(userRole==='approver' || userRole==='admin' ||
+    userRole==='clientadmin')? 'd-flex justify-content-between
+    align-items-center upload-listname
+    tab-sub-header-approver ':'d-flex justify-content-between
+    align-items-center upload-listname
+    tab-sub-header'" *ngIf="showRPAChildrenRoute && tappChangesVisibility =='1'">
+    <div *ngFor="let tab of RPATabs; let i= index" (click)="rpaClicked(i);setPostingTabFilters(tab.route)">
+      <a class="upload-sub-listname_active" [ngClass]="{ active: tab.active }">{{
+        tab?.tab }}</a>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="upload-scroll m-0 p-1">
+    <div [class]="currentViewType == 'card' ? 'scrolling-list pl-1':'pl-1'">
+      <!-- Uploads card view -->
+      <app-alluploads [dataset]="documents" [itemsCount]="totalItems" [selectedFilters]="selectedFilters.status"
+        [pageNumber]="defaultPageNumber" (currentPage)="paginate($event)" (refresh)="refreshItem($event)"
+        (delete)="deleteDocumentById($event)" *ngIf="currentViewType == 'card'">
+      </app-alluploads>
+
+      <!-- Uploads list view -->
+      <app-upload-list [dataset]="documents" [itemsCount]="totalItems" [selectedFilters]="selectedFilters.status"
+        [selectedFiltersList]="selectedFiltersList" [showRPAChildrenRoute]="showRPAChildrenRoute"
+        [pageNumber]="defaultPageNumber" (currentPage)="paginate($event)" (refresh)="refreshItem($event)"
+        (delete)="deleteDocumentById($event)" (extractedAll)="fetchDocuments(pageNumber)"
+        (afterRefresh)="updateDatasetByReviewerOnRefresh($event)" *ngIf="currentViewType == 'list'">
+      </app-upload-list>
+
+      <!-- Pagination Div -->
+      <div class="d-flex align-items-end justify-content-center p-1" *ngIf="documents && documents.length">
+        <pagination-controls (pageChange)="setPageNumber($event);pageNumber=$event" class="ft-14 font-weight-normal">
+        </pagination-controls>
+      </div>
+
+      <!-- Show when No Invoices are there -->
+      <div class="p-5" *ngIf="!(
+        currentViewType &&
+        (currentViewType == 'card' || 'list') &&
+        documents &&
+        documents.length
+        ) && isDocsFetched">
+        <h5 class="text-center">No Documents to Show</h5>
+      </div>
+
+      <!-- Show Loader while getting documents -->
+      <div *ngIf="!isDocsFetched">
+        <ngx-spinner [fullScreen]="false" type="line-scale" color="#fc9221" size="default">
+        </ngx-spinner>
+      </div>
+
+      <!-- Side panel to show invoice details -->
+      <ng-container>
+        <div [ngClass]="{ 'modal-container-backdrop': togglevendor }" (click)="closeInfoBox($event)"></div>
+        <app-vendor-name (closeOutput)="closeInfoBox($event)" [selectedData]="selectedItem"
+          [togglevendor]="togglevendor">
+        </app-vendor-name>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- <div class="pointer" (click)="openVendorModal()">modal</div> -->
+</div>

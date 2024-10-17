@@ -1,0 +1,68 @@
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div>
+        <div class="modal-header text-center">
+          <h5 class="w-100 text-center ft-18">PathFinder - Test Templates</h5>
+          <button type="button" class="close" title="Close Dialog" aria-label="Close"
+            (click)="onCloseHandled()"><span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="header-bar d-flex align-items-end justify-content-between
+          ft-500
+          p-2 ft-12 text-center font-weight-normal pr-4 pl-4">
+
+          <div class="ft-12 ft-500 font-weight-bold custom_title">
+            AVAILABLE DOCUMENTS FOR TESTING
+          </div>
+
+          <div *ngIf="isAnyColumnSelected" class="d-flex">
+            <div class="pointer d-flex align-items-center custom-button
+              approve_btn
+              padding-custom" (click)="insertTemplate()">
+              <span class="pr-1 pl-1">
+                <span class="ft-12" title="click to Approve selected templates">APPROVE</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="(isDocsFetched && currentViewType && (currentViewType ==
+          'card'
+          || 'list') &&
+          documents && documents.length)" class="upload-scroll m-0 p-0">
+          <div class="scrolling-list custom-font pt-0 pl-2 pr-2">
+            <app-testing-documents-list
+              [dataset]="documents"
+              [itemsCount]="totalItems"
+              [selectedFilters]="selectedFilters.status"
+              [fieldsDataWithState]="fieldsDataWithState"
+              [actionDataInfo]="actionDataInfo"
+              (currentPage)="paginate($event)"
+              (refresh)="refreshItem($event)"
+              (delete)="deleteDocumentById($event)"
+              (extractedAll)="fetchDocuments(pageNumber)"
+              (columnSelected)="onColumnSelect($event)"
+              (actionCompleted)="OnNextActionComplete($event)"
+              *ngIf="currentViewType == 'list'">
+            </app-testing-documents-list>
+          </div>
+        </div>
+
+        <div *ngIf="!isDocsFetched" class="center_div custom_spinner custom-font">
+          Fetching Documents. Please wait..
+        </div>
+
+        <div *ngIf="isDocsFetched && documents && documents.length == 0"
+          class="center_div custom-font">
+          No Documents Found.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,200 @@
+<div class="page_bg">
+    <div class="signup_page">
+        <div class="__left">
+            <app-demo-instuctions></app-demo-instuctions>
+        </div>
+
+        <div class="__right">
+            <div class="signup">
+                <div class="w-20"></div>
+                <div class="signup__form">
+                    <!-- <div class="demo">demo</div> -->
+
+                    <div class="signup__logo">
+                        <img src={{logoSrc}} />
+                    </div>
+                    <!-- <h6 class="customFont ft-12">Start your free Trial now !</h6> -->
+                    <p class="customFont ft-12">All fields required.</p>
+
+                    <form class="w-100" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+                        <div class="form-group">
+                            <label class="ft-14 fw-500 text-capitalize">Username*</label>
+                            <!-- <input type="text" class="form-control" name="userName" id="userName" formControlName="userName" placeholder="username" required /> -->
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control
+                                    customFont" placeholder="username" formControlName="userName" name="userName"
+                                    id="userName" />
+                            </div>
+
+                            <!-- <div *ngIf="signupForm.get('userName').errors && submitted" class="error-msg">
+                            Username is required
+                        </div> -->
+                            <span class="text-danger" *ngIf="(signupForm.get('userName').touched ||
+                                (signupForm.get('userName').errors &&
+                                submitted)) &&
+                                signupForm.get('userName').errors?.required">
+                                Username is required
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="ft-14 fw-500 text-capitalize">Corporate
+                                Email Id*</label>
+                            <!-- <input type="text" class="form-control" name="emailId" id="emailId" formControlName="emailId" placeholder="example@paiges.com" required /> -->
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control
+                                    customFont" placeholder="example@mail.com" formControlName="emailId" name="emailId"
+                                    id="emailId" />
+                            </div>
+
+                            <div *ngIf="(signupForm.get('emailId').touched ||
+                                submitted)">
+                                <span class="text-danger" *ngIf="signupForm.get('emailId').errors?.required">
+                                    Email is required
+                                </span>
+                                <span class="text-danger" *ngIf="signupForm.get('emailId').errors?.pattern">
+                                    Enter a valid email address
+                                </span>
+                                <span class="text-danger" *ngIf="signupForm.get('emailId').errors?.emailNotAvailable
+                                    &&
+                                    !signupForm.get('emailId').errors?.pattern
+                                    &&
+                                    !signupForm.get('emailId').errors?.required">
+                                    Please provide your corporate EmailId
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="ft-14 fw-500 text-capitalize">Password*</label>
+                            <!-- <input type="password" class="form-control" name="password" id="password" formControlName="password" placeholder="password" required /> -->
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fa" [ngClass]="{
+                                            'fa-eye-slash': !fieldTextType,
+                                            'fa-eye': fieldTextType
+                                            }" (click)="toggleFieldTextType()"></i>
+                                    </span>
+                                </div>
+                                <input [type]="fieldTextType ? 'text' :
+                                    'password'" class="form-control customFont" formControlName="password"
+                                    placeholder="password" />
+
+                            </div>
+
+                            <!-- <div *ngIf="(signupForm.get('password').touched || submitted)">
+                                <span class="text-danger" *ngIf=" signupForm.get('password').errors?.required ">
+                                Password is required
+                            </span> <span class="text-danger" *ngIf="signupForm.get('password').errors?.invalidPassword">
+                                Password must be in range of 8-30 characters
+                            </span>
+                            </div> -->
+                            <div class="password_instruct">
+                                <label class="col" [ngClass]="signupForm.controls['password'].hasError('required')
+                                    ||
+                                    signupForm.controls['password'].hasError('minlength')
+                                    ? 'text-danger' : 'text-success'">
+                                    <i class="material-icons">{{
+                                        signupForm.controls['password'].hasError('required')
+                                        ||
+                                        signupForm.controls['password'].hasError('minlength')
+                                        ? 'cancel' :
+                                        'check_circle' }}</i>
+                                    Must be at least 8 characters!
+                                </label>
+                                <label class="col" [ngClass]="signupForm.controls['password'].hasError('required')
+                                    ||
+                                    signupForm.controls['password'].hasError('hasNumber')
+                                    ? 'text-danger' : 'text-success'">
+                                    <i class="material-icons">{{
+                                        signupForm.controls['password'].hasError('required')
+                                        ||
+                                        signupForm.controls['password'].hasError('hasNumber')
+                                        ? 'cancel' :
+                                        'check_circle' }}</i>
+                                    Must contain at least 1 number!
+                                </label>
+                                <label class="col" [ngClass]="signupForm.controls['password'].hasError('required')
+                                    ||
+                                    signupForm.controls['password'].hasError('hasCapitalCase')
+                                    ? 'text-danger' : 'text-success'">
+                                    <i class="material-icons">{{
+                                        signupForm.controls['password'].hasError('required')
+                                        ||
+                                        signupForm.controls['password'].hasError('hasCapitalCase')
+                                        ? 'cancel' :
+                                        'check_circle' }}</i>
+                                    Must contain at least 1 in Capital Case!
+                                </label>
+                                <label class="col" [ngClass]="signupForm.controls['password'].hasError('required')
+                                    ||
+                                    signupForm.controls['password'].hasError('hasSmallCase')
+                                    ? 'text-danger' : 'text-success'">
+                                    <i class="material-icons">{{
+                                        signupForm.controls['password'].hasError('required')
+                                        ||
+                                        signupForm.controls['password'].hasError('hasSmallCase')
+                                        ? 'cancel' :
+                                        'check_circle' }}</i>
+                                    Must contain at least 1 Letter in Small
+                                    Case!
+                                </label>
+                                <label class="col" [ngClass]="signupForm.controls['password'].hasError('required')
+                                    ||
+                                    signupForm.controls['password'].hasError('hasSpecialCharacters')
+                                    ? 'text-danger' : 'text-success'">
+                                    <i class="material-icons">{{
+                                        signupForm.controls['password'].hasError('required')
+                                        ||
+                                        signupForm.controls['password'].hasError('hasSpecialCharacters')
+                                        ? 'cancel' :
+                                        'check_circle' }}</i>
+                                    Must contain at least 1 Special
+                                    Character!
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- <div style="margin: auto;padding: inherit;">
+                            <h6> Password must be:</h6>
+                            <li>
+                                At least 8 characters long, And
+                            </li>
+                            <li>
+                                can't greater than 30 characters
+                            </li>
+                        </div> -->
+                        <div class="form-group">
+                            <button [disabled]="signupForm.invalid" type="submit" class="btn btn-sign w-100 ft-14
+                                customFont">SIGN UP</button>
+                        </div>
+                        <hr>
+                        <div class="hiw_link">
+                            <p class="ft-14 fw-500 text-capitalize">Already
+                                Registered?
+                                <button type="button" class="btn tt-header-btn
+                                    m-0 customFont blink_me_text" routerLink="/login" routerLinkActive="active">
+                                    SignIn
+                                </button>
+                            </p>
+                        </div>
+                        <app-demo-copyright></app-demo-copyright>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

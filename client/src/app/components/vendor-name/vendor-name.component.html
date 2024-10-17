@@ -1,0 +1,374 @@
+<!-- Main div -->
+<div class="vendor-container row-col-12" [ngClass]="{ showVendor:
+  togglevendor,hideVendor: !togglevendor }">
+
+  <!-- header with vendor-name and close icon -->
+  <div class="vendor-container__header d-flex justify-content-between">
+    <div class="vendor-container__header-title">
+      {{!(selectedData && selectedData.length)? (selectedData?.vendorId): ""}}
+    </div>
+    <div class="vendor-container__header-refid text-danger">
+      <span (click)="closeforReview()" class="pointer"><img [src]="closeIcon" width="14" height="14" alt="" /></span>
+    </div>
+  </div>
+
+  <!-- content area with statusChange option, DocumentDetails and Header -->
+  <div class="vendor-scroll">
+    <div *ngIf="selectedData">
+
+      <!-- Document is defined -->
+      <div *ngIf="selectedData.length">
+        <!-- Multiple Action -->
+        <div class="row-col-12 scroll-list" *ngIf="selectedData &&
+          selectedData.length">
+          <div class="vendor-container__body col-12 row m-0">
+            <div class="col-12 vendor-container__body-scan">
+              <h4 class="text-warning">
+                <img [src]="extractionIcon" />
+                Multiple Extraction
+              </h4>
+              <div class="row pt-2">
+                <div class="col-sm-12">
+                  <div class="pt-2 pb-4 ft-12">
+                    No. of Selected Documents: {{ selectedData?.length }}
+                  </div>
+                  <div class="pt-2 pb-4 ft-12">
+                    Selected Documents:
+                    <table class="table table-white">
+                      <tr>
+                        <th>Sl No.</th>
+                        <th>Vendor</th>
+                        <th>File Name</th>
+                        <th>Status</th>
+                      </tr>
+                      <tr *ngFor="let data of selectedData; let i= index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ (data?.vendor)[0]?.name }}</td>
+                        <td>{{ data?.fileName }}</td>
+                        <td>
+                          {{
+                          (extractionStatus[i] | async)
+                          ? "started"
+                          : "not started"
+                          }}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="pt-2 pb-4 ft-12" *ngIf="extractionStarted">
+                    Click the button below to start the extraction process.
+                  </div>
+
+                  <button class="btn btn-success" (click)="extractAll(selectedData)" [disabled]="extractionStarted">
+                    Extract All
+                  </button>
+                  <div class="pt-4 ft-12">
+                    <div class="text-primary" *ngIf="extractionStarted &&
+                      !(extractionError || extractionSuccess)">
+                      Processing...
+                    </div>
+                    <div class="text-danger" *ngIf="extractionError">
+                      {{ extractionError }}
+                    </div>
+                    <div class="text-success" *ngIf="extractionSuccess">
+                      {{ extractionSuccess }}
+                      <pre>
+    Success: {{ extractionCount }} , Failed:{{
+                          selectedData.length - extractionCount
+                        }}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- statusChange option + Document Details + Header tab  -->
+      <div *ngIf="!selectedData.length">
+
+        <!-- statusChange option -->
+        <div>
+          <!-- Status Change for FAILED  -->
+          <!-- <div *ngIf="selectedData?.status == 'FAILED'">
+          <div class="vendor-container__body col-12 row">
+            <div class="col-12 vendor-container__body-scan">
+              <h4 class="text-danger">
+                <img [src]="failedIcon" />
+                Failed {{ formatName(selectedData?.stage) }}
+              </h4>
+              <span *ngIf="selectedData.stage">
+                {{ selectedData?.statusMsg }}
+              </span>
+              <span *ngIf="!selectedData.stage">
+                Sorry either the file format or data was not accepted, please
+                upload this again.
+              </span>
+
+              <br /><br />
+
+              <button class="btn btn-outline-secondary ml-2" (click)="showList=
+                true; resetTo= null"
+                [disabled]="!selectedData.stage" *ngIf="!showList">
+                Reset Document
+              </button>
+
+              <select id="dropdown3" class="status-reset ft-12 pointer
+                text-capitalize ml-2 form-control"
+                (change)="setResetTo(resetTo.value)" name="select3" #resetTo
+                *ngIf="possibleResetValues && possibleResetValues.length &&
+                showList">
+                <option value="null">Change Status</option>
+                <option *ngFor="let status of possibleResetValues"
+                  [ngValue]="status">{{ status?.status }}
+                </option>
+              </select>
+
+              <button class="btn btn-success ml-2" *ngIf="showList && resetTo"
+                (click)="resetStatusTo()">
+                Reset
+              </button>
+              <button class="btn btn-outline-danger ml-2"
+                (click)="setResetTo(null)" *ngIf="showList">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div> -->
+          <!-- Status Change for ReviewCompleted/Deleted  -->
+          <div *ngIf="isResetAllowed && (selectedData?.status ==
+            'REVIEW_COMPLETED' || selectedData?.status == 'DELETED')">
+            <div class="vendor-container__body col-12 row">
+              <div class="col-12 vendor-container__body-scan">
+                <h4 class="text-danger">
+                  <img [src]="failedIcon" />
+                  {{selectedData?.status | underScoreToSpacePipe}}
+                </h4>
+                <span>
+                  <!-- You have already verified this Document. Now You wanna change
+                the document status Again ? -->
+                  Document status is {{selectedData?.status |
+                  underScoreToSpacePipe}}. Do you want to reset the status?
+                </span>
+                <br /><br />
+
+                <button class="btn btn-outline-secondary ml-2" (click)="showList=
+                  true; resetTo= null" *ngIf="!showList">
+                  Reset Document
+                </button>
+
+                <select id="dropdown3" class="status-reset ft-12 pointer
+                  text-capitalize ml-2 form-control" (change)="setResetTo(resetTo.value)" name="select3" #resetTo
+                  *ngIf="possibleResetValues && possibleResetValues.length &&
+                  showList">
+                  <option value="null">Change Status</option>
+                  <option *ngFor="let status of possibleResetValues" [ngValue]="status">{{ status?.status }}
+                  </option>
+                </select>
+
+                <button class="btn btn-success ml-2" *ngIf="showList && resetTo" (click)="resetStatusTo()">
+                  Reset
+                </button>
+                <button class="btn btn-outline-danger ml-2" (click)="setResetTo(null)" *ngIf="showList">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- approvalStatus Change for approvalStatus to OPEN  -->
+          <div *ngIf="approvalCondition">
+            <div class="vendor-container__body col-12 row">
+              <div class="col-12 vendor-container__body-scan">
+                <h4 class="text-danger">
+                  <img [src]="failedIcon" />
+                  {{selectedData?.approvalStatus | underScoreToSpacePipe}}
+                </h4>
+                <span>
+                  Document approval status is {{selectedData?.approvalStatus |
+                  underScoreToSpacePipe}}. Do you want to reset the
+                  Approval Status?
+                </span>
+                <br /><br />
+
+                <button class="btn btn-outline-secondary ml-2" (click)="showApprovalList=
+                  true; resetApprovalStatusTo= null" *ngIf="!showApprovalList">
+                  Reset Approval Status
+                </button>
+
+                <select id="dropdown3" class="status-reset ft-12 pointer
+                  text-capitalize ml-2 form-control" (change)="setApprovalTo(resetApprovalStatusTo.value)"
+                  name="select3" #resetApprovalStatusTo *ngIf="resetApprovalValues && resetApprovalValues.length &&
+                  showApprovalList">
+                  <option value="null">Change Approval Status</option>
+                  <option *ngFor="let status of resetApprovalValues" [ngValue]="status">{{ status?.approvalStatus }}
+                  </option>
+                </select>
+
+                <button class="btn btn-success ml-2" *ngIf="showApprovalList &&
+                  resetApprovalStatusTo" (click)="onResetApproval()">
+                  Reset
+                </button>
+                <button class="btn btn-outline-danger ml-2" (click)="setApprovalTo(null)" *ngIf="showApprovalList">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Details -->
+        <div class="row p-4">
+          <div class="col-12 p-2">
+            <span class="documentHeader">Document Details</span>
+          </div>
+
+          <div class="flex-column pt-2" [ngClass]="field.cssClass" *ngFor="let
+            field of metadataFields">
+            <div class="vendor-container__tab-header__title text-uppercase">
+              {{ field?.label }}
+            </div>
+            <div class="vendor-container__tab-header__subtitle">
+              {{ field?.data | underScoreToSpacePipe }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Extraction when status is READY_FOR_EXTRACTION-->
+        <div class="row-col-12" *ngIf="selectedData?.status ===
+          'READY_FOR_EXTRACTION'">
+          <div class="vendor-container__body col-12 row">
+            <div class="col-12 vendor-container__body-scan">
+              <h4 class="text-warning">
+                <img src="../../../assets/images/icon-extraction.svg" />
+                Extraction
+              </h4>
+              <div class="pt-2 pb-4 ft-12">
+                No. of Selected Documents: 1
+              </div>
+              <div class="pt-2 pb-4 ft-12">
+                <table class="table table-white">
+                  <tr>
+                    <th>Sl No.</th>
+                    <th>Vendor</th>
+                    <th>File Name</th>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>{{ (selectedData?.vendor)[0]?.name }}</td>
+                    <td>{{ selectedData?.fileName }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="pt-2 pb-4 ft-12" *ngIf="!extractionStarted">
+                Click the button below to start the extraction process.
+              </div>
+              <div class="row pt-2">
+                <div class="col-sm-12">
+                  <button class="btn btn-success" (click)="startExtraction()" [disabled]="extractionStarted">
+                    Extract Now
+                  </button>
+                  <div class="pt-4 ft-12">
+                    <div class="text-primary" *ngIf="extractionStarted &&
+                      !(extractionError || extractionSuccess)">
+                      Processing...
+                    </div>
+                    <div class="text-danger" *ngIf="extractionError">
+                      {{ extractionError }}
+                    </div>
+                    <div class="text-success" *ngIf="extractionSuccess">
+                      {{ extractionSuccess }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Header tab-->
+        <ngb-tabset type="pills" class="alluploads tab-vendor" *ngIf="documentInfo && showData(selectedData)">
+          <ngb-tab title="Header">
+            <ng-template ngbTabContent>
+              <div class="vendor-container__tab-header pt-1 col-12 row">
+                <div class="col-6 pt-2" *ngFor="let field of documentInfo" [hidden]="!(
+                  (field.fieldValue &&
+                  field.fieldValue.trim() &&
+                  field.fieldValue.trim().length) ||
+                  (field.correctedValue &&
+                  field.correctedValue.trim() &&
+                  field.correctedValue.trim().length)
+                  )">
+                  <div class="flex-column">
+                    <div class="vendor-container__tab-header__title">
+                      {{ modifyTitle(field.fieldId) | uppercase }}
+                    </div>
+                    <div class="vendor-container__tab-header__subtitle">
+                      {{
+                      field?.correctedValue
+                      ? field?.correctedValue
+                      : field?.fieldValue
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div>
+
+      <!-- error message when no docInfo -->
+      <!-- <div *ngIf="!documentInfo && showData(selectedData)" class="alluploads tab-vendor text-danger p-3">
+        Error while loading results. Try again later
+      </div> -->
+    </div>
+  </div>
+
+  <!-- footer with START REVIEW/VIEW button -->
+  <div class="vendor-footer">
+    <div class="vendor-container__tab-header view-container col-12
+      justify-content-star d-flex" *ngIf="showData(selectedData)" style="border-top:#ccc 1px solid">
+
+      <!-- action button -->
+      <button [disabled]="selectedData?.status === 'FAILED' ||
+        selectedData?.status === 'NEW' || selectedData?.status ===
+        'PROCESSED'" type="button" [class]="(selectedData?.status === 'FAILED'
+        || selectedData?.status === 'NEW' || selectedData?.status ===
+        'PROCESSED') ? 'btn submit-button h24 ft-12 py-0 px-2
+        d-inline-flex align-items-center not_allowed' : 'btn submit-button h24
+        ft-12 py-0 px-2 d-inline-flex align-items-center'" (click)="goToCorrectionPage()">
+        <span class="pr-2 icon-submit d-flex">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" ng-show="hoverEdit">
+            <g transform="translate(0)">
+              <g transform="translate(0 0)">
+                <path
+                  d="M8.672,48.371a.5.5,0,1,0,.707.707l3.449-3.45a.577.577,0,0,0,0-.757L9.379,41.422a.5.5,0,0,0-.707.707l2.621,2.621H.5a.5.5,0,0,0,0,1H11.293ZM14,38.25H4a2,2,0,0,0-2,2v2H3v-2a1,1,0,0,1,1-1H14a1,1,0,0,1,1,1v10a1,1,0,0,1-1,1H4a1,1,0,0,1-1-1v-2H2v2a2,2,0,0,0,2,2H14a2,2,0,0,0,2-2v-10A2,2,0,0,0,14,38.25Z"
+                  transform="translate(0 -38.25)" />
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span *ngIf="selectedData?.status === 'REVIEW' || selectedData?.status === 'REASSIGN'" class="pr-2">
+          START REVIEW
+        </span>
+        <span *ngIf="selectedData?.status !== 'REASSIGN' && showView(selectedData)" class="pr-2"> VIEW</span>
+      </button>
+
+      <!-- failed message  -->
+      <!-- <div class="pl-2 text-danger" *ngIf="failed.case">{{ failed.msg }}</div> -->
+    </div>
+  </div>
+
+  <div *ngIf="!selectedData">
+    Document Not Defined
+  </div>
+</div>
+
+<!-- Reviewer Dialog -->
+<div *ngIf="isReviewerDialogOpened">
+  <app-reviewer-dialog [bodyContent]="dataService.reviewerBody" (onCancel)="closeReviewerDialog()"
+    (onActionPressed)="onActionPressedForReviewer($event)">
+  </app-reviewer-dialog>
+</div>

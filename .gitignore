@@ -1,0 +1,13 @@
+node_modules
+*.zip
+package-lock.json
+client/package-lock.json
+client/node_modules
+.vscode/launch.json
+.env
+*.log
+logger/error.log
+logger/info.log
+logger/warn.log
+logger/userLogs.log
+logger/*.log

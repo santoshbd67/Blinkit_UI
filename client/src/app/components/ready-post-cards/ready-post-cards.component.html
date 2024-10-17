@@ -1,0 +1,49 @@
+<div class="row col-12 ready-post-container">
+  <div
+    class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-3"
+    *ngFor="let detail of readypost"
+  >
+      <div class="card custom-card m-2">
+        <div class="custom-page-fold"></div>
+        <div class="card-body flex-column flex-wrap m-2">
+          <div
+            class="ready-post-container__header  d-flex justify-conetnt-around"
+          >
+            <div class="ready-post-container__header-size fw-500">
+              {{ detail?.size }} pages(s)
+            </div>
+            <span class="ready-post-container__header-vertical-line"></span>
+            <div
+              class="ready-post-container__header-extraction text-danger fw-500"
+            >
+              {{ detail?.extraction }}
+            </div>
+          </div>
+          <div
+            class="ready-post-container__vender-name fw-500 font-weight-bold"
+          >
+            {{ detail?.name }}
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="ready-post-container__price fw-500">
+              {{ detail?.price }}
+            </div>
+            <div class="ready-post-container__date fw-500">
+              {{ detail?.date }}
+            </div>
+          </div>
+          <div
+            class="ready-post-container__readyfolder d-flex justify-content-end cursor-pointer"
+          >
+            <img
+              src="../../../assets/images/login-square-arrow-button-outline.svg"
+            />
+            <span class="ready-post-container__readyfolder-status fw-500">{{
+              detail?.status
+            }}</span>
+          </div>
+        </div>
+      </div>
+    
+  </div>
+</div>

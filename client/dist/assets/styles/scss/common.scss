@@ -1,0 +1,408 @@
+@import "./variable.scss";
+
+.card {
+  box-shadow: $card-shadow;
+  margin-bottom: 20px;
+}
+
+.custom-card {
+  &:hover {
+    box-shadow: 0 0px 10px 0 rgb(228, 89, 35);
+    border: 1px solid #e56824;
+  }
+}
+
+.border-card {
+  border: 1px solid $border;
+}
+
+.mt-10 {
+  margin-top: -10px;
+}
+
+.container-title {
+  height: 48px;
+  position: relative;
+  // z-index: -1;
+  padding: 0px 30px;
+  line-height: 36px;
+}
+
+// .sort__btn--position {
+//   // position: absolute;
+//   // right: 0;
+//   // top: 90px;
+// }
+
+.sort__btn--top {
+  position: relative;
+  // top: 22px;
+  right: 23px;
+}
+
+//sort-btn
+.sort-btn--color {
+  border: 1px solid $border-btn-color;
+  background: $white 0% 0% no-repeat padding-box;
+  border-radius: 2px;
+  opacity: 1;
+  box-shadow: inset 0 0 0.2px 0.2px $light-color;
+}
+
+.sort-btn__filter {
+  height: auto;
+  width: 100%;
+
+  .sort-btn {
+    width: 80px;
+    height: 24px;
+    padding: 0px 10px;
+
+    &:active {
+      border: 1px solid $btn-color;
+      box-shadow: none;
+      outline: 0;
+    }
+  }
+}
+
+.sort-btn__input {
+  height: 24px;
+  padding: 0px 10px;
+  margin-top: 2px;
+  width: 280px;
+
+  &:active {
+    border: 1px solid $btn-color;
+  }
+}
+
+.table-white {
+  background: $white;
+  border: $light-color 1px solid;
+  box-shadow: $card-shadow;
+}
+
+@media screen and (max-width: 1024px) {
+  .table-white-responsive {
+    width: 100%;
+    overflow-x: auto;
+    display: block !important;
+  }
+}
+
+//dashboard-cards
+.dashboard-card {
+  min-height: 100%;
+
+  .dashboard-uploads {
+    text-align: left;
+
+    &__overview {
+      &-title {
+        font-size: $ft16;
+        font-weight: bold;
+      }
+
+      &-count {
+        font-size: 48px;
+        font-weight: bold;
+      }
+
+      &-status {
+        font-size: $ft14;
+      }
+    }
+
+    &__img {
+      height: 100px;
+      width: 124px;
+    }
+  }
+
+  .dashboard-data {
+    &__status {
+      font-size: $ft14;
+      font-weight: 500;
+    }
+
+    &__border {
+      border-bottom: 1px solid #cccccc;
+      // flex: 1;
+    }
+  }
+
+  .dashboard-values {
+    &__total {
+      &-valuedefault {
+        font-size: $ft16;
+        font-weight: bold;
+      }
+
+      &-valuesuccess {
+        font-weight: 500;
+        color: #0db40d;
+        font-size: $ft10;
+        text-transform: uppercase;
+      }
+
+      &-valuesecondary {
+        font-weight: 500;
+        color: #0981dc;
+        font-size: $ft12;
+      }
+
+      &-valuedanger {
+        font-weight: 500;
+        color: #fc9220;
+        font-size: $ft10;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+.align-card-item {
+  width: 150px;
+}
+
+@media screen and (min-width: 800px) and (max-width: 1280px) {
+  .grid-app-container {
+    column-gap: 30px;
+    grid-template-columns: auto auto auto;
+  }
+
+  .dashboard-card {
+    .card-body {
+      padding: 0.25rem;
+
+      .dashboard-uploads__img {
+        text-align: right;
+
+        img {
+          height: 100px;
+          width: 100px;
+        }
+      }
+    }
+  }
+}
+
+// pointer
+.pointer {
+  cursor: pointer;
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// outline
+.outline {
+  box-shadow: none;
+  outline: none;
+}
+
+//  paddding for buttton rpa action page
+
+.padding {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+@media screen and (max-width: 550px) {
+  .dashboard-uploads__overview-count {
+    font-size: 38px !important;
+  }
+
+  .dashboard-values__total-valuedefault {
+    font-size: 18px !important;
+  }
+}
+
+/*-----------checkbox css start---------------*/
+
+.custom-check-box {
+  /* The container */
+  .container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Hide the browser's default checkbox */
+  .container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+
+  /* On mouse-over, add a grey background color */
+  .container:hover input ~ .checkmark {
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+
+  /* When the checkbox is checked, add a blue background */
+  .container input:checked ~ .checkmark {
+    background-color: #fc9220;
+    border: 1px solid #ccc;
+  }
+
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  /* Show the checkmark when checked */
+  .container input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  /* Style the checkmark/indicator */
+  .container .checkmark:after {
+    left: 6px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
+
+/*-----------------xxxxxxx-------------------*/
+
+//  upload-list -- list view css
+
+.list-view-checkbox {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1vh;
+}
+
+.padding-custom {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.custom-button {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 5px;
+  padding: 3px 6px;
+  box-shadow: 0px 0px 5px #ccc;
+  background-color: #fff;
+  cursor: pointer !important;
+  height:34px !important;
+
+  &:hover,
+  &:active,
+  &:focus,
+  &:visited {
+    border-color: #f68321;
+    box-shadow: 0px 0px 5px #f98b20;
+    cursor: pointer !important;
+  }
+
+  a:hover {
+    text-decoration: none !important;
+  }
+}
+
+a:hover {
+  text-decoration: none !important;
+}
+
+.border-none {
+  border: none;
+}
+
+// grid css
+
+.grid1 {
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.grid2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.grid3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.grid4 {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.grid5 {
+  grid-template-columns: repeat(5, 1fr) !important;
+}
+
+.grid6 {
+  grid-template-columns: repeat(6, 1fr) !important;
+}
+
+.grid-container {
+  display: grid;
+  column-gap: 20px;
+  padding: 10px 30px 0px 30px;
+}
+
+.overall-container{
+  padding: 10px 30px 0px 30px;
+  .grid-container {
+    padding: 10px 0px 0px 0px;
+  }
+}
+// common css for dashboard & upload-overview
+
+.summary-items {
+  display: grid;
+  // column-gap: 20px;
+
+  div {
+    // margin: 10px;
+
+    .num {
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .title {
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .chart {
+      display: block;
+    }
+  }
+}

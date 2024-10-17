@@ -1,0 +1,558 @@
+<div class="invoice-form row" #invoiceForm>
+  <!-- <button (click)="goBack()">Back</button> -->
+  <div [ngClass]="{ 'col-sm-8': showSidebar, 'col-sm-12': !showSidebar }">
+
+    <!-- TIPS section -->
+    <p *ngIf="tipsVisibility == 1" style="font-size: 14px;">
+      <strong>TIPS:</strong>
+      <li> <strong>To review, click each field on the right of the screen to
+          cross-check the area highlighted on the document (on the left) in the
+          red box. </strong></li>
+      <li> <strong>To modify the values, pleas type the correct value and hit
+          "Save" button. Once all the changes are done, please click "Done" to
+          finalize the changes.</strong></li>
+    </p>
+
+    <!-- Slider section -->
+    <!-- <mat-slide-toggle color='primary' *ngIf="POINT_AND_SHOOT_VISIBILITY === 1"
+      (change)="emitEnableZoom($event)">Enable {{toggleFunctionality}}
+    </mat-slide-toggle> -->
+    <ngb-tabset type="pills" class="alluploads" (tabChange)="showSidebar= false;
+      tabChanged($event)" #tabSet="ngbTabset">
+
+      <!-- Headers tab -->
+      <ngb-tab title="Header" id="header">
+        <ng-template ngbTabContent>
+          <div class="form-container" (scroll)="scrollHandler($event)"
+            #headerItems>
+            <form class="p-4">
+              <div class="row">
+                <div class="col-sm-12" *ngFor="let data of resultBasicInfo; let
+                  ind= index">
+                  <div class="form-group">
+                    <div class="ft-12 d-flex justify-content-between
+                      margin-input-custom" [ngClass]="{
+                      'margin-input-reset': isValueDefined(
+                      data?.correctedValue
+                      )
+                      }">
+                      <div>
+                        {{ transFormHeader(data?.fieldId) }}
+                        <sup title="Required Field" *ngIf="data?.mandatory">*</sup>
+                      </div>
+                      <div class="reset-data d-flex">
+                        <div class="pointer mr-1" placement="bottom"
+                          ngbTooltip="Reset to Extracted Value"
+                          tooltipClass="my-custom-class" placement="left">
+                          <img [src]="imgSrc?.resetIcon"
+                            *ngIf="allowReset(data)"
+                            (click)="resetBasicInfoFieldValue(ind)" width="20"
+                            height="20" />
+                        </div>
+                        <div class="input-confidence" [ngClass]="{
+                          'text-red': !(
+                          data && data.confidence>= confidenceThreshold
+                          )
+                          }" *ngIf="!allowReset(data)">
+                          {{ data && data.confidence ? (data.confidence |
+                          number: "2.0-2") : 0 }}%
+                        </div>
+                      </div>
+                    </div>
+                    <ng-template #headerContent>
+                      <span class="my-custom-class">
+                        <b class="tipTitle">Extracted Value</b>
+                        <br />
+                        <span
+                          [innerHTML]="data?.fieldValue
+                          | suspiciousSymbolsPipe: data?.suspiciousSymbols">
+                        </span>
+                      </span>
+                    </ng-template>
+                    
+                    <!-- Added for dropdown CR -->
+                    <select
+                      *ngIf="isDropDown(data)"
+                      class="form-control custom-input-invoice-form"
+                      [ngClass]="{
+                        'custom-input-invoice-form-corrected':
+                          data.correctedValue,
+                        'custom-input-invoice-form-error': isAnIssue(data)
+                      }"
+                      name="{{ data?.fieldId }}{{ ind }}"
+                      [ngbTooltip]="headerContent"
+                      data-html="true"
+                      tooltipClass="my-custom-class"
+                      placement="bottom"
+                      [(ngModel)]="data.editField"
+                      (click)="updatefield($event, data)"
+                      (focus)="setBoundingBoxData($event, data,false)"
+                      [disabled]="data.vendorMasterdata > 0"
+                    >
+                      <option
+                        *ngFor="let type of data.dropDownOptions"
+                        [value]="type"
+                      >
+                        {{ type }}
+                      </option>
+                    </select>
+
+                    <div style="margin-bottom: -1rem;" *ngIf="searchAndSelect[data.fieldId] && !isDropDown(data)">
+                      <div class="d-flex">
+                        <mat-form-field class="filters-chip-list">
+                          <mat-chip-list #chipList>
+                            <mat-chip
+                              *ngFor="let option of this.searchAndSelect[data.fieldId]['selected']"
+                              [selectable]="searchAndSelectSelectable"
+                              [removable]="searchAndSelectRemovable"
+                              (removed)="searchAndSelectRemove(option, data)"
+                            >
+                              {{ option }}
+                              <mat-icon matChipRemove *ngIf="searchAndSelectRemovable">cancel</mat-icon>
+                            </mat-chip>
+                            <input
+                              #searchAndSelectInput
+                              name="{{ data?.fieldId }}{{ ind }}"
+                              placeholder="Search"
+                              [formControl]="searchAndSelectCtrl"
+                              [matAutocomplete]="auto"
+                              [matChipInputFor]="chipList"
+                              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                              [matChipInputAddOnBlur]="searchAndSelectAddOnBlur"
+                              (matChipInputTokenEnd)="searchAndSelectAdd($event)"
+                              (focus)="setBoundingBoxData($event, data,null,'cropped-image-container')"
+                              (click)="updatefield($event, data)"
+                            />
+                          </mat-chip-list>
+                          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="searchAndSelectSelectOption($event, data)">
+                            <mat-option
+                              *ngFor="let option of this.searchAndSelect[data.fieldId]['filteredValues'] | async"
+                              [value]="option"
+                            >
+                              {{ option }}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <textarea *ngIf="isTextArea(data) &&
+                      isTextArea(data).textarea && !isDropDown(data) && !searchAndSelect[data.fieldId]" class="form-control
+                      custom-input-invoice-form" [ngClass]="{
+                      'custom-input-invoice-form-corrected':
+                      data.correctedValue,
+                      'custom-input-invoice-form-error': isAnIssue(data)
+                      }" name="{{ data?.fieldId }}{{ ind }}"
+                      [(ngModel)]="data.editField" [ngbTooltip]="headerContent"
+                      data-html="true" tooltipClass="my-custom-class"
+                      placement="bottom"
+                      (focus)="setBoundingBoxData($event,data)"
+                      (click)="updatefield($event,data)"
+                      [disabled]="data.vendorMasterdata> 0">
+                      <!--!data.confidence || testConfidence(data.confidence)-->
+                    </textarea>
+                    <input type="text"
+                      *ngIf="!(isTextArea(data) &&
+                      isTextArea(data).textarea) && !isDropDown(data) && !searchAndSelect[data.fieldId]" class="form-control
+                      custom-input-invoice-form" [ngClass]="{
+                      'custom-input-invoice-form-corrected':
+                      data.correctedValue,
+                      'custom-input-invoice-form-error': isAnIssue(data)
+                      }" name="{{ data?.fieldId }}{{ ind }}"
+                      [(ngModel)]="data.editField" [ngbTooltip]="headerContent"
+                      data-html="true" tooltipClass="my-custom-class"
+                      placement="bottom"
+                      (focus)="setBoundingBoxData($event,data)"
+                      (click)="updatefield($event,data)"
+                      [disabled]="data.vendorMasterdata> 0"
+                    />
+                    <div *ngFor="let error_item of fields_list">
+                      <div *ngIf="isError && (data.fieldId
+                        ===error_item.fieldId)"
+                        class="ft-12 text-danger">
+                        {{error_item.error_message}}
+                      </div>
+                    </div>
+                    <!--!data.confidence || testConfidence(data.confidence)-->
+                  </div>
+                </div>
+
+                <div class="col-sm-12">
+                  <div class="form-group" *ngIf="isSelect">
+                    <select
+                      class="form-control custom-input-invoice-form"
+                      (change)="addNewField($event)">
+                      <option selected value="">Select Field</option>
+                      <option *ngFor="let type of fieldIds" [value]="type">
+                        {{ type }}
+                      </option>
+                      <option [value]="'addCustomField'">Add custom Field</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-sm-12">
+                  <div class="form-group d-flex" *ngIf="isInputSelect">
+                    <input class="form-control" type="text"
+                      name='addCustomFieldValue' ngModel
+                      [(ngModel)]="addCustomFieldValue"
+                      placeholder="Enter Field Name" />
+                    <button class="btn btn-primary ml-2" title="Add Field"
+                      (click)="addCustomField(addCustomFieldValue)">
+                      Add
+                    </button>
+                  </div>
+                </div>
+                <button *ngIf="!showView(documentMetadata)" class="btn ml-2"
+                  title="click to add new field that needs to be extracted"
+                  (click)="changeSelect()">
+                  <img
+                    [src]="imgSrc.plusIcon"
+                    class="cursor-pointer"
+                    width="16"
+                    height="16"
+                    />
+                  Add Field
+                </button>
+              </div>
+            </form>
+          </div>
+        </ng-template>
+      </ngb-tab>
+
+      <!-- LineItems tab -->
+      <ngb-tab title="Items" id="invoice" *ngIf="lineItemsVisibility == 1">
+        <ng-template ngbTabContent>
+          <div class="invoice-description custom-table" *ngIf="resultInvoiceData
+            && resultInvoiceData.length">
+            <table class="table custom-table-css" #lineItems>
+              <thead class="thead-dark">
+                <tr class="ft-12">
+                  <th scope="col">S No.</th>
+                  <th scope="col" *ngFor="let data of
+                    targetResultInvoiceData?.fieldset;
+                    let i= index">
+                    {{ transFormHeader(data?.fieldId) }}
+                  </th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of resultInvoiceData; let i= index"
+                  class="ft-12 pointer tr-success-highlight" [ngClass]="{
+                  'row-gray': i == selectedLineItem,
+                  'line-through': row.isDeleted
+                  }">
+                  <td>{{ i + 1 }}</td>
+                  <td scope="col" *ngFor="let item of row?.fieldset"
+                    [ngClass]="{
+                    'correction-box': isAnIssue(item),
+                    disabled: row.isDeleted
+                    }" (click)="getEachRowData(i)">
+                    <span>
+                      <!--!(item && item.confidence && (item.confidence  >= confidenceThreshold))-->
+                      {{ item?.editField }}
+                    </span>
+                  </td>
+                  <td>
+                    <!-- <button (click)="deleteRow(i)">Delete Row</button> -->
+                    <button class="btn btn-delete ml-1" *ngIf="!row.isDeleted"
+                      title="delete invoice row" (click)="openAlertModel(i)">
+                      <img
+                        [src]="imgSrc.deleteIcon"
+                        class="cursor-pointer"
+                        width="16"
+                        height="16"
+                        />
+                    </button>
+                    <button class="btn btn-reset ml-1" *ngIf="row.isDeleted"
+                      title="restore invoice row" (click)="restoreRow(i)">
+                      <img
+                        [src]="imgSrc.resetIcon"
+                        class="cursor-pointer"
+                        width="16"
+                        height="16"
+                        />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button *ngIf="!showView(documentMetadata)" class="btn ml-2"
+              title="add invoice row" (click)="addRow()">
+              <img
+                [src]="imgSrc.plusIcon"
+                class="cursor-pointer"
+                width="16"
+                height="16"
+                />
+              Add Row
+            </button>
+          </div>
+          <h6 class="text-center text-danger" *ngIf="!(resultInvoiceData &&
+            resultInvoiceData.length)">
+            No data
+          </h6>
+        </ng-template>
+      </ngb-tab>
+
+      <!-- Query tab -->
+      <ngb-tab title="Query" id="query" *ngIf="queryWorkflowActive">
+        <ng-template ngbTabContent>
+          <div class="form-container" #queryItems>
+            <h6 class="pl-4" *ngIf="addingQuery">ADD QUERY</h6>
+
+            <div class="pb-4" *ngIf="!addingQuery">
+              <button class="btn btn-sm ft-12 float-right" type="button"
+                (click)="refreshPage()"><img
+                  src="../../../assets/images/refreshing.png"
+                  width="12"
+                  height="12"
+                  /></button>
+              <button class="btn btn-sm btn-success ft-12 float-right"
+                type="button" (click)="addingQuery= true">
+                + ADD QUERY
+              </button>
+            </div>
+
+            <form class="p-4 queryBox" #queryForm="ngForm" *ngIf="addingQuery">
+              <div class="row">
+                <div class="col-sm-12">
+                  <p style="margin-bottom: 20px">
+                    If you have a query on this document, please add your query
+                    below.
+                  </p>
+
+                  <!-- *ngFor="let data of resultBasicInfo; let ind = index" -->
+                  <div class="form-group">
+                    <div class="ft-12 d-flex justify-content-between
+                      margin-input-custom">
+                      QUERY TYPE *
+                    </div>
+                    <select [(ngModel)]="activeQuery.queryType"
+                      class="form-control custom-input-invoice-form"
+                      name="query_type" #query_type="ngModel" required>
+                      <option selected value="">Select Query Type</option>
+                      <option *ngFor="let type of query_master" [value]="type">
+                        {{ type }}
+                      </option>
+                    </select>
+
+                    <!-- (focus)="setBoundingBoxData($event, data)" -->
+                  </div>
+                  <div class="form-group">
+                    <div class="ft-12 d-flex justify-content-between
+                      margin-input-custom">
+                      QUERY DESCRIPTION *
+                    </div>
+                    <textarea class="form-control custom-input-invoice-form"
+                      name="Query Text" [(ngModel)]="activeQuery.queryText"
+                      [ngbTooltip]="activeQuery.queryText" data-html="true"
+                      tooltipClass="my-custom-class" placement="bottom"
+                      placeholder="Enter your query description"
+                      required>
+                    </textarea>
+                    <!-- (focus)="setBoundingBoxData($event, data)" -->
+                  </div>
+
+                  <div class="form-group">
+                    <div class="ft-12 d-flex justify-content-between
+                      margin-input-custom">
+                      QUERY ON PAGE NUMBER
+                    </div>
+                    <select [(ngModel)]="activeQuery.pageIndex"
+                      class="form-control custom-input-invoice-form"
+                      name="query_page">
+                      <option selected value="">Select Page</option>
+                      <option
+                        *ngFor="let data of pageMaster"
+                        [value]="data.value">
+                        {{ data?.index + 1 }}
+                      </option>
+                    </select>
+                    <!-- (focus)="setBoundingBoxData($event, data)" -->
+                  </div>
+                  <div class="form-group">
+                    <div class="ft-12 d-flex justify-content-between
+                      margin-input-custom">
+                      QUERY ON FIELD
+                    </div>
+                    <select [(ngModel)]="activeQuery.fieldId"
+                      class="form-control custom-input-invoice-form"
+                      name="query_field">
+                      <option selected value="">Select Field</option>
+                      <option
+                        *ngFor="let data of availableFields | orderBy:
+                        'fieldId'" [value]="data.fieldId">
+                        {{ transFormHeader(data?.fieldId) }}
+                      </option>
+                    </select>
+                    <!-- (focus)="setBoundingBoxData($event, data)" -->
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-success btn-sm" type="button"
+                      (click)="addQuery(queryForm.form,queryItems)">
+                      Submit Query
+                    </button>
+                    <button class="btn btn-outline btn-sm" type="button"
+                      (click)="addingQuery= false">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div>
+              <h6 class="pl-4">QUERIES AND RESPONSES</h6>
+            </div>
+
+            <div class="p-4" *ngIf="!queries?.length">
+              No Queries found for this document.
+            </div>
+
+            <div class="card invoice-card" style="width: 94%; margin-left: 20px"
+              *ngFor="let query of queries; let i= index">
+              <div class="card-body">
+                <button class="btn ml-1 float-right del-button" type="button"
+                  (click)="confirmDeleteQuery(query.queryId)">
+                  <img
+                    class="cursor-pointer"
+                    height="16"
+                    width="16"
+                    src="../../../assets/images/icon-delete.svg"
+                    />
+                </button>
+
+                <small><b>QUERY {{ i + 1 }}</b></small>
+
+                <h6 class="card-title">
+                  {{ query?.queryType }}
+                  <span *ngIf="query?.fieldId">
+                    on field {{ query?.fieldLabel }}</span>
+                </h6>
+                <p class="card-text">{{ query?.queryText }}</p>
+                <img
+                  _ngcontent-gsn-c13=""
+                  alt="profile image"
+                  class="user-img mx-2"
+                  src="../../../assets/images/profile-default.jpg"
+                  />
+                <small>By {{ query?.queryUserName }}</small>
+                <small> on {{ query?.dateCreated }}</small>
+
+                <hr />
+                <small><b>RESOLUTION</b></small>
+                <p *ngIf="!query?.dateResponded" style="color: #fc9220">
+                  Awaiting Response.
+                </p>
+
+                <span *ngIf="query?.dateResponded" style="color: #1e7e34">
+                  <p class="card-text">{{ query?.resolutionText }}</p>
+                  <img
+                    _ngcontent-gsn-c13=""
+                    alt="profile image"
+                    class="user-img mx-2"
+                    src="../../../assets/images/profile-default.jpg"
+                    />
+                  <small>{{ query?.resolvedByUserName }}</small> |
+                  <small>{{ query?.dateResponded }}</small>
+                </span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+
+  <div class="col-sm-4 correction-section" *ngIf="showSidebar" #lineItemRow>
+    <img [src]="imgSrc?.crossIcon" width="15" height="20" class="float-right
+      pt-1 pointer" (click)="showSidebar= false;
+      hidePreview('cropped-image-container')" />
+    <div class="invoice-data-analysis">
+      <div class="mt-5 line-item-correction">
+        <div class="correction-fields">
+          <form class="p-2 mt-2">
+            <div class="form-group" *ngFor="let rowItem of lineItemsRowData; let
+              itemIndex= index">
+              <div *ngIf="rowItem!==''">
+                <div class="reset-data d-flex justify-content-between">
+                  <span class="ft-12">{{
+                    transFormHeader(rowItem.fieldId)}}
+                  </span>
+
+                  <div class="mb-1 pointer" placement="bottom" ngbTooltip="Reset
+                    to Extracted Value" tooltipClass="my-custom-class"
+                    placement="left">
+                    <img [src]="imgSrc?.resetIcon" width="20" height="20"
+                      *ngIf="allowReset(rowItem)"
+                      (click)="resetInvoiceValue(itemIndex)" />
+
+                    <div class="input-confidence ft-12" [ngClass]="{'text-red':
+                      !(rowItem && rowItem.confidence>= confidenceThreshold)}"
+                      *ngIf="!allowReset(rowItem)">
+                      {{ rowItem && rowItem.confidence ? (rowItem.confidence |
+                      number: "2.0-2") : 0 }}%
+                    </div>
+                  </div>
+                </div>
+                <ng-template #lineContent><span class="my-custom-class">
+                    <b class="tipTitle">Extracted Value</b>
+                    <br />
+                    <span
+                      [innerHTML]="rowItem?.fieldValue| suspiciousSymbolsPipe:
+                      rowItem?.suspiciousSymbols">
+                    </span>
+                  </span>
+                </ng-template>
+                <textarea *ngIf="isTextArea(rowItem) &&
+                  isTextArea(rowItem).textarea" class="form-control ft-12
+                  custom-input-invoice-form" name="{{ rowItem.fieldId }}{{
+                  itemIndex }}" [(ngModel)]="rowItem.editField"
+                  (ngModelChange)="getChangedValue(rowItem, itemIndex)"
+                  [ngClass]="{
+                  'custom-input-invoice-form-corrected': rowItem.correctedValue,
+                  'custom-input-invoice-form-error': isAnIssue(rowItem)
+                  }" placement="bottom" [ngbTooltip]="lineContent"
+                  tooltipClass="my-custom-class"
+                  (focus)="setBoundingBoxData($event, rowItem)"
+                  (click)="updatefield($event,rowItem)"
+                  [disabled]="rowItem.vendorMasterdata> 0">
+                  <!--!rowItem.confidence || testConfidence(rowItem.confidence)-->
+                </textarea>
+
+                <input type="text" *ngIf="!(isTextArea(rowItem) &&
+                  isTextArea(rowItem).textarea)" class="form-control ft-12
+                  custom-input-invoice-form" name="{{ rowItem.fieldId }}{{
+                  itemIndex }}" [(ngModel)]="rowItem.editField"
+                  (ngModelChange)="getChangedValue(rowItem, itemIndex)"
+                  [ngClass]="{
+                  'custom-input-invoice-form-corrected': rowItem.correctedValue,
+                  'custom-input-invoice-form-error': isAnIssue(rowItem)
+                  }" placement="bottom" [ngbTooltip]="lineContent"
+                  tooltipClass="my-custom-class"
+                  (focus)="setBoundingBoxData($event, rowItem)"
+                  (click)="updatefield($event,rowItem)"
+                  [disabled]="rowItem.vendorMasterdata> 0" />
+                <!--!rowItem.confidence || testConfidence(rowItem.confidence)-->
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="footer custom-check-box invoice-check-box" *ngIf="allIssues">
+  <div class="footer-items d-flex align-self-left mx-2">
+    <span class="p-1 ft-12">{{ selectedClass + 1 }} of {{
+      allIssues }}</span>
+    <button (click)="prevIssue()" class="btn btn-outline-secondary ft-12 ml-2">
+      Previous
+    </button>
+    <button (click)="nextIssue()" class="btn danger-btn ft-12 ml-2">
+      Next
+    </button>
+  </div>
+</div> -->

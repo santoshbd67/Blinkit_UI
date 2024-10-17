@@ -1,0 +1,126 @@
+@import "../../../assets/styles/scss/variable.scss";
+@import "../../../assets/styles/scss/common.scss";
+
+.table-hover-data:hover {
+    background-color: #fc92201a;
+}
+
+.flex-container {
+    display: flex;
+    align-items: stretch;
+}
+
+.flex-container>div {
+    margin: 10px 0px;
+}
+
+.filename {
+    word-break: break-word;
+    inline-size: 200px;
+}
+
+.btn-delete {
+    border: 1px solid #e66824;
+    color: #e66824;
+    background: #fff;
+
+    &:hover,
+    &:focus {
+        color: #e66824;
+        box-shadow: 0px 0px 4px #e66824;
+    }
+}
+
+.btn-save {
+    color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34;
+
+    &:focus,
+    &:hover {
+        box-shadow: 0px 0px 4px #1e7e34;
+        outline: 0;
+        color: #fff;
+    }
+}
+
+.btn-purged {
+    color: #2874A6;
+    background-color: #fff;
+    border-color: #2874A6;
+}
+
+.vendor-list {
+    height: calc(100vh - 180px);
+    overflow: scroll;
+}
+
+.word-wrap {
+    white-space: nowrap;
+}
+
+.vendor-upload-list td,
+.table td {
+    padding: 5px 10px !important;
+}
+
+.vendor-upload-list,
+.table td,
+.table th {
+    vertical-align: middle !important;
+}
+
+table.vendor-upload-list th {
+    position: sticky;
+    top: -1px;
+    z-index: 9 !important;
+    background: #fff8f8 !important;
+}
+
+.scrolling-list {
+    overflow-y: scroll !important;
+    height: calc(100vh - 220px) !important;
+}
+
+.scrolling-list-Badge {
+    overflow-y: scroll !important;
+    height: calc(100vh - 240px) !important;
+}
+
+.scrolling-list-Posting {
+    overflow-y: scroll !important;
+    height: calc(100vh - 260px) !important;
+}
+
+.scrolling-list-PostingAndBadge {
+    overflow-y: scroll !important;
+    height: calc(100vh - 280px) !important;
+}
+
+.download-all {
+    background-color: #f3eeee;
+    margin-right: 30px;
+    margin-top: -5px;
+    width: 110px;
+    outline: 0 !important;
+}
+
+.download-all:hover {
+    background-color: rgb(35, 166, 35);
+}
+
+.enabled {
+    background-color: #28a745;
+    color: white;
+}
+
+.enabled:hover {
+    background-color: #098125;
+    color: white;
+}
+
+.download-orginal {
+    margin-top: 7px;
+    margin-left: 5px;
+    cursor: pointer;
+}

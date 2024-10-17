@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="32.556" viewBox="0 0 188 32.556">
+  <defs>
+    <style>.a,.i{fill:none;}.b{clip-path:url(#a);}.c{fill:#fc9220;}.d,.g{fill:#e56924;}.e{fill:#df4c24;}.f{fill:#d34125;}.g{font-size:16px;font-family:Arial, Noto Sans;font-weight:700;}.h{fill:#999;font-size:8px;font-family:Arial, Noto Sans;}.i{stroke:#ccc;}.tm{font-size:8px;font-family:Arial, Noto Sans;font-weight:700;}</style>
+    <clipPath id="a">
+      <rect class="a" width="190" height="32.556"/>
+    </clipPath>
+  </defs>
+  <g class="b">
+    <g transform="translate(-10 -14)">
+      <text class="g" transform="translate(15 20)">
+        <tspan x="0" y="17">pAIges</tspan>
+        <tspan x="55" y="8" class="tm">TM</tspan>
+      </text>
+    </g>
+    <text class="h" transform="translate(85 14)">
+      <tspan x="0" y="0">INTELLIGENT DOCUMENT</tspan>
+      <tspan x="0" y="11">PROCESSING PLATFORM</tspan>
+    </text>
+    <path class="i" d="M0,8V24" transform="translate(78 0.5)"/>
+  </g>
+</svg>

@@ -1,0 +1,66 @@
+.upload-scroll {
+    overflow: auto;
+}
+
+.header_modal h1 {
+    color: #202e3e;
+    // text-transform: uppercase;
+    font-weight: 500;
+}
+
+.header-bar {
+    padding: 10px 20px;
+    background: #f7f7f7 !important;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 12px;
+}
+
+.raise_ticket {
+    background: orangered;
+    color: whitesmoke;
+}
+
+.approve_btn {
+    background-color: #229954;
+    color: white;
+}
+
+.custom-font {
+    font-family: "Roboto";
+    font-size: 13px;
+}
+
+.modal-body {
+    max-height: calc(100vh - 10px);
+    overflow: auto;
+}
+
+.modal {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-dialog {
+    width: 95% !important;
+    min-width: 98% !important;
+    margin-top: 10px;
+    height: 100% !important;
+}
+
+.modal-content {
+    height: 90% !important;
+    min-height: 95% !important;
+    border-radius: 0;
+}
+
+.modal-header {
+    background: #a569bd !important;
+}
+
+.modal-header .close {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 22px !important;
+    top: 30px !important;
+    right: 34px !important;
+    font-family: auto !important;
+}

@@ -1,0 +1,487 @@
+<div class="main_page mr-2" (click)="setFieldData($event)">
+  <div class="masterdata_headers">
+    <label class="heading">PathFinder: <span class="fields_label">{{format}}</span></label>
+    <div class="row">
+      <div class="ft-500 ft-12 mt-3">
+        <button ngbTooltip="This action will show the list of available
+          documents for
+          Testing." (click)="initiateTemplatesTesting()" class="btn tablinks
+          test_btn"
+          [class.spinner]="isLoading" [disabled]="isLoading">TEST</button>
+      </div>
+      <h4 ngbTooltip="Go Back" class="close"
+        (click)="close()">X</h4>
+    </div>
+  </div>
+
+  <!-- field values & TestButton  -->
+  <div class="d-flex col-sm-12 mt-2">
+    <section class="list-with-scroll col-sm-12">
+
+      <div class="list" appScrollable #list="appScrollable" [scrollUnit]="150">
+        <div class="tab" *ngFor="let data of
+          selectedFields; let ind=index">
+          <div>
+            <button class="tablinks"
+              title="This action will remove this field temporarily from the list"
+              [ngClass]="{'active': (selectedTab == data.fieldId)}"
+              (click)="makeActive(data.fieldId)">{{modifyTitle(data.fieldId) |
+              uppercase}}
+              <i (click)="removeField(data.fieldId)" class="fa
+                fa-close custom_close_icon">
+              </i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- left scroll -->
+      <button class="scroll-button scroll_btn" *ngIf="list.isOverflow"
+        [class.disable]="!list.canScrollStart" (click)="list.scroll(-1)"
+        id="scroll-left">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+      </button>
+
+      <!-- right scroll -->
+      <button class="scroll-button scroll_btn" *ngIf="list.isOverflow"
+        [class.disable]="!list.canScrollEnd" (click)="list.scroll(1)">
+        <i class="fa fa-angle-right" aria-hidden="true"></i>
+      </button>
+    </section>
+  </div>
+
+  <!-- main content area -->
+  <form #pathFinderForm="ngForm">
+    <div class="content_div form-container-div">
+      <!-- Row 1 -->
+      <div class="d-flex justify-content-between col-sm-12">
+
+        <!-- Fieldtype -->
+        <div class="col-sm-6 ft-500 ft-12">
+          <h6 class="form_labels">Field Type
+            <button type="button" class="m-0
+              help_btn" (click)="showHelp('Field Type')">
+              <!-- Help <i class="fa fa-question-circle" aria-hidden="true"></i> -->
+              <i ngbTooltip="Know more details" placement="bottom" class="fa
+                fa-info-circle"
+                aria-hidden="true"></i>
+            </button>
+          </h6>
+          <select (change)="changeFieldType($event.target.value)"
+            name="fieldType"
+            ngModel
+            [(ngModel)]="selectedFieldType" class="form-control select_field">
+            <option [value]="item.id" *ngFor="let item of fieldTypeOptions">{{item.name}}</option>
+          </select>
+        </div>
+
+        <!-- templateType -->
+        <div class="col-sm-6 ft-500 ft-12">
+          <h6 class="form_labels">Template Type
+            <button type="button" class="m-0
+              help_btn" (click)="showHelp('Template Type')">
+              <!-- Help <i class="fa fa-question-circle" aria-hidden="true"></i> -->
+              <i ngbTooltip="Know more details" placement="bottom" class="fa
+                fa-info-circle"
+                aria-hidden="true"></i>
+            </button>
+          </h6>
+          <div class="d-flex">
+            <select (change)="changeTemplateType($event.target.value)"
+              name="templateType" ngModel
+              [(ngModel)]="selectedTemplate" class="form-control select_field">
+              <option [value]="item.id" *ngFor="let item of templateOptions">{{item.name}}</option>
+            </select>
+            <i style="margin: 10px;" (click)="showHelp('SubType')"
+              ngbTooltip="Know more details" class="fa
+              fa-info-circle"
+              aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="d-flex justify-content-between col-sm-12 mt-2">
+
+        <!-- FieldShape -->
+        <div *ngIf="selectedFieldType==1 && (selectedTemplate==2 ||
+          selectedTemplate==3)" class="col-sm-6 ft-500 ft-12">
+          <h6 ngbTooltip="Encodes the shape of
+            the value to be extracted (not a hard check).'d' for digits, 'x' for
+            alphabets" class="form_labels">Field
+            Shape</h6>
+          <input type="text" class="form-control input_field" name="fieldShape"
+            ngModel (focusout)="onFocusOutEvent(pathFinderForm)"
+            [(ngModel)]="currentStateOfField.selectedfieldShape"
+            placement="bottom" />
+        </div>
+
+        <!-- Field Value -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==1" class="col-sm-6 ft-500 ft-12">
+          <h6 ngbTooltip="Exact value
+            to be extracted" class="form_labels">Field Value</h6>
+          <input type="text" class="form-control input_field" name="fieldValue"
+            [(ngModel)]="currentStateOfField.selectedfieldValue" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Top -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Top Delimiter"
+            class="form_labels">Top</h6>
+          <input type="text" class="form-control input_field" name="fieldTop"
+            [(ngModel)]="currentStateOfField.selectedfieldTop" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Include Top -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="If YES, the top boundary of the rectangular box will
+            enclose the Top Delimiter" class="form_labels">Include Top</h6>
+          <select class="form-control select_field" name="fieldIncludeTop"
+            [(ngModel)]="currentStateOfField.selectedfieldIncludeTop" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)">
+            <option value="YES">YES</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+
+        <!-- FieldLocation -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==2" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Restricts the area
+            of the page where the key/label will be searched. Default Value is
+            NONE (searched across the entire page). TOP LEFT means the search is
+            restricted to the top left quarter of the page."
+            class="form_labels">Field
+            Location </h6>
+          <select class="form-control select_field" name="fieldLocation" ngModel
+            [(ngModel)]="currentStateOfField.selectedfieldLocation"
+            (focusout)="onFocusOutEvent(pathFinderForm)">
+            <option value="NONE" selected>NONE</option>
+            <option value="TOP LEFT">TOP LEFT</option>
+            <option value="TOP RIGHT">TOP RIGHT</option>
+            <option value="BOTTOM LEFT">BOTTOM LEFT</option>
+            <option value="BOTTOM RIGHT">BOTTOM RIGHT</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="d-flex justify-content-between col-sm-12 mt-2">
+
+        <!-- Label -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==2" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label for the value to
+            be extracted" class="form_labels">Label </h6>
+          <input type="text" class="form-control input_field" name="fieldLabel"
+            ngModel (focusout)="onFocusOutEvent(pathFinderForm)"
+            [(ngModel)]="currentStateOfField.selectedfieldLabel"
+            placement="bottom" />
+        </div>
+
+        <!-- Horizontal Anchor -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==3" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Horizontal Key/Label to be used as anchor"
+            class="form_labels">Horizontal
+            Anchor</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldHorzAnchor" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            [(ngModel)]="currentStateOfField.selectedfieldHorzAnchor"
+            placement="bottom" />
+        </div>
+
+        <!-- Location -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==3" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Location of HA from the actual value. It can be either
+            LEFT or RIGHT." class="form_labels">Location</h6>
+          <select class="form-control select_field" name="field_Location"
+            ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            [(ngModel)]="currentStateOfField.selectedfield_Location">
+            <option value="LEFT">LEFT</option>
+            <option value="RIGHT">RIGHT</option>
+          </select>
+        </div>
+
+        <!-- Bottom -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Bottom Delimiter"
+            class="form_labels">Bottom</h6>
+          <input type="text" class="form-control input_field" name="fieldBottom"
+            [(ngModel)]="currentStateOfField.selectedfieldBottom" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Include Bottom -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="If YES, the bottom boundary of the rectangular box
+            will
+            enclose the Bottom Delimiter" class="form_labels">Include Bottom</h6>
+          <select class="form-control select_field" name="fieldIncludeBottom"
+            [(ngModel)]="currentStateOfField.selectedfieldIncludeBottom" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)">
+            <option value="YES">YES</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+
+        <!-- label Position -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==2" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Left/Above" class="form_labels">Label Position</h6>
+          <select class="form-control select_field" name="fieldLabelPosition"
+            ngModel (focusout)="onFocusOutEvent(pathFinderForm)"
+            [(ngModel)]="currentStateOfField.selectedfieldLabelPosition">
+            <option value="Left">Left</option>
+            <option value="Above">Above</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="d-flex justify-content-between col-sm-12 mt-2">
+
+        <!-- Vertical Anchor -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==3" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Vertical Key/Label to be used as anchor"
+            class="form_labels">Vertical
+            Anchor</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldVertAnchor" ngModel
+            [(ngModel)]="currentStateOfField.selectedfieldVertAnchor"
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Location -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==3" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Location of VA from the actual value. It can be either
+            TOP or BOTTOM." class="form_labels">Location</h6>
+          <select class="form-control select_field" name="fieldLocation_3"
+            ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            [(ngModel)]="currentStateOfField.selectedfieldLocation_3">
+            <option value="TOP">TOP</option>
+            <option value="BOTTOM">BOTTOM</option>
+          </select>
+        </div>
+
+        <!-- Left -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2)
+          &&selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Left Delimiter"
+            class="form_labels">Left</h6>
+          <input type="text" class="form-control input_field" name="fieldLeft"
+            [(ngModel)]="currentStateOfField.selectedfieldLeft" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Right -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Right Delimiter"
+            class="form_labels">Right</h6>
+          <input type="text" class="form-control input_field" name="fieldRight"
+            [(ngModel)]="currentStateOfField.selectedfieldRight" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Default Value -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==2" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="If the field is not
+            extracted with good confidence, this value will be extracted"
+            class="form_labels">Default Value </h6>
+          <input type="text" class="form-control input_field"
+            name="fieldDefaultValue_1" ngModel
+            [(ngModel)]="currentStateOfField.selectedfieldDefaultValue_1"
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+      </div>
+
+      <!-- Row 5 -->
+      <div class="d-flex justify-content-between col-sm-12 mt-2">
+
+        <!-- PAGE_IDENTIFIER -->
+        <div ngbTooltip="Numeric value or the TEXT to identify the page from
+          which
+          value is to be extracted" *ngIf="(selectedFieldType==1 ||
+          selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 class="form_labels">PAGE IDENTIFIER</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldPageIdentifier"
+            [(ngModel)]="currentStateOfField.selectedfieldPageIdentifier"
+            ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Default Value -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+          selectedTemplate==4" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="If the field is not
+            extracted with good confidence, this value will be extracted"
+            class="form_labels">Default Value</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldDefaultValue_2"
+            [(ngModel)]="currentStateOfField.selectedfieldDefaultValue_2"
+            ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- Default Value -->
+        <div *ngIf="selectedFieldType==1 && selectedTemplate==3" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="If the field is not
+            extracted with good confidence, this value will be extracted"
+            class="form_labels">Default Value</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldDefaultValue_3" ngModel
+            [(ngModel)]="currentStateOfField.selectedfieldDefaultValue_3"
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- gaurav delimiter update -->
+        <!-- TopDelimiter -->
+        <div *ngIf="(selectedFieldType==1 &&
+          selectedTemplate==2)" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Top Delimiter"
+            class="form_labels">Top Delimiter</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldTopDelimiter"
+            placeholder="Not Applicable"
+            [(ngModel)]="currentStateOfField.selectedfieldTopDelimiter" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- BottomDelimiter -->
+        <div *ngIf="(selectedFieldType==1 &&
+          selectedTemplate==2)" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Bottom Delimiter"
+            class="form_labels">Bottom Delimiter</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldBottomDelimiter"
+            placeholder="Not Applicable"
+            [(ngModel)]="currentStateOfField.selectedfieldBottomDelimiter"
+            ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+      </div>
+
+      <!-- Row 6 -->
+      <div class="d-flex justify-content-between col-sm-12 mt-2">
+
+        <!-- Default Value -->
+        <!-- <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&
+      selectedTemplate==4" class="col-sm-6
+      ft-500 ft-12">
+      <h6 class="form_labels">Default Value</h6>
+      <input type="text" class="form-control input_field"
+        placement="bottom" />
+    </div> -->
+        <!-- gaurav delimiter update -->
+        <!-- TopDelimiter -->
+        <div *ngIf="(selectedFieldType==1 ||
+          selectedFieldType==2) &&(
+          selectedTemplate==3|| selectedTemplate==4)" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Top Delimiter"
+            class="form_labels">Top Delimiter</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldTopDelimiter"
+            placeholder="Not Applicable"
+            [(ngModel)]="currentStateOfField.selectedfieldTopDelimiter" ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+
+        <!-- BottomDelimiter -->
+        <div *ngIf="(selectedFieldType==1 || selectedFieldType==2) &&(
+          selectedTemplate==3|| selectedTemplate==4)" class="col-sm-6
+          ft-500 ft-12">
+          <h6 ngbTooltip="Key/Label to be used as Bottom Delimiter"
+            class="form_labels">Bottom Delimiter</h6>
+          <input type="text" class="form-control input_field"
+            name="fieldBottomDelimiter"
+            placeholder="Not Applicable"
+            [(ngModel)]="currentStateOfField.selectedfieldBottomDelimiter"
+            ngModel
+            (focusout)="onFocusOutEvent(pathFinderForm)"
+            placement="bottom" />
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Result Div -> Extraction Value & Confidence -->
+    <div class="d-flex justify-content-between col-sm-12 mt-2">
+      <div class="col-sm-9">
+        <!-- Extracted Value -->
+        <div>
+          <div class="d-flex col-sm-6 ft-500 ft-12">
+            <h6 class="form_labels result_label">Extracted Value</h6>
+            <textarea type="text" disabled
+              [(ngModel)]="Validate_Result.extractedValue"
+              class="form-control input_field result_input"
+              name="fieldExtractedValue" ngModel
+              (focusout)="onFocusOutEvent(pathFinderForm)"
+              placement="bottom"></textarea>
+
+            <!-- Confidence -->
+            <h6 class="form_labels confidence_value" [ngClass]="{'text-red':
+              !(Validate_Result.Confidence>= confidenceThreshold)}">{{Validate_Result.Confidence
+              | decimalPretty}}%</h6>
+          </div>
+        </div>
+
+        <!-- Confidence -->
+        <!-- <div>
+        <div class="d-flex col-sm-3 ft-500 ft-12 mt-2">
+          <h6 class="form_labels">Confidence</h6>
+          <h6 class="form_labels confidence_value">{{Validate_Result.Confidence
+            | decimalPretty}}%</h6>
+        </div>
+      </div> -->
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="isTestingBtnClicked">
+  <app-template-testing (actionCompleted)="onActionCompleted($event)"
+    [fieldsDataWithState]="fieldsDataForTestState"
+    (close)="closeTestDialog()"></app-template-testing>
+</div>

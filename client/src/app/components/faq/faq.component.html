@@ -1,0 +1,116 @@
+<div class="page_bg">
+    <mat-card class="mat_card">
+        <!--Section: FAQ-->
+        <section>
+            <div class="d-flex align-items-end justify-content-between ft-500 p-2 ft-12 text-center font-weight-normal pr-4"
+                style="display: flex;">
+                <div>
+                    <img height="200px" src="assets/images/faq.svg" alt="faq">
+                </div>
+                <div>
+                    <!--  -->
+                    <div (click)="goBack()" class="back_btn">
+                        <a style="color: white !important;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Go
+                            Back</a>
+                    </div>
+                    <div class="tt-header-content-icon">
+                        <a routerLink="/dashboard" routerLinkActive="active">
+                            <img src={{logoSrc}} class="app-logo" /></a>
+                    </div>
+                    <h3 class="text-center mb-4 pb-2 text-primary fw-bold">Frequently Asked Questions</h3>
+                    <p class="text-center mb-5 ft-14">
+                        Find the answers for the most frequently asked questions below
+                    </p>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 25px;">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="ft-14 far fa-paper-plane text-primary pe-2"></i> What is
+                        pAIges and how does it work?</h6>
+                    <p class="ft-14">
+                        pAIges is an intelligent data extraction engine based on Machine Learning algorithms that
+                        interpret and identify OCR extracted data and make them available in an easily usable format for
+                        further processing.
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-pen-alt text-primary pe-2"></i> What are the document
+                        types trained in pAIges?</h6>
+                    <p class="ft-14">Various kinds of documents can currently be processed through pAIges. These include
+                        Invoices, KYC documents, travel documents, PoDs and Sales Orders. Many of these are regions
+                        specific and pAIges is able to process those accordingly.
+                        If you have a different document type you can write to us at <strong> <strong><a
+                                    href={{ADMIN_EMAIL}}>{{ADMIN_EMAILID}}</a></strong>
+                        </strong>and we will get back to you.
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-user text-primary pe-2"></i> Can pAIges extract all
+                        the fields and data from an Invoice? </h6>
+                    <p class="ft-14">
+                        pAIges is currently trained to extract 35 key fields from an Invoice.
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-rocket text-primary pe-2"></i> What if a field is not
+                        extracted correctly?</h6>
+                    <p class="ft-14">
+                        This can happen because of the quality of the scanned document that you are using. If you feel
+                        that is not the case then we request you to share the field information along with document
+                        details at <strong><a href={{ADMIN_EMAIL}}>{{ADMIN_EMAILID}}</a></strong>
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-home text-primary pe-2"></i> Can a new field be
+                        added?</h6>
+                    <p class="ft-14"><strong><u>Yes,</u></strong> we can add new fields that you might require. Please
+                        share the field details along with the relevant document at <strong><a
+                                href={{ADMIN_EMAIL}}>{{ADMIN_EMAILID}}</a></strong>
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-book-open text-primary pe-2"></i> Can pAIges
+                        integrate with any other tools?</h6>
+                    <p class="ft-14">
+                        <strong><u> Yes,</u></strong> there are Rest APIs available that can be accessed by any
+                        application, in the Licensed version.
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-rocket text-primary pe-2"></i> Can the output format
+                        be customized?</h6>
+                    <p class="ft-14">
+                        Currently, pAIges can provides output in Excel and JSON formats. It can also be customized to
+                        provide outputs in other formats if required.
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-home text-primary pe-2"></i> How secure is my data in
+                        pAIges?</h6>
+                    <p class="ft-14">Your data is completely secure and is encrypted both at motion and at rest.
+                    </p>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <h6 class="mb-3 text-primary"><i class="fas fa-book-open text-primary pe-2"></i> Can pAIges be
+                        trained on new document type?</h6>
+                    <p class="ft-14">
+                        <strong><u> Yes,</u></strong> please let us know what other document types you need to extract
+                        data from, along with details of the data to be extracted at <strong><a
+                                href={{ADMIN_EMAIL}}>{{ADMIN_EMAILID}}</a></strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!--Section: FAQ-->
+
+    </mat-card>
+
+</div>

@@ -1,0 +1,16 @@
+
+
+<button type="button" class="btn btn-menu ft-12" (click)="show('list')"
+  *ngIf="currentViewType =='card'"
+  title="list view">
+  <img src="../../../assets/images/icon-list.svg" />
+</button>
+<!-- routerLink="./card" routerLinkActive="active" -->
+<button [disabled]="cardViewVisibility==0" type="button"
+  [class]="cardViewVisibility==0?'btn btn-menu ft-12 not_allowed':'btn btn-menu
+  ft-12'" (click)="show('card')" *ngIf="currentViewType =='list'"
+  title="card view">
+  <!--*ngIf="currentViewType =='list'"-->
+  <img src="../../../assets/images/icon-dots.svg" />
+</button>
+<!-- </div> -->

@@ -1,0 +1,15 @@
+.highlight {
+    border: solid 2px red;
+    position: absolute;
+    z-index: 1;
+    margin-top: -5px;
+    margin-left: -5px;
+    padding: 2px;
+    left: -10000px;
+}
+
+.originalImage {
+    position: absolute;
+    left: -100000000px;
+}
+

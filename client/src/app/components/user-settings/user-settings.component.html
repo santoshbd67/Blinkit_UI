@@ -1,0 +1,158 @@
+<!-- headerView -->
+<div style="background: aliceblue;border: 1px dotted lightblue;" class="d-flex
+  align-items-end justify-content-between ft-500 p-2 ft-12 text-center
+  font-weight-normal pr-4 pl-0">
+  <div style="margin-bottom: 10px;" class="ft-14 font-weight-bold">
+    All Users Data
+  </div>
+
+  <!-- AddNewUser button-->
+  <button style="width: 15%;" class="btn ft-14 update_btn" type="button"
+    (click)="openModifyUserModal('Add',null)" *ngIf="isAdmin() ||
+    isClientAdmin()">
+    <i class="fa fa-user-plus" aria-hidden="true"></i> Add New User
+  </button>
+
+  <!-- Download button when not clicked-->
+  <button style="width: 25%;" *ngIf="!isDownloading && (isAdmin() ||
+    isClientAdmin())" class="btn ft-14 update_btn" type="button"
+    (click)="downloadCSV()">
+    <i class="fa fa-download" aria-hidden="true"></i> Download User Activity
+    Data
+  </button>
+
+  <!-- Download button when clicked-->
+  <button style="width: 25%;" *ngIf="isDownloading && (isAdmin() ||
+    isClientAdmin())" class="btn ft-14 update_btn">
+    <i class="fa fa-refresh fa-spin"></i> Downloading User Activity Data
+  </button>
+</div>
+
+<!-- listview -->
+<div class="table-list">
+  <table class="table table-white vendor-upload-list table-white-responsive"
+    *ngIf="(isAdmin() || isClientAdmin()) && userList && userList.length">
+    <thead>
+      <tr>
+        <th style="width: 150px;" scope="col">User name</th>
+        <th style="width: 320px;" scope="col">Email Id</th>
+        <th style="width: 170px;" scope="col">Created On</th>
+        <th style="width: 320px;" scope="col">User Role</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of userList| paginate
+        : {
+        itemsPerPage: usersPerPage,
+        currentPage: userPage,
+        totalItems: userCount
+        }; let i= index" class="{{user.isActive == true ?
+        'active_tr':'inactive_tr'}}">
+
+        <!-- Username -->
+        <td class="column_width">
+          {{user?.userName}}
+        </td>
+        <!-- EmailId -->
+        <td style="width: 320px;">
+          {{user?.emailId}}
+        </td>
+        <!-- CreatedOn -->
+        <td style="width: 170px;">
+          {{ user?.createdOn }}
+        </td>
+        <!-- Role -->
+        <td style="width: 150px;">
+          {{user?.role}}
+        </td>
+
+        <!-- Actions -->
+        <td>
+          <div class="d-flex">
+            <!-- Show Files button -->
+            <button type="button" [disabled]="!user.isActive"
+              class="{{user.isActive == true ? 'btn btn-outline-success px-3
+              mr-2 mb-1 btn-sm' : 'btn btn-outline-success px-3 mr-2 mb-1 btn-sm
+              disabled_btn'}}" style="min-width:fit-content"
+              (click)="openModifyViewModal('View',user)">
+              <i class="fa fa-list" aria-hidden="true"></i> Show Files
+            </button>
+
+            <!-- EditUser button -->
+            <button type="button" [disabled]="!user.isActive"
+              class="{{user.isActive == true ? 'btn btn-outline-success px-3
+              mr-2 mb-1 btn-sm' : 'btn btn-outline-success px-3 mr-2 mb-1 btn-sm
+              disabled_btn'}}" style="min-width:fit-content"
+              (click)="openModifyUserModal('Edit',user)">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+            </button>
+
+            <!-- DeleteUser button -->
+            <button type="button" [disabled]="!user.isActive"
+              class="{{user.isActive == true ? 'btn btn-delete mb-1 px-3 mr-2
+              mb-1 btn-sm' : 'btn btn-delete mb-1 px-3 mr-2 mb-1 btn-sm
+              disabled_btn'}}" style="min-width:fit-content"
+              (click)="openUserModal(user,'delete')"
+              *ngIf="!currentAccount(user.emailId)">
+              <i class="fa fa-trash" aria-hidden="true"></i> Delete
+            </button>
+
+            <!-- ActivateUser button -->
+            <!-- <button type="button" [disabled]="!user.isActive" class="{{user.isActive == true ? 'btn btn-delete mb-1 px-3 mr-2 mb-1 btn-sm' : 'btn btn-delete mb-1 px-3 mr-2 mb-1 btn-sm disabled_btn'}}" (click)="openUserVendorRelationModal(user)" *ngIf="user.role!=='admin'">Vendors</button> -->
+            <button type="button" *ngIf="!user.isActive"
+              class="{{user.isActive !== true ? 'btn btn-outline-success px-3
+              mr-2 mb-1 btn-sm' : 'btn btn-outline-success px-3 mr-2 mb-1 btn-sm
+              disabled_btn'}}" style="min-width:fit-content"
+              (click)="openUserModal(user,'activate')">
+              <i class="fas fa-user-alt"></i> Activate
+            </button>
+
+            <!-- DeactivateUser button -->
+            <!-- <button type="button" *ngIf="user.isActive"
+              class="{{user.isActive === true ? 'btn btn-outline-success px-3
+              mr-2 mb-1 btn-sm' : 'btn btn-outline-success px-3 mr-2 mb-1 btn-sm
+              disabled_btn'}}"
+              (click)="openUserModal(user,'deactivate')">
+              <i class="fas fa-user-slash"></i> Deactivate
+            </button> -->
+            <span *ngIf="currentAccount(user.emailId)"
+              style="min-width:fit-content" class="text-danger px-3">Current
+              User</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Count Div -->
+  <div class="d-flex align-items-end justify-content-start ft-500 p-2 ft-12
+    text-center font-weight-normal" *ngIf="(isAdmin() || isClientAdmin()) &&
+    userList && userList.length">
+    Showing {{ showingItemCount }} of {{ userCount }}
+  </div>
+
+  <!-- Pagination Div -->
+  <div class="d-flex align-items-end justify-content-center p-3"
+    *ngIf="(isAdmin() || isClientAdmin()) && userList && userList.length">
+    <pagination-controls (pageChange)="setUserPage($event); userPage= $event"
+      class="ft-14 font-weight-normal">
+    </pagination-controls>
+  </div>
+
+  <!-- Fetching users -->
+  <h6 class="center-data" *ngIf="(isAdmin() || isClientAdmin()) && !isDataFetching">
+    Fetching Users Data...
+  </h6>
+
+  <!-- If no users -->
+  <h6 *ngIf="(isAdmin() || isClientAdmin()) && isDataFetching && !(userList &&
+    userList.length)">
+    No users to show
+  </h6>
+
+  <!-- If not authorized -->
+  <h6 *ngIf="!(isAdmin() || isClientAdmin())" style="color:red">
+    You are not Authorized to see the list
+  </h6>
+</div>

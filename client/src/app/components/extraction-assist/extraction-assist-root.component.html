@@ -1,0 +1,294 @@
+<div class="extraction-container">
+    <!-- Header with Back Button -->
+    <div class="extraction-header header_area">
+        <div class="d-flex justify-content-between align-items-center
+            header-btn">
+            <div class="align-items-center upload-btn" (click)="goBack()">
+                <div class="d-flex cursor-pointer">
+                    <img src="../../../assets/images/left-arrow.svg"
+                        width="14px" />
+                    <span class="upload-btn-text-header ft-14 fw-600 ml-1">Back</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ImageView plus Description View && Footer View -->
+    <div class="extraction-content d-flex" *ngIf="!loading">
+        <div class="extraction-invoice-view card">
+
+            <!-- ImageView and DescriptionView -->
+            <div class="content_area extraction-invoice-content d-flex">
+                <as-split direction="horizontal"
+                    (dragEnd)="currentSize($event)">
+                    <!-- ImageView -->
+                    <as-split-area size="pageSplit[0]">
+                        <div class="invoice-comp card" id="scrollContainer">
+                            <div class="extraction-img" *ngFor="let imageItem of
+                                filteredInvoiceImages; let i= index">
+                                <app-image-zoom id="image-zoom_{{i}}"
+                                    [boundingData]="boundingBoxData"
+                                    [imageUrl]="imageItem.url"
+                                    [pageNumber]="imageItem.index"
+                                    [totalPages]="filteredInvoiceImages.length"
+                                    [scrollParentSelector]="'#scrollContainer'"
+                                    [canvasId]="'cropped-image'"
+                                    [canvasContainer]="'cropped-image-container'"
+                                    [activeLineText]="activeLineText"
+                                    [calledFrom]="'extraction-assist'"
+                                    [linesVisibility]="linesVisibility"
+                                    [splitSizes]="splitSizes"
+                                    (selectedLineText)="setLineText($event)">
+                                </app-image-zoom>
+                                <div class="page-num">Page {{ i + 1 }}</div>
+                            </div>
+                        </div>
+                    </as-split-area>
+
+                    <!-- DescriptionView -->
+                    <as-split-area class="description_view" size="pageSplit[1]">
+                        <!-- FieldSelection Component -->
+                        <div *ngIf="pageCalledFor==='RuleCreation'">
+                            <app-field-selection
+                                [documentResult]="documentResult"
+                                [selectedfields]="selectedfields"
+                                [documentMetadata]="documentMetadata"
+                                [confidenceThreshold]="confidenceThreshold"
+                                [masterDataCreateStatus]="masterDataCreateStatus"
+                                (Object_PathFinder)="setObject_PathFinder($event)"
+                                (onBoundingBoxDataReady)="onBoundingBoxDataReady($event)">
+                            </app-field-selection>
+                        </div>
+
+                        <!-- Masterdata-Suggestions Component -->
+                        <div *ngIf="pageCalledFor==='masterdata-suggestion'">
+                            <app-rule-masterdata-suggestion
+                                [vendorPagecalledFrom]="vendorPagecalledFrom"
+                                (closeComponent)="closeMasterDataSuggestion()"
+                                (approveSuggestion)="approveSuggestion($event)">
+                            </app-rule-masterdata-suggestion>
+                        </div>
+
+                        <!-- Masterdata-Creation Component -->
+                        <div *ngIf="pageCalledFor==='masterdata-creation'">
+                            <app-rule-masterdata-creation
+                                (closeComponent)="closeMasterDataCreation()"
+                                (toggleSaveButton)="onToggleSaveBtn($event)"
+                                [setLineTextField]="setLineTextField"
+                                [isPointAndShootActive]="isPointAndShootActive"
+                                (activeSelectedLineText)="activeSelectedLineText($event)">
+                            </app-rule-masterdata-creation>
+                        </div>
+
+                        <!-- Template Creation Component -->
+                        <div *ngIf="pageCalledFor==='template-creation'">
+                            <app-template-creation
+                                [requiredObject_PathFinder]="requiredObject_PathFinder"
+                                [Validate_Result]="TemplateValidationResult"
+                                [TicketRaised]="ticketRaisedObj"
+                                [documentId]="docIdentifier"
+                                [setLineTextField]="setLineTextField"
+                                [revertClicked]="isRevertBtnClicked"
+                                [templatePagecalledFrom]="templatePagecalledFrom"
+                                (revertActionTaken)="onRevertActionTaken($event)"
+                                (activeSelectedLineText)="activeSelectedLineText($event)"
+                                (closeTemplate)="closeTemplate()"
+                                (actionCompleted)="onActionCompleted($event)"
+                                (onTabActive)="drawBoundingBoxOverImage($event)">
+                            </app-template-creation>
+                        </div>
+                    </as-split-area>
+                </as-split>
+            </div>
+
+            <!-- FooterView -->
+            <div (click)="onFooterClick()" class="footer_area footer d-flex
+                justify-content-between">
+
+                <!-- Left Side -->
+                <div class="d-flex align-items-center">
+                    <div class="footer-items"></div>
+                    <div class="footer-items"></div>
+                    <div class="footer-items"></div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="d-flex align-items-center">
+
+                    <!-- For FieldSelection component -->
+                    <div *ngIf="pageCalledFor==='RuleCreation'" class="d-flex
+                        align-items-center">
+                        <div class="footer-items">
+
+                            <!-- PROCEED Button -->
+                            <button *ngIf='!masterDataCreateStatus'
+                                type="button"
+                                class="btn btn-warning ft-12"
+                                (click)="openMasterDataSuggestion()">
+                                PROCEED
+                            </button>
+
+                            <!-- Define Rule Button -->
+                            <button *ngIf='masterDataCreateStatus' type="button"
+                                class="btn btn-warning ft-12"
+                                (click)="openTemplateCreationPage()">
+                                DEFINE RULE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- For masterdata-suggestion component -->
+                    <div *ngIf="pageCalledFor==='masterdata-suggestion'"
+                        class="d-flex align-items-center">
+
+                        <!-- APPROVE Button -->
+                        <div class="footer-items" *ngIf="(score>=60
+                            ||!isMasterdataValidated) && showApproveButton &&
+                            vendorPagecalledFrom !== 'ML_Identifier'">
+                            <button type="button" (click)="approveMasterdata()"
+                                class="btn
+                                btn-warning ft-12">
+                                APPROVE
+                            </button>
+                        </div>
+
+                        <!-- CREATE Button -->
+                        <div *ngIf="!isMasterdataValidated &&
+                            vendorPagecalledFrom !== 'ML_Identifier'"
+                            class="footer-items">
+                            <button type="button" class="btn btn-warning ft-12"
+                                (click)="openMasterDataComponent()">
+                                CREATE
+                            </button>
+                        </div>
+
+                        <!-- EDIT Button -->
+                        <div *ngIf="isMasterdataValidated &&
+                            vendorPagecalledFrom !== 'ML_Identifier'"
+                            class="footer-items">
+                            <button type="button"
+                                (click)="openMasterDataComponent()" class="btn
+                                btn-warning ft-12">
+                                Edit
+                            </button>
+                        </div>
+
+                        <div class="footer-items" *ngIf="vendorPagecalledFrom
+                            === 'ML_Identifier'">
+                            <button type="button" (click)="openAlertModel('2')"
+                                class="btn
+                                btn-warning ft-12">
+                                DELETE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- For masterdata-creation component -->
+                    <div *ngIf="pageCalledFor==='masterdata-creation'"
+                        class="d-flex
+                        align-items-center">
+                        <!-- VALIDATE Button -->
+                        <div class="footer-items">
+                            <button type="button" (click)="validateMasterdata()"
+                                class="btn btn-warning ft-12">
+                                VALIDATE
+                            </button>
+                        </div>
+
+                        <!-- SAVE Button -->
+                        <div *ngIf="isResultValid" class="footer-items">
+                            <button type="button" class="btn btn-warning ft-12"
+                                (click)="saveMasterData()">
+                                SAVE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- For template-creation component -->
+                    <div *ngIf="pageCalledFor==='template-creation'"
+                        style="margin-top: 8px;" class="d-flex">
+
+                        <!-- Revert Button -->
+                        <div class="d-flex align-items-center"
+                            style="margin-right:250px;">
+                            <div class="footer-items">
+                                <button
+                                    type="button"
+                                    class="btn btn-warning ft-12"
+                                    ngbTooltip="This action will reset the
+                                    template to
+                                    origanal state for currently selected
+                                    field."
+                                    (click)="callRevertButton()">
+                                    REVERT
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CLOSE Button -->
+                        <div *ngIf="templatePagecalledFrom !=='RulesTab'"
+                            class="d-flex align-self-right">
+                            <button ngbTooltip="This action will remove the
+                                field permanently from the EA Queue"
+                                type="button"
+                                class="btn ft-12 btn-warning
+                                markAsDone_btn"
+                                (click)="openAlertModel('3')">
+                                CLOSE
+                                <!-- <i class="fa fa-check" aria-hidden="true"></i> -->
+                            </button>
+                        </div>
+
+                        <!-- DELETE Button -->
+                        <div *ngIf="templatePagecalledFrom === 'RulesTab'"
+                            class="d-flex align-self-right">
+                            <button ngbTooltip="This action will remove the
+                                template permanently from the RULES tab"
+                                type="button"
+                                class="btn ft-12 btn-warning
+                                markAsDone_btn"
+                                (click)="openAlertModel('4')">
+                                DELETE
+                                <!-- <i class="fa fa-check" aria-hidden="true"></i> -->
+                            </button>
+                        </div>
+
+                        <!-- RAISE TICKET Button -->
+                        <div class="d-flex align-self-right">
+                            <button disabled ngbTooltip="This will set action as
+                                TicketRaised for currently selected field and
+                                remove it from the list" type="button"
+                                class="btn ft-12
+                                raise_ticket_btn not_allowed"
+                                (click)="openAlertModel('1')">
+                                RAISE TICKET
+                            </button>
+                        </div>
+
+                        <!-- VALIDATE/SAVE Button -->
+                        <div class="d-flex align-self-right">
+                            <button ngbTooltip="This action will validate the
+                                template for currently selected field."
+                                type="button"
+                                class="btn btn-warning ft-12"
+                                (click)="onSubmitTemplate()">
+                                {{template_btnText}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading">
+        Loading please wait...
+    </div>
+</div>
+
+<!-- Text Cropper View -->
+<div class="cropped-image-container" id="cropped-image-container">
+    <a href="javascript:void(0)"
+        (click)="closePreview('cropped-image-container')" class="close">X</a>
+    <canvas id="cropped-image" class="cropped-image"></canvas>
+</div>

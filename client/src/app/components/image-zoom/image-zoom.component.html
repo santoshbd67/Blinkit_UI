@@ -1,0 +1,44 @@
+<!-- For Point and Shoot -->
+<div *ngIf="isPointAndShootEnabled === 1" class="image-container" id="imgContainer" #imageContainer>
+  <div class="highlight" #highlighter></div>
+
+  <ngx-image-zoom
+    zoomMode='click'
+    [thumbImage]="thumbnail"
+    [fullImage]="image"
+    [enableLens]="true"
+    [lensWidth]="1"
+    [lensHeight]="1"
+    [maxZoomRatio]="2"
+    [enableScrollZoom]="false"
+    (imagesLoaded)="onFullImageLoaded($event)"
+    [magnification]="0.3" [scrollParentSelector]="scrollParentSelector">
+  </ngx-image-zoom>
+
+  <img [src]="image" (load)="onFullImageLoaded($event)" #originalImage class="originalImage">
+</div>
+
+
+<!-- With Magnifier Zoom -->
+<div *ngIf="isPointAndShootEnabled === 0" class="image-container" id="imgContainer" #imageContainer>
+  <div class="highlight" #highlighter></div>
+
+  <ngx-image-zoom
+    zoomMode='hover'
+    [thumbImage]="thumbnail"
+    [fullImage]="image"
+    [enableLens]="true"
+    [lensWidth]="200"
+    [lensHeight]="100"
+    [maxZoomRatio]="2"
+    [enableScrollZoom]="true"
+    (imagesLoaded)="onFullImageLoaded($event)"
+    [magnification]="0.3"
+    [scrollParentSelector]="scrollParentSelector">
+  </ngx-image-zoom>
+
+  <img
+    [src]="image"
+    (load)="onFullImageLoaded($event)" #originalImage
+    class="originalImage">
+</div>

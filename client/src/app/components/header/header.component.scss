@@ -1,0 +1,95 @@
+@import "../../../assets/styles/scss/variable.scss";
+.tt-header {
+    background-color: $white;
+    box-shadow: $box-shadow2;
+    height: 100%;
+    width: 100%;
+    z-index: 99;
+    position: relative;
+    .app-logo {
+        height: 40px;
+    }
+    &-content {
+        min-height: 60px;
+        width: 97%;
+        margin: 0px auto;
+    }
+    &-btn.active {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        font-size: $ft14;
+        border-radius: 0px;
+        background: transparent linear-gradient(180deg, #fc9220 0%, #df4c24 100%) 0% 0% no-repeat padding-box;
+        padding: 0px 20px;
+        box-shadow: none;
+        border: none;
+        outline: none;
+        color: $white;
+    }
+    &-btn:hover {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        font-size: $ft14;
+        border-radius: 0px;
+        background: transparent linear-gradient(180deg, #fc9220 0%, #df4c24 100%) 0% 0% no-repeat padding-box;
+        padding: 0px 20px;
+        box-shadow: none;
+        border: none;
+        outline: none;
+        color: $white;
+    }
+    &-btn {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        color: $black;
+        font-size: $ft14;
+        box-shadow: none;
+        border: none;
+        outline: none;
+        padding: 0px 20px;
+    }
+    &-profile-image {
+        width: 36px;
+        height: 36px;
+        border-radius: 50px;
+    }
+    .primary-btn {
+        outline: none;
+        border-radius: 2px;
+        padding: 5px 20px;
+        box-shadow: none;
+        font-size: 12px;
+        height: 35px;
+        align-self: center;
+        &:active {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    }
+}
+
+.faq_btn {
+    border: none;
+    background: white;
+    align-items: center;
+}
+
+@media screen and (max-width: 550px) {
+    .tt-header {
+        &-content {
+            min-height: 60px;
+            width: 95%;
+            margin: 0px auto;
+            padding-bottom: 70px;
+            padding-top: 10px;
+        }
+    }
+    .tt-header--btngroup-change {
+        position: absolute;
+        top: 70px;
+        left: 50px;
+    }
+}

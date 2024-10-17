@@ -1,0 +1,28 @@
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div>
+        <button title="Go to the Home" class="btn btn-success float-right
+          home_btn"
+          (click)="redirectToHome()">Home</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="text-center ">
+          <div>
+            <h5 class="docs_reviewed_text">Documents Reviewed:
+              <span title="Total Documents Reviewed by you from today
+                midnight 12:00
+                am to till now."
+                class="docs_reviewed_qty">{{totalDocsReviewed}}
+              </span>
+            </h5>
+            <p class="content_msg"> {{bodyContent.content_msg}}</p>
+            <button (click)="CheckNewDocuments()" type="button" class="btn
+              btn-primary btn-lg action_btn">{{bodyContent.action}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

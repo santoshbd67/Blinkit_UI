@@ -1,0 +1,26 @@
+.disabled_btn {
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.active_tr {
+    color: black;
+}
+
+.inactive_tr {
+    color: cadetblue;
+}
+
+.column_width {
+    width: 150px;
+    word-wrap: break-word;
+}
+
+.center-data {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}

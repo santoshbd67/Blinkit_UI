@@ -1,0 +1,200 @@
+ <!-- Header Area -->
+<div class="header-div">
+  <div class="d-flex justify-content-between align-items-center
+    upload-listname upload-container">
+
+    <!-- Horizontal Tabs -->
+    <div class="d-flex justify-content-start upload-tabs">
+      <div *ngFor="let tab of horizontalTabs; let i= index" class="px-2"
+        (click)="switchTab(tab.tab)">
+        <a class="upload-listname_active" [ngClass]="{active:tab.active}">
+          {{ tab.tab }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div>
+
+      <!-- Filters for Rules Tab -->
+      <div class="d-flex">
+
+        <!-- ML Ids -->
+        <ng-multiselect-dropdown title="Select available ML Ids"
+          class="custom_dropdown custom-button"
+          [placeholder]="'Select MLID'"
+          [settings]="dropdownSettings_Format"
+          [data]="dropdownListOfFormat"
+          [(ngModel)]="selectedItemsInFormat"
+          (onSelect)="onItemSelectInFormat($event)"
+          (onDeSelect)="onItemDeSelectFormat($event)"
+          (onSelectAll)="onSelectAllInFormat($event)"
+          (onDeSelectAll)="onDeSelectAllFormat($event)">
+        </ng-multiselect-dropdown>
+
+        <!-- Fields -->
+        <ng-multiselect-dropdown title="Select available Fields"
+          class="custom_dropdown custom-button"
+          [placeholder]="'Select Corrections'"
+          [settings]="dropdownSettings_Corrections"
+          [data]="dropdownListOfCorrections"
+          [(ngModel)]="selectedItemsInCorrections"
+          (onSelect)="onItemSelectInCorrections($event)"
+          (onDeSelect)="onItemDeSelectCorrections($event)"
+          (onSelectAll)="onSelectAllInCorrections($event)"
+          (onDeSelectAll)="onDeSelectAllCorrections($event)">
+        </ng-multiselect-dropdown>
+
+        <div class="pointer d-flex align-items-center custom-button
+          padding-custom" (click)="resetFilter()">
+          <span class="pr-1 pl-1">
+            <span class="ft-12" 
+            title="This action will reset MLIDs & Corrections Filter">Reset Filters</span>
+          </span>
+          <img src="../../../assets/images/filter_reset.png"
+            width="24"
+            height="24"
+            alt="Filter" />
+        </div>
+
+        <!-- Refresh Format Button renamed to ML ID on 30-09-2022 -->
+        <!-- <div class="pointer d-flex align-items-center custom-button
+          padding-custom" (click)="getUpdatedFormats()">
+          <span class="pr-1 pl-1">
+            <span class="ft-12" title="click me to get Updated ML
+              IDs which have
+              Unknown ML IDs currently">Refresh ML ID</span>
+          </span>
+          <img src="../../../assets/images/refreshing.png" width="12"
+            height="12"
+            alt="Filter" />
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Content-Area -->
+<div class="content-area">
+
+  <div class="d-flex align-items-end justify-content-between ft-500 p-2 ft-12
+    text-center font-weight-normal pr-4 pl-0">
+    <div class="ft-14 font-weight-bold">
+      {{ selectedFilters ? statusTextMapping[selectedFilters] : "Rules
+      Created"}}
+    </div>
+
+    <div *ngIf="rulesDataSet && rulesDataSet.length">
+      Showing {{ itemsCount }} of {{ itemsCount }}
+    </div>
+  </div>
+
+  <div [class]="(rulesDataSet && rulesDataSet.length>0) ? 'scrolling-list' :
+    ''">
+    <table class="table table-white manually-doc-list table-white-responsive"
+      *ngIf="rulesDataSet && rulesDataSet.length">
+      <thead>
+        <tr>
+          <th scope="col" class="ft-12">
+            <div class="custom-check-box list-view-checkbox"
+              *ngIf="selectedFilters == 'READY_FOR_EXTRACTION'">
+              <label class="container">
+                <input type="checkbox" [(ngModel)]="selectAll"
+                  (ngModelChange)="toggleSelect()" />
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </th>
+          <th scope="col" class="ft-12 word-wrap">Vendor Name</th>
+          <th scope="col" class="ft-12 word-wrap">ML ID</th>
+          <th scope="col" class="ft-12 word-wrap">Fields </th>
+          <th scope="col" class="ft-12 word-wrap" *ngIf="!multipleSelect">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr [ngStyle]="{backgroundColor: getColor(headerItem?.vendorId)}"
+          class="table-hover-data" *ngFor="let headerItem of rulesDataSet;
+          let
+          i= index">
+
+          <!-- select checkbox -->
+          <td>
+            <div class="custom-check-box" *ngIf="selectedFilters ==
+              'READY_FOR_EXTRACTION'">
+              <label class="container">
+                <input type="checkbox"
+                  [(ngModel)]="headerItem.selected"
+                  (ngModelChange)="toggleSelectSingle(i)" />
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            &nbsp;
+          </td>
+
+          <!-- VendorName -->
+          <td style="width: 200px;" class="ft-12">
+            <span *ngIf="headerItem?.vendor_name; else showNA">
+              {{headerItem?.vendor_name}}
+            </span>
+          </td>
+
+          <!-- MLID -->
+          <td class="ft-12" style="white-space: nowrap;">
+            <span *ngIf="headerItem?.vendor_id; else showNA">
+              {{headerItem.vendor_id}}
+            </span>
+          </td>
+
+          <!-- Fields -->
+          <td style="width: 450px;"
+            class="ft-12">
+            <div class="d-inline">
+              <span *ngIf="headerItem?.field_name; else showNA">{{
+                headerItem?.field_name}}
+              </span>
+            </div>
+          </td>
+
+          <!-- forwardIcon button  -->
+          <td style="vertical-align: text-top !important;" class="ft-12
+            justify-content-between d-flex"
+            *ngIf="!multipleSelect">
+            <button [disabled]="disableAction"
+              [ngClass]="!disableAction ? 'btn mr-1' :'notAllowed'"
+              style="width: 42px"
+              (click)="openTemplateCreationPage(headerItem)">
+              <img [src]="imgSrc.forwardIcon"
+                width="22" height="auto"
+                title={{actionTooltip}} />
+            </button>
+
+            <!-- info icon -->
+            <button class="btn mr-1 info" title="{{
+              headerItem.documentId
+              }}">
+              <img [src]="imgSrc.infoIcon"
+                class="cursor-pointer"
+                width="16" height="16" title="Info"
+                (click)="dataService.copyToClipboard(headerItem.documentId)"
+                />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex align-items-end justify-content-start ft-500 p-2 ft-12
+    text-center font-weight-normal" *ngIf="rulesDataSet && rulesDataSet.length">
+    Showing {{ itemsCount }} of {{ itemsCount }}
+  </div>
+
+  <div class="p-5"
+    *ngIf="!(rulesDataSet && rulesDataSet.length) && isDocsFetched">
+    <h5 class="text-center">No Documents to Show</h5>
+  </div>
+
+  <div *ngIf="!isDocsFetched" class="center_div list_spinner">
+    <small>Fetching Documents. Please wait..</small>
+  </div>
+</div>

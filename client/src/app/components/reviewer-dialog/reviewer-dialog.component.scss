@@ -1,0 +1,89 @@
+.header_modal h1 {
+    color: #202e3e;
+    font-weight: 500;
+}
+
+.header-bar {
+    padding: 10px 20px;
+    background: #f7f7f7 !important;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 12px;
+}
+
+.card {
+    margin: 0 auto; /* Added */
+    float: none; /* Added */
+    margin-bottom: 10px; /* Added */
+    min-width: 500px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+}
+
+.center_div {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.docs_reviewed_text {
+    font-size: smaller;
+    color: #909090;
+}
+
+.docs_reviewed_qty {
+    font-size: xxx-large;
+    color: #27ae60;
+}
+
+.content_msg {
+    font-size: 18px;
+    // width: fit-content;
+    color: #909090;
+    font-weight: bold;
+}
+
+.action_btn {
+    margin: 30px;
+    width: 200px;
+    height: 50px;
+}
+
+.action_clicked {
+    margin-top: 10px;
+    width: max-content;
+}
+
+.spinner_footer {
+    //  position: absolute;
+    width: fit-content;
+    left: 50%;
+    /* top: 50%; */
+    transform: translate(-50%, -50%);
+}
+
+.e-dialog .e-dlg-header-content {
+    background-color: white !important;
+}
+
+.modal {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-dialog {
+    width: 50% !important;
+    min-width: 50% !important;
+    height: 50% !important;
+}
+
+.modal-header {
+    background: transparent !important;
+}
+
+.home_btn {
+    margin-top: 20px;
+    margin-right: 30px;
+}
+
+.modal-dialog {
+    top: 25% !important;
+}

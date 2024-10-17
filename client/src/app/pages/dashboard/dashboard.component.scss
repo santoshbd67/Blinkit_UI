@@ -1,0 +1,222 @@
+@import "../../../assets/styles/scss/common.scss";
+@import "../../../assets/styles/scss/variable.scss";
+
+.dashboard-container-main {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+.dashboard-separator {
+  width: 94%;
+  border: #eee 1px solid;
+  margin: 0px auto 15px auto;
+}
+
+.dashboard-container {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+  padding-right: 16px;
+  padding-left: 0px;
+}
+
+.statsTable {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  background: #f7f7f7;
+
+  tr.tab {
+    border-left: rgb(102, 89, 89) 0px solid;
+
+    td:nth-child(1) {
+      padding-left: 20px;
+
+      &::before {
+        content: "\21B3 ";
+      }
+    }
+  }
+
+  td,
+  th {
+    padding: 4px;
+    font-size: 11px;
+    font-weight: 500;
+
+    b {
+      color: #fd7e14;
+    }
+  }
+
+  td:nth-child(1) {
+    b::after {
+      content: "*";
+    }
+  }
+
+  td:nth-child(2) {
+    text-align: right;
+  }
+}
+
+.legend {
+  font-size: 11px;
+  font-weight: 500;
+  color: #fd7e14;
+}
+
+.sub-card {
+  margin: 0px !important;
+  background: #f7f7f7;
+
+  hr {
+    margin: 0px !important;
+  }
+}
+
+.dashboard-container-card {
+  margin-top: 20px;
+  overflow-y: scroll;
+  height: calc(100vh - 155px);
+  scroll-behavior: smooth;
+  width: 100%;
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
+.drop-down {
+  height: 25px;
+}
+
+.card-body {
+  .text {
+    font-size: 12px;
+    font-weight: 600;
+    display: block;
+  }
+}
+
+.topFixed {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 98;
+  border-bottom: 2px solid #e6e6e6;
+  background: #f7f7f7;
+}
+
+@media screen and (max-width: 550px) {
+  .grid-container {
+    padding: 20px 50px 50px !important;
+  }
+
+  .sort__btn--position {
+    position: relative;
+    z-index: 1;
+    left: 275px;
+    padding: 10px;
+    top: 0;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .dashboard-container-card {
+    height: calc(90vh - 90px);
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 1024px) {
+  .grid2 {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+
+  .grid4,
+  .grid5 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .summary-items {
+    div {
+      margin: 0px !important;
+    }
+
+    .chart {
+      height: 100% !important;
+    }
+  }
+}
+
+.tooltip-class .tooltip-inner {
+  background-color: #333;
+  color: #fff;
+}
+
+.tooltip-class .arrow::before {
+  border-top-color: #333;
+}
+
+.tooltip-class {
+  font-size: 11px !important;
+}
+
+.summary-items {
+  .card {
+    margin-right: 10px !important;
+  }
+
+  .statsTable {
+    td {
+      font-size: 11px;
+    }
+  }
+}
+
+.card-customize {
+  padding: 10px 10px 5px 10px !important;
+}
+
+.btn-menu {
+  box-shadow: none !important;
+  outline: none !important;
+
+  &:active {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+}
+
+.dashboard-position {
+  position: relative;
+  top: -40px;
+}
+.filter-dashboard {
+  position: relative;
+  z-index: 1;
+}
+
+.label{
+  font-size: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #efefef;
+  margin-bottom: 10px;
+}
+
+.data{
+  font-size: 18px;
+  padding-bottom: 10px;
+  font-weight: 600;
+  border-bottom: 1px solid #efefef;
+  border-right: 1px solid #efefef;
+  margin-bottom: 10px;
+}
+
+h6{
+  font-size: 12px;
+  text-transform: uppercase;
+  background-color: #666666;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

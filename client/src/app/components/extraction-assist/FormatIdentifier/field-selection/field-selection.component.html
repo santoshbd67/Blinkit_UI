@@ -1,0 +1,75 @@
+<ngb-tabset type="pills" class="alluploads" #tabSet="ngbTabset">
+
+  <ngb-tab title="Extraction Assist™" id="header">
+    <ng-template ngbTabContent>
+      <div class="form-container">
+        <form class="p-4">
+          <div class="row">
+            <div class="col-sm-12" *ngFor="let data of resultBasicInfo; let ind=index">
+
+              <!-- fieldValue -->
+              <ng-template #ExtractedValueContent>
+                <span class="my-custom-class">
+                  <b class="tipTitle">Extracted Value</b><br />
+                  <span [innerHTML]="data?.fieldValue | suspiciousSymbolsPipe:
+                    data?.suspiciousSymbols"></span>
+                </span>
+              </ng-template>
+
+              <!-- CorrectedValue -->
+              <ng-template #CorrectedValueContent><span class="my-custom-class">
+                  <b class="tipTitle">Corrected Value</b> <br />
+                  <span [innerHTML]="data?.correctedValue |
+                    suspiciousSymbolsPipe: data?.suspiciousSymbols"></span>
+                </span>
+              </ng-template>
+
+              <!-- main form fields -->
+              <div class="form-group">
+                <h6 class="form_labels">{{modifyTitle(data.fieldId) |
+                  uppercase}}</h6>
+                <div class="d-flex">
+
+                  <!-- checkbox -->
+                  <input *ngIf="masterDataCreateStatus" type="checkbox"
+                    class="checkbox" [checked]="data.checked"
+                    (change)="onCheckboxChange(data,$event)" />
+
+                  <!-- input fields -->
+                  <div class="input_fields">
+
+                    <!-- fieldValue inputfield -->
+                    <input readonly type="text" class="form-control
+                      custom-input-invoice-form extracted_field" name="{{
+                      data.fieldId }}_1"
+                      [(ngModel)]="data.fieldValue"
+                      (focus)="setBoundingBoxData($event,data,'boundingBox')"
+                      [ngbTooltip]="ExtractedValueContent"
+                      placement="bottom" />
+
+                    <!-- correctedValue inputfield -->
+                    <input readonly type="text" class="form-control
+                      custom-input-invoice-form corrected_field" name="{{
+                      data.fieldId }}_2"
+                      [(ngModel)]="data.correctedValue"
+                      (focus)="setBoundingBoxData($event,data,'correctedBoundingBox')"
+                      [ngbTooltip]="CorrectedValueContent" placement="bottom" />
+                  </div>
+
+                  <!-- Confidence -->
+                  <!-- <div class="input-confidence reset-data d-flex confidence"
+                    [ngClass]="{'text-red': !(data && data.confidence >=
+                    confidenceThreshold)}">
+                    {{ data && data.confidence ? (data.confidence |
+                    number:"2.0-2") : 0 }}%
+                  </div> -->
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

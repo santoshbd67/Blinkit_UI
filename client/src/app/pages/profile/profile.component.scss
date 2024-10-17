@@ -1,0 +1,47 @@
+@import "../dashboard/dashboard.component.scss";
+
+.profile-container {
+    height: calc(100vh - 60px);
+}
+
+.profile-container-title {
+    padding: 0px 12px;
+    line-height: 30px;
+    font-weight: 600;
+    font-size: $ft16 !important;
+    pointer-events: none;
+    cursor: default;
+}
+
+
+.sidebar-nav {
+    width: 200px;
+
+    ul.nav.flex-column {
+
+        // width: 200px;
+        .nav-item>.nav-link.active {
+            color: #fff;
+            background: #fc9220;
+            font-weight: bold;
+            border-radius: 0px;
+            font-size: $ft14;
+        }
+
+        .nav-item>.nav-link.disabled {
+            pointer-events: none;
+            cursor: default;
+            color: $light-color
+        }
+
+        .nav-item>.nav-link {
+            color: black;
+            font-size: $ft14;
+            text-align: left;
+        }
+    }
+}
+
+.page-content {
+    width: calc(100% - 200px);
+}

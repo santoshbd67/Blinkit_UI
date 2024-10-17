@@ -1,0 +1,42 @@
+ <div class="row summary-items grid4">
+  <div class=" dashboard-values__total">
+    <div class="num">{{dashboardSummary?.totalDocumentsProcessed | number}}</div>
+    <div class="title "> Documents Processed </div>
+  </div>
+  <div class=" ready-status-extraction align-card-item">
+    <div class="num">{{dashboardSummary?.totalDocumentsFailed | number}}</div>
+    <div class="title ">Document Failed </div>
+  </div>
+
+  <div class=" dashboard-values__total">
+    <div class="num">{{dashboardSummary?.totalPageCount | number}}</div>
+    <div class="title "> Total Pages </div>
+  </div>
+  <div class=" ready-status-extraction align-card-item">
+    <div class="num">{{dashboardSummary?.avgPageCount | number}}</div>
+    <div class="title ">Average Pages </div>
+  </div>
+</div>
+
+<div class="row summary-items grid4 ">
+  <div class=" dashboard-values__total">
+    <div class="num">{{dashboardSummary?.totalProcessingTime | prettifyTime}}
+    </div>
+    <div class="title ">Total Processing Time</div>
+  </div>
+  <div class=" ready-status-extraction align-card-item">
+    <div class="num">
+      {{dashboardSummary?.avgPreProcessingTime | prettifyTime}}</div>
+    <div class="title ">Average Processing Time</div>
+  </div>
+  <div class=" dashboard-values__total">
+    <div class="num">{{dashboardSummary?.totalAmount | currency:'GBP'}}</div>
+    <!-- TODO: GBP should come from client currency -->
+    <div class="title ">Total Amount</div>
+  </div>
+  <div class=" ready-status-extraction align-card-item">
+    <div class="num">
+      {{dashboardSummary?.avgAmount | currency:'GBP'}}</div>
+    <div class="title ">Average Amount</div>
+  </div>
+</div>

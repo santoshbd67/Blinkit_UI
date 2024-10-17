@@ -1,0 +1,67 @@
+<!-- Header -->
+<div (click)="setFieldData($event)">
+
+  <div class="masterdata_headers">
+    <h4 class="heading">CREATE MASTERDATA</h4>
+    <div class="row">
+      <h6 *ngIf="isValidateScore" class="score_lable_font">score:&nbsp;&nbsp;</h6>
+      <h4 *ngIf="isValidateScore" class="score_value_font" [ngStyle]="{color:
+        getColor()}">
+        {{validated_score}}%
+      </h4>
+      <h4 class="close" (click)="close()">X</h4>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div>
+    <form #masterdataForm="ngForm" class="p-4">
+      <div class="row">
+        <div class="col-sm-12" *ngFor="let data of masterData; let ind= index">
+          <div class="form-group">
+            <h6 class="header-labels ft-12 justify-content-between
+              margin-input-custom">{{data.fieldId | uppercase}}<sup>*</sup></h6>
+            <input type="text" class="form-control
+              custom-input-rulemasterdata-form field-style" [disabled]='false'
+              name='vendorName' [(ngModel)]="vendorName"
+              (focus)="onFocusIn($event)"(click)="setFieldData($event)"
+              (focusout)="onFocusOutEventVendorName($event)" />
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <h6 class="header-labels ft-12 justify-content-between
+              margin-input-custom">IDENTIFIER TEXT <sup>*</sup></h6>
+            <textarea type="text" class="form-control
+              custom-input-rulemasterdata-form text_area" rows="4" cols="50"
+              name="identifierText" [(ngModel)]="identifierTextField"
+              (focus)="onFocusIn($event)"(click)="setFieldData($event)"
+              (focusout)="onFocusOutEventIdentifierText($event)"></textarea>
+            <div>
+              <p class="validate_error_msg" *ngIf="isInvalidIdentifier">{{error_message}}</p>
+              <p *ngIf="!isInvalidIdentifier" class="helper_text">Unique words
+                to
+                identify Document Format.
+                For e.g., Vendor Address can be used in an Invoice.
+                Enter at least 10 space separated words.
+              </p>
+              <p class="response_msg">{{validate_message}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- This div is a trick to hide the PAS visibilibilty on click on blank area -->
+  <div style="visibility: hidden;">  
+    As you can see, we have the accurate results for the second page by
+    eliminating 15 records at the top instead of 10 in offset based pagination.
+    In cursor based pagination we can’t consider the concept of pages,
+    as it changes rapidly, so the results will be considered as either
+    previous or next. Generally, max_id is effective enough to generate
+    accurate results, but there can be scenarios where since_id is also
+    essential while paginating back and forth. You can look at more
+  </div>
+</div>

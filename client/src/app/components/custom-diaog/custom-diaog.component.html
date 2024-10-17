@@ -1,0 +1,69 @@
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header text-center customFont">
+                <h5 class="w-100 text-center">{{heading}}</h5>
+                <button type="button" class="close" aria-label="Close"
+                    (click)="onCloseHandled()"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div slot="body" class="content" class="body_content custom"
+                    style="display: flex; margin-top: 20px;">
+                    <form class="w-60" [formGroup]="signupForm"
+                        (ngSubmit)="onSubmit()">
+                        <div class="form-group">
+                            <label class="ft-14 fw-500 text-capitalize
+                                flext_start">Company*</label>
+                            <input type="company" class="form-control
+                                customFont" name="company" id="company"
+                                formControlName="company" placeholder="company
+                                name" required />
+                            <div *ngIf="signupForm.get('company').errors &&
+                                signupForm.get('company').touched || submitted"
+                                class="error-msg text-danger flext_start">
+                                Company is required
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="ft-14 fw-500 text-capitalize
+                                flext_start">Designation*</label>
+                            <input type="designation" class="form-control
+                                customFont" name="designation" id="designation"
+                                formControlName="designation" placeholder="e.g.
+                                department manager" required />
+                            <div *ngIf="signupForm.get('designation').errors &&
+                                signupForm.get('designation').touched ||
+                                submitted" class="error-msg text-danger
+                                flext_start">
+                                Designation is required
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="ft-14 fw-500 text-capitalize
+                                flext_start">Phone*</label>
+                            <input phoneMask type="phone" class="form-control
+                                customFont" style="background: mintcream;"
+                                name="phone" id="phone" formControlName="phone"
+                                placeholder="e.g. 999-999-9999" required />
+                            <div *ngIf="signupForm.get('phone').errors &&
+                                signupForm.get('phone').touched || submitted"
+                                class="error-msg text-danger flext_start">
+                                Phone is required
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button style="margin-top: 35px" type="submit"
+                                class="form-control reset_btn customFont">
+                                <i class="fa fa-download" aria-hidden="true"></i>
+                                SUBMIT & DOWNLOAD
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

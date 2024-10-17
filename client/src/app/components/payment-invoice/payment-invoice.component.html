@@ -1,0 +1,13 @@
+<div class="d-flex flex-wrap justify-content-around  pt-4 ">
+  <div class="card custom-card mb-5" 
+     *ngFor=" let detail of invovice">
+      <div class="card-body flex-wrap m-2">
+        <div class="d-flex justify-content-between ready-status">
+          <div class="ready-status-extraction">
+            <div class="ready-status-file-no pr-5">{{detail.files}}<span class="ft-24">({{detail.number}})</span></div>
+            <div class="ready-status-file-invoice fw-400 ft-14">{{detail.process}}</div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

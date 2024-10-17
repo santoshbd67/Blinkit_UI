@@ -1,0 +1,126 @@
+@import "../dashboard/dashboard.component.scss";
+
+
+.btn-delete {
+  border: 1px solid #e66824;
+  color: #e66824;
+  background: #fff;
+
+  &:hover,
+  &:focus {
+    color: #e66824;
+    box-shadow: 0px 0px 4px #e66824;
+  }
+}
+
+.btn-save {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+
+  &:focus,
+  &:hover {
+    box-shadow: 0px 0px 4px #1e7e34;
+    outline: 0;
+    color: #fff;
+  }
+}
+
+.add-list {
+  background: #e66824;
+  color: #fff;
+
+  &:hover,
+  &:focus {
+    box-shadow: 0px 0px 4px #e66824;
+    outline: 0;
+    color: #fff;
+    border: 1px solid #e66824;
+  }
+}
+
+.table thead th {
+  vertical-align: middle !important;
+  border-bottom: 1px solid #dee2e6 !important;
+  border-top: 0px !important;
+}
+
+.table-list {
+  width: 100% !important;
+  font-size: 14px !important;
+  margin-top: 14px;
+
+  .table {
+
+    thead,
+    tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    tbody {
+      display: block;
+      height: calc(100vh - 300px);
+      overflow: auto;
+    }
+  }
+
+  .setting-logo {
+    width: 80px;
+    height: 50px;
+  }
+
+}
+
+
+.vendor-edit-model {
+  .modal-body {
+    height: calc(100vh - 300px);
+    overflow: auto;
+  }
+}
+
+//setting-vendor-tabs
+
+.settings-container-title {
+  padding: 0px 12px;
+  line-height: 30px;
+  font-weight: 600;
+  font-size: $ft16 !important;
+  pointer-events: none;
+  cursor: default;
+}
+
+
+.sidebar-nav {
+  width: 200px;
+
+  ul.nav.flex-column {
+
+    // width: 200px;
+    .nav-item>.nav-link.active {
+      color: #fff;
+      background: #fc9220;
+      font-weight: bold;
+      border-radius: 0px;
+      font-size: $ft14;
+    }
+
+    .nav-item>.nav-link.disabled {
+      pointer-events: none;
+      cursor: default;
+      color: $light-color
+    }
+
+    .nav-item>.nav-link {
+      color: black;
+      font-size: $ft14;
+      text-align: left;
+    }
+  }
+}
+
+.page-content {
+  width: calc(100% - 200px);
+}

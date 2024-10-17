@@ -1,0 +1,46 @@
+@import "../../../assets/styles/scss/common.scss";
+
+.ready-post-container {
+  padding: 20px 0px 0px 37px;
+  color: $blacklight;
+
+  &__header {
+    &-size {
+      padding-right: 10px;
+      font-size: $ft12;
+    }
+
+    &-vertical-line {
+      border-left: 1px solid $black;
+      height: 18px;
+    }
+
+    &-extraction {
+      padding-left: 10px;
+      font-size: $ft12;
+    }
+  }
+
+  &__vender-name {
+    padding: 10px 0px;
+  }
+
+  &__price {
+    font-size: $ft12;
+
+  }
+
+  &__date {
+    font-size: $ft12;
+    font-style: italic;
+  }
+
+  &__readyfolder {
+    padding-top: 20px;
+
+    &-status {
+      font-size: $ft12;
+      padding-left: 8px;
+    }
+  }
+}

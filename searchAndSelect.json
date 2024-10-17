@@ -1,0 +1,58 @@
+{
+    "billingGSTIN": {
+      "selectOption": "single",
+      "values": [
+        "N/A",
+        "18AADCH7038R1ZW",
+        "07AADCH7038R1ZZ",
+        "24AADCH7038R1Z3",
+        "06AADCH7038R1Z1",
+        "29AADCH7038R1ZT",
+        "23AADCH7038R1Z5",
+        "27AADCH7038R1ZX",
+        "03AADCH7038R1Z7",
+        "08AADCH7038R1ZX",
+        "33AADCH7038R1Z4",
+        "36AADCH7038R1ZY",
+        "09AADCH7038R1ZV",
+        "19AADCH7038R1ZU",
+        "05AADCH7038R1Z3",
+        "10AADCH7038R1ZC",
+        "20AADCH7038R1ZB",
+        "21AADCH7038R1Z9",
+        "23AADCH7038R2Z4",
+        "30AADCH7038R1ZA",
+        "37AADCH7038R1ZW"
+      ]
+    },
+    "shippingGSTIN": {
+      "selectOption": "single",
+      "values": [
+        "N/A",
+        "18AADCH7038R1ZW",
+        "07AADCH7038R1ZZ",
+        "24AADCH7038R1Z3",
+        "06AADCH7038R1Z1",
+        "29AADCH7038R1ZT",
+        "23AADCH7038R1Z5",
+        "27AADCH7038R1ZX",
+        "03AADCH7038R1Z7",
+        "08AADCH7038R1ZX",
+        "33AADCH7038R1Z4",
+        "36AADCH7038R1ZY",
+        "09AADCH7038R1ZV",
+        "19AADCH7038R1ZU",
+        "05AADCH7038R1Z3",
+        "10AADCH7038R1ZC",
+        "20AADCH7038R1ZB",
+        "21AADCH7038R1Z9",
+        "23AADCH7038R2Z4",
+        "30AADCH7038R1ZA",
+        "37AADCH7038R1ZW"
+      ]
+    }
+  }
+
+
+
+

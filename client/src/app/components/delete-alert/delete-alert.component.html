@@ -1,0 +1,197 @@
+<!-- For Header Message on Popup -->
+<div class="d-flex modal-header p-3">
+    <h6 *ngIf="calledFrom!=='InActivity'" class="modal-title ft-12 ft-600
+        text-white">{{action | uppercase}} {{item | uppercase}}
+    </h6>
+</div>
+
+<!-- For body content on Popup -->
+<div class="modal-body p-3 mt-2">
+    <h6 class="modal-title ft-600 ft-12" *ngIf="message &&
+        calledFrom!=='InActivity';else defaultMessage">
+        {{message}}
+    </h6>
+    <h6 class="modal-title ft-600 ft-24" *ngIf="calledFrom=='InActivity'">
+        {{message}}
+    </h6>
+    <h6 class="modal-title ft-600 ft-12" *ngIf="calledFrom=='InActivity'">
+        <br>
+        <button class="timer">{{closingIn}} </button> <br><br>
+        <span class="timer_text">Returning to Processing screen</span>
+    </h6>
+    <ul *ngIf="action === 'warning'" class="text-justify">
+        <li class="modal-title ft-600" *ngFor="let msg of warningMsg">{{msg}}</li>
+    </ul>
+</div>
+
+<!-- For Footer Actions on Popup -->
+<div class="d-flex justify-content-end modal-footer">
+    <button *ngIf="action !== 'Raise' && action !== 'Redirecting' && action !==
+        'CLOSE' && action!=='add' && action !=='DELETE' && action !=='reassign' && action !== 'warning'" class="btn
+        btn-save ft-12 mr-1 pl-4 pr-4"
+        (click)="delete()">Yes
+    </button>
+    <button *ngIf="action ==='reassign'" class="btn
+        btn-save ft-12 mr-1 pl-4 pr-4"
+        (click)="reassign()">Yes
+    </button>
+
+    <button *ngIf="action !== 'Raise' && action !== 'Redirecting' && action !==
+        'CLOSE'&& action!=='No Activity' && action!=='add' && action !== 'warning'" class="btn
+        btn-delete ft-12 ml-1 pl-4
+        pr-4"
+        (click)="dismissModal()">No
+    </button>
+
+    <button *ngIf="action === 'Raise'" class="btn btn-save ft-12 mr-1 pl-4 pr-4"
+        (click)="delete()">Yes, Raise Now
+    </button>
+
+    <button *ngIf="action === 'CLOSE'" class="btn btn-save ft-12 mr-1
+        pl-4 pr-4"
+        (click)="delete()">Yes, Remove It.
+    </button>
+
+    <button *ngIf="action === 'DELETE'" class="btn btn-save ft-12 mr-1
+        pl-4 pr-4"
+        (click)="deleteTemplate()">Yes, delete It.
+    </button>
+
+    <button *ngIf="action === 'Redirecting'" class="btn btn-save ft-12 mr-1 pl-4
+        pr-4"
+        (click)="delete()">OK
+    </button>
+
+    <button *ngIf="calledFrom === 'add_comment'" class="btn btn-save ft-12 mr-1
+        pl-4
+        pr-4"
+        (click)="delete()">Save
+    </button>
+
+    <button *ngIf="action === 'warning'" class="btn
+        btn-delete ft-12 ml-1 pl-4
+        pr-4"
+        (click)="dismissModal()">Review Again
+    </button>
+
+    <button *ngIf="action === 'warning'" class="btn
+        btn-save ft-12 mr-1 pl-4 pr-4"
+        (click)="proceed()">Submit
+    </button>
+</div>
+
+<ng-template #defaultMessage>
+    <!-- For Delete Popup -->
+    <div *ngIf="action === 'delete'&& calledFrom =='delete_document'">
+        <h6 class="modal-title ft-600 ft-12">
+            Are you sure you want to {{action}}? If yes please select valid
+            reason.Once deleted, you will not be able to revert back.
+        </h6>
+        <br>
+        <h6 class="form_labels ft-12">Reason </h6>
+        <select class="form-control ft-12"
+            (change)="changeReason($event.target.value)">
+            <option value="" disabled="disabled" selected="selected">Please
+                select valid Reason</option>
+            <option [value]="item.name" *ngFor="let item of reasonOptions">{{item.name}}</option>
+        </select>
+        <input *ngIf="reason =='Others'" class="form-control mt-3 ft-12"
+            placeholder="Type your reason" type="text"
+            [(ngModel)]="OthersReason">
+    </div>
+    
+    <!-- For Reassing Popup -->
+    <div *ngIf="action === 'reassign'&& calledFrom =='reassign_document'">
+        <h6 class="modal-title ft-600 ft-12">
+            Are you sure you want to {{action}}? If yes please select valid
+            reason.Once reassigned, you will not be able to revert back.
+        </h6>
+        <br>
+        <h6 class="form_labels ft-12">Reason </h6>
+        <select class="form-control ft-12"
+            (change)="changeReason($event.target.value)">
+            <option value="" disabled="disabled" selected="selected">Please
+                select valid Reason</option>
+            <option [value]="item.name" *ngFor="let item of reasonOptions">{{item.name}}</option>
+        </select>
+        <input class="form-control mt-3 ft-12"
+            placeholder="Comment ( Optional )" type="text"
+            [(ngModel)]= "reassignComment">
+    </div>
+
+    <!-- For Delete Popup -->
+    <div *ngIf="action === 'delete'&& calledFrom !=='delete_document'">
+        <h6 class="modal-title ft-600 ft-12">
+            Are you sure you want to {{action}}? Once deleted, you will not be
+            able to revert back.
+        </h6>
+        <br>
+    </div>
+
+    <!-- For Add Comment Popup -->
+    <div *ngIf="action === 'add'&& calledFrom =='add_comment'">
+        <h6 class="modal-title ft-600 ft-12">
+            Comment
+        </h6>
+        <br>
+        <textarea required rows="4" [(ngModel)]="comment_text"
+            class="form-control ft-12" placeholder="add comments"></textarea>
+    </div>
+
+    <!-- For UserSettings -->
+    <h6 *ngIf="action === 'activate' || action === 'deactivate'"
+        class="modal-title ft-600 ft-12">
+        Are you sure you want to {{action}} this account ?
+    </h6>
+
+    <!-- For Extraction Assist -->
+    <div *ngIf="action === 'Raise' || action === 'CLOSE'">
+        <h6 class="modal-title ft-600 ft-12">
+            Following Field will be removed from the EA Queue. Would you like to
+            proceed?
+        </h6>
+        <br>
+        <div class="ft-600 ft-12">
+            <li>VendorId : {{ticketInfo.VendorId}}</li>
+            <li>FieldName : {{ticketInfo.FieldName}}</li>
+            <!-- <li>DocumentId : {{ticketInfo.DocumentId}}</li> -->
+        </div>
+    </div>
+
+    <!-- For Extraction Assist -->
+    <div *ngIf="action === 'DELETE' && item !== 'MASTERDATA'">
+        <h6 class="modal-title ft-600 ft-12">
+            Following Field will be removed from the RulesTab. Would you like to
+            proceed?
+        </h6>
+        <br>
+        <div class="ft-600 ft-12">
+            <li>VendorId : {{ticketInfo.VendorId}}</li>
+            <li>FieldName : {{ticketInfo.FieldName}}</li>
+            <!-- <li>DocumentId : {{ticketInfo.DocumentId}}</li> -->
+        </div>
+    </div>
+
+    <!-- For Extraction Assist -->
+    <div *ngIf="action === 'DELETE' && item === 'MASTERDATA'">
+        <h6 class="modal-title ft-600 ft-12">
+             Are you sure you want to delete this vendor masterdata ? 
+        </h6>
+        <br>
+    </div>
+
+    <!-- For Extraction Assist -->
+    <div *ngIf="action === 'Redirecting'">
+        <div class="fa-3x" style="text-align: center;">
+            <i class="fas fa-spinner fa-pulse"></i>
+        </div>
+        <h6 class="modal-title ft-600 ft-12">
+            We observed that there is no more correction field left for which
+            you can take an action, So You will be redirected to Extraction
+            Assist Root screen within <mark>3 seconds.</mark>
+            Or Press OK to redirect now.
+        </h6>
+        <br>
+    </div>
+
+</ng-template>

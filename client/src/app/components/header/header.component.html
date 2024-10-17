@@ -1,0 +1,82 @@
+<!-- <header class="tt-header"> -->
+<div class="d-flex justify-content-between align-items-center
+    tt-header-content">
+    <div class="tt-header-content-icon">
+        <a *ngIf="userRole!=='reviewer'" routerLink="/processing"
+            routerLinkActive="active">
+            <img src={{logoSrc}}
+                class="app-logo" />
+        </a>
+        <a *ngIf="userRole=='reviewer'" routerLink="/processing"
+            routerLinkActive="active">
+            <img src={{logoSrc}}
+                class="app-logo" />
+        </a>
+    </div>
+    <div class="tt-header--btngroup-change">
+        <div class="btn-group">
+            <button *ngIf="DASHBOARD_VISIBILITY == 1 &&
+                dashboardVisibility" type="button" class="btn
+                tt-header-btn"
+                routerLink="/dashboard"
+                routerLinkActive="active">
+                Dashboard
+            </button>
+            <button *ngIf="PROCESSING_VISIBILITY == 1"
+                type="button" class="btn tt-header-btn m-0"
+                routerLink="/processing" routerLinkActive="active">
+                Processing
+            </button>
+            <button *ngIf="EXTRACTION_ASSIST_VISIBILITY == 1 &&
+                extractionAssistVisibility" type="button"
+                class="btn tt-header-btn m-0" routerLink="/extraction-assist"
+                routerLinkActive="active">
+                Extraction Assist<sup class="sup ft-10">TM</sup>
+            </button>
+        </div>
+    </div>
+
+    <div style="margin-top: 15px;" class="ft-12 font-weight-bold hiw_link
+        forgot_password">
+        <p class="ft-14 fw-500 text-capitalize">
+            <button *ngIf="FAQ_VISIBILITY==1" type="button" class="m-0 faq_btn"
+                routerLink="/faq"
+                routerLinkActive="active">
+                FAQ <i class="fa fa-question-circle" aria-hidden="true"></i>
+            </button>
+            <span *ngIf="FAQ_VISIBILITY==1"> &nbsp;|&nbsp;</span> email Support:
+            <button type="button" class="m-0 faq_btn">
+                <a href={{ADMIN_EMAIL}}>{{ADMIN_EMAILID}}</a>
+            </button>
+        </p>
+    </div>
+
+    <div class="tt-header--btngroup d-flex">
+        <div>
+            <div ngbDropdown class="sort-btn__filter">
+                <button class="btn ft-12" id="dropdownsort" ngbDropdownToggle>
+                    <img src="../../../assets/images/icon-user-default.png"
+                        class="tt-header-profile-image mx-2"
+                        alt="profile image" />
+                </button>
+
+                <div ngbDropdownMenu class="sort-btn__filter--menu1">
+                    <button *ngIf="SETTINGS_VISIBILITY == 1 &&
+                        settingsVisibility" ngbDropdownItem
+                        class="sort-filter-item" routerLink="../settings">
+                        <i class="fa fa-cog" aria-hidden="true"></i> Settings
+                    </button>
+                    <button ngbDropdownItem class="sort-filter-item"
+                        routerLink="../profile">
+                        <i class="fa fa-user" aria-hidden="true"></i> Profile
+                    </button>
+                    <button ngbDropdownItem class="sort-filter-item"
+                        (click)="logout()">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- </header> -->

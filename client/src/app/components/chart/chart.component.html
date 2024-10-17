@@ -1,0 +1,16 @@
+<div class="dashboard-card">
+  <div class="m-2">
+    <div class="d-flex justify-content-between mb-3">
+      <!-- <div class="title" *ngIf="chartConfig.multipleAxis !== 'true'">{{chartConfig.xAxisLabel}} vs
+        {{chartConfig.yAxis_1}}</div>
+      <div class="title" *ngIf="chartConfig.multipleAxis == 'true'"> {{chartConfig.yAxisLabel}} vs
+        {{chartConfig.xAxisLabel}}
+      </div> -->
+      <div class="title" > {{chartConfig?.chartInfo}}
+      </div>
+    </div>
+    <div class="d-flex chart-responsive">
+      <canvas [id]="chartConfig.chartId"></canvas>
+    </div>
+  </div>
+</div>

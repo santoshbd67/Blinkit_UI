@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:9090
+@adminEmailId = "admin@taoautomation.com";
+@adminPassword = "21232f297a57a5a743894a0e4a801fc3";
+
+# GET {{baseUrl}}/document/result/get/doc_1577856002636_8bb9a8888b8
+
+# GET {{baseUrl}}/document/result/get/doc_1577856002636_8bb9a8888b8
+# Accept: application/json
+
+
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+{   "ver": "1.0",
+    "params": {
+        "msgid": ""
+    },
+    "request": {
+        "emailId": {{adminEmailId}},
+        "password":{{adminPassword}}
+    }
+}

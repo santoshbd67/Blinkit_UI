@@ -1,0 +1,48 @@
+<div>
+  <div class="modal-header">
+    <h5 class="modal-title w-100 text-center">Other Graphs</h5>
+    <button type="button" (click)="dismissModal()" class="close" data-dismiss="modal" aria-label="Close">X
+    </button>
+  </div>
+
+  <!-- <div class="d-flex modal-body p-3 mt-2" *ngIf="modalData.isLoading;else bodyContent">
+    <h6 class="modal-title ft-600 ft-12">
+      Graph Cards </h6>
+  </div> -->
+
+  <ngb-carousel *ngIf="modalData.Graphs">
+    <div *ngFor="let innerChart of modalData.Graphs; let i= index">
+      <ng-template ngbSlide>
+        <div class="card">
+
+          <div *ngIf="innerChart.viewType=='graph'" class="card-body" [class]="!(innerChart.enabled)? 'disabled-graph' : ''">
+            <app-chart-new [chartData]="" [chartConfig]="innerChart">
+            </app-chart-new>
+          </div>
+
+          <div *ngIf="innerChart.viewType=='table'">
+            <app-dashboard-new-table [chartConfig]="innerChart">
+            </app-dashboard-new-table>
+          </div>
+
+          <div class=" carousel-caption d-none d-md-block graph-label-btn">
+            <div *ngIf="!(innerChart.currentData)">
+              <h4 class="text_center">{{innerChart.name}}</h4>
+              <h4 *ngIf="innerChart.description" class="desc_text">
+                {{innerChart.description}}
+              </h4>
+              <h4 *ngIf="!innerChart.description" class="desc_text">
+                {{innerChart.name}}
+              </h4>
+            </div>
+            <button *ngIf="!(innerChart.enabled)" class="btn btn-sm btn-outline-success"
+              (click)="enableGraph(innerChart)">
+              Enable
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </ngb-carousel>
+
+</div>

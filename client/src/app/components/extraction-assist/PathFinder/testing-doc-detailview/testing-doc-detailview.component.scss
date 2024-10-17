@@ -1,0 +1,57 @@
+.card {
+  border-radius: 0px !important;
+}
+
+.e-dlg-content {
+  // margin-right: 10px !important;
+  overflow: hidden !important;
+}
+
+.margin_top {
+  margin-top: 5px !important;
+}
+
+// .footer_space {
+//   border-top: 1px solid #a0a0a066 !important;
+// }
+
+.invoice-comp {
+  margin: 10px 10px;
+  height: calc(100vh - 130px);
+  overflow: scroll;
+}
+
+.modal-body {
+  max-height: calc(100vh - 160px) !important;
+  overflow: hidden;
+}
+
+.modal {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.modal-dialog {
+  width: 95% !important;
+  min-width: 98% !important;
+  margin-top: 10px;
+  height: 100% !important;
+}
+
+.modal-content {
+  height: auto;
+  min-height: 95%;
+  border-radius: 0;
+}
+
+.modal-header {
+  background: #a569bd !important;
+}
+
+.modal-header .close {
+  width: 35px !important;
+  height: 35px !important;
+  font-size: 22px !important;
+  top: 30px !important;
+  right: 34px !important;
+  font-family: auto !important;
+}

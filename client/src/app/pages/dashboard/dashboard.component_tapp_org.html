@@ -1,0 +1,685 @@
+<app-header></app-header>
+<!--<router-outlet></router-outlet> -->
+
+<div class="dashboard-container-main ">
+    <!-- summary -->
+    <div class="dashboard-container d-flex justify-content-between align-items-center topFixed">
+        <div class="container-title">
+            <div class="d-flex">
+                <div class="ft-18 fw-500 pl-2 pt-2">Overall Invoices Summary</div>
+                <div class="mt-1" ngbTooltip="Refresh" tooltipClass="my-custom-tooltip" placement="right">
+                    <button (click)="clickOnRefresh()" class="btn btn-menu">
+            <img src="../../../assets/images/refreshing.png" width="12" height="12" />
+          </button>
+                </div>
+            </div>
+        </div>
+        <div class="pr-4"><span class="legend">* Current Pipeline</span></div>
+    </div>
+
+    <div class="grid-container grid5">
+        <!-- historic  -->
+        <div class="card">
+            <div class="card-body card-customize">
+                <div class="text">
+                    <img src="../../../assets/images/icon-submit.svg" width="16" class="float-left mr-2">Submitted till date
+                    <div class="card-title mb-0 text-right ft-18">
+                        {{dashboardStatsHistory?.totalDocumentsSubmitted | dashboardStatsPipe : 'integer'}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body card-customize">
+                <div class="text">
+                    <img src="../../../assets/images/icon-rpa.svg" width="16" class="float-left mr-2">Posting Completed
+                    <div class="card-title mb-0 text-right ft-18">
+                        {{dashboardStatsHistory?.totalDocumentsProcessed | dashboardStatsPipe : 'integer'}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body card-customize">
+                <div class="text">
+                    <img src="../../../assets/images/vendor.png" width="16" class="float-left mr-2"> Number of Vendors
+                    <div class="card-title mb-0 text-right ft-18">
+                        {{totalVendorCount}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body card-customize">
+                <div class="text">
+                    <img src="../../../assets/images/icon-processing.png" width="16" class="float-left mr-2"> Total Processing time
+                    <div class="card-title mb-0 text-right ft-18">
+                        {{dashboardStatsHistory?.totalProcessingTime | dashboardStatsPipe : 'time'}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body card-customize">
+                <div class="text">
+                    <img src="../../../assets/images/icon-manual.png" width="16" class="float-left mr-2">Total Time saved
+                    <div class="card-title mb-0 text-right ft-18">
+                        <!-- {{dashboardStatsHistory?.totalCorrectionTime | dashboardStatsPipe : 'time'}} -->
+                        {{(appConfig.AHT * dashboardStatsHistory?.totalDocumentsProcessed) - dashboardStatsHistory?.totalProcessingTime | dashboardStatsPipe : 'time' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="dashboard-separator">
+    <div class="grid-container grid5">
+        <div class="card">
+            <div class="card-body">
+                <div class="text">
+                    <img src="../../../assets/images/icon-submit.svg" width="16" class="float-left mr-2"> In Submission
+                    <div class="card-title float-right">
+                        {{(handleNumberUndefined(documentStats?.NEW) + handleNumberUndefined(documentStats?.PRE_PROCESSING))}}</div>
+                </div>
+                <table class="table statsTable">
+                    <tr>
+                        <td>New</td>
+                        <td>{{documentStats?.NEW}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Pre-Processing</b></td>
+                        <td>{{documentStats?.PRE_PROCESSING}}</td>
+                    </tr>
+                    <!-- <tr>
+            <td>&nbsp;</td>
+            <td>&#8594; </td>
+          </tr> -->
+                </table>
+
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="text">
+                    <img src="../../../assets/images/icon-extraction.svg" width="16" class="float-left mr-2">In Extraction
+                    <div class="card-title float-right">
+                        {{addFour(documentStats?.READY_FOR_EXTRACTION , documentStats?.EXTRACTION_INPROGRESS , documentStats?.EXTRACTION_FAILED, documentStats?.EXTRACTION_DONE)}}
+                    </div>
+                </div>
+                <table class="table statsTable">
+                    <tr>
+                        <td><b>Ready for Extraction</b></td>
+                        <td><b>{{documentStats?.READY_FOR_EXTRACTION}}</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Extraction In Progress</b></td>
+                        <td>{{documentStats?.EXTRACTION_INPROGRESS}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div tooltipClass="tooltip-class">Extraction Failed</div>
+                        </td>
+                        <td>
+                            {{FAILED_SUM}}
+                        </td>
+                    </tr>
+                    <!-- <tr>
+            <td>
+              <div ngbTooltip="Extraction may have failed to move to verification" placement="bottom"
+                tooltipClass="tooltip-class">Extraction Exceptions **</div>
+            </td>
+            <td>{{documentStats?.EXTRACTION_DONE}}</td>
+          </tr> -->
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="text">
+                    <img src="../../../assets/images/icon-review.svg" width="16" class="float-left mr-2"> In Exception Handling
+                    <div class="card-title float-right">
+                        {{addTwo(documentStats?.REVIEW , documentStats?.REVIEW_COMPLETED) }}
+                    </div>
+                </div>
+                <table class="table statsTable">
+                    <tr>
+                        <td><b>Ready for Review</b></td>
+                        <td><b>{{documentStats?.REVIEW}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Reviewed</td>
+                        <td>{{documentStats?.REVIEW_COMPLETED}}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp; </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="text">
+                    <img src="../../../assets/images/icon-rpa.svg" width="16" class="float-left mr-2">Invoice Posting
+                    <div class="card-title float-right">
+                        {{addTwo(documentStats?.RPA_PROCESSING , documentStats?.PROCESSED) }}
+                    </div>
+                </div>
+                <table class="table statsTable">
+                    <tr>
+                        <td><b>Posting In progress</b></td>
+                        <td><b>{{documentStats?.RPA_PROCESSING}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Posting Completed</td>
+                        <td>{{documentStats?.PROCESSED}}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp; </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+
+                <div class="text">
+                    <img src="../../../assets/images/icon-warning.svg" width="16" class="float-left mr-2"> Unable to Process
+                    <div class="card-title float-right">
+                        {{addThree(documentStats?.FAILED , documentStats?.INVALID , documentStats?.REJECTED)}}
+                    </div>
+                </div>
+                <table class="table statsTable">
+                    <tr>
+                        <td>Failed</td>
+                        <td>{{documentStats?.FAILED}}</td>
+                    </tr>
+                    <tr>
+                        <td>Invalid</td>
+                        <td>{{documentStats?.INVALID}}</td>
+                    </tr>
+                    <tr>
+                        <td>Rejected</td>
+                        <td>{{documentStats?.REJECTED}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <!--  -->
+    </div>
+    <!-- filter -->
+    <div class="d-flex sort__btn sort__btn--position justify-content-end pr-3">
+        <div class="d-flex align-items-center pr-3 filter-dashboard">
+            <div class="d-flex mr-1">
+                <select class="form-control status-list ft-12 pointer text-capitalize outline custom-card" [(ngModel)]="selectedPeriodValue" (ngModelChange)="filterDashBoardStats()" [class.ng-hover]="this.selectedPeriodValue">
+          <option *ngFor="let item of masterDataOfSelectPeriod" [value]="item.value">{{ item.name }}
+          </option>
+        </select>
+            </div>
+            <div class="d-flex ml-1" style="display:none !important">
+                <select class="form-control status-list ft-12 pointer text-capitalize outline custom-card" [(ngModel)]="selectedVendorValue" (ngModelChange)="filterDashBoardStats() ">
+          <option selected value="">all vendor</option>
+          <option *ngFor="let item of vendorList | orderBy:'name'" [value]="item.vendorId">{{ item.name }}
+          </option>
+        </select>
+            </div>
+            <div class="ml-3 mr-2 d-flex custom-button padding-custom p-1">
+                <a class="ft-12 link clear-filter pointer clear" (click)="clearFilters()" href="javascript:void(0)">Clear</a>
+            </div>
+        </div>
+    </div>
+    <!-- tabs -->
+    <ngb-tabset type="pills" class="alluploads dashboard-position dashboard-tabs">
+        <ngb-tab title="Dashboard">
+            <ng-template ngbTabContent>
+                <!-- Dashboard -->
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="mb-3">Summary <span *ngIf="selectedPeriodValue">for
+                {{selectedPeriodValue | underScoreToSpacePipe | lowercase}} </span>
+                            <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span> </h6>
+                        <div class="summary-items grid4">
+
+                            <!-- INVOICES -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-submit.png" width="16" class="float-left mr-2"> Submitted
+                                        <div class="card-title float-right">
+                                            {{dashboardStats?.summaries?.totalDocumentsSubmitted | dashboardStatsPipe : 'integer'}}</div>
+                                    </div>
+                                    <table class="table statsTable">
+                                        <tr>
+                                            <td>Ready for Extraction</td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsReadyForExtraction | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <!-- <tr>
+                <td>Review </td>
+                <td>{{dashboardStats?.summaries?.totalDocumentsExtracted | dashboardStatsPipe : 'integer'}}</td>
+              </tr> -->
+                                        <tr>
+                                            <td>Exception Handling</td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInReview | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Awaiting AP Posting</td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsReadyForPosting | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Overall Failed</td>
+                                            <td>{{dashboardStats?.summaries?.failedDocumentsCount | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Posting In progress</td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsPostedToRPA | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Posting Completed</td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsProcessed | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <!-- PAGES -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-pages.png" width="16" class="float-left mr-2">
+                                        <span class="pointer" ngbTooltip="Calculated for invoices for which posting is successful" tooltipClass="my-custom-tooltip" placement="top"> Total Pages
+                      Posted</span>
+                                        <div class="card-title float-right">
+                                            {{dashboardStats?.summaries?.totalPageCount | dashboardStatsPipe : 'integer'}}</div>
+                                    </div>
+                                    <table class="table statsTable">
+                                        <tr>
+                                            <td>Average pages per invoice in <span *ngIf="selectedPeriodValue" class="text-capitalize">
+                          {{selectedPeriodValue | underScoreToSpacePipe }} </span>
+                                                <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span>
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.avgPageCount | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Average pages per invoice <span *ngIf="selectedVendorValue"> for
+                          {{getVendorName(selectedVendorValue)?.name}} </span>till date</td>
+                                            <td>{{dashboardStats?.globalAverages?.avgPageCount | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <!-- Processing TIME -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-processing.png" width="16" class="float-left mr-2">
+
+                                        <span class="pointer" ngbTooltip="Calculated for invoices for which posting is successful" tooltipClass="my-custom-tooltip" placement="top"> Processing Time</span>
+                                        <div class="card-title float-right">
+                                            {{dashboardStats?.summaries?.totalProcessingTime | dashboardStatsPipe : 'time'}}</div>
+                                    </div>
+                                    <table class="table statsTable">
+                                        <tr>
+                                            <td>Time spent in Pre-Processing </td>
+                                            <td>{{dashboardStats?.summaries?.totalPreProcessingTime | dashboardStatsPipe : 'time'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Time spent in Extraction
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalExtractionTime | dashboardStatsPipe : 'time'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Time spent in Posting </td>
+                                            <td>{{dashboardStats?.summaries?.totalRPAProcessingTime | dashboardStatsPipe : 'time'}}</td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <!-- Invoice Value -->
+                            <div class="card" *ngIf="selectedVendorValue">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-invoice.png" width="16" class="float-left mr-2">Total Processed Invoice Value
+                                        <div class="card-title float-right"> {{getVendorName(selectedVendorValue)?.currency}} {{dashboardStats?.summaries?.totalAmount | dashboardStatsPipe : 'number'}}
+                                        </div>
+                                    </div>
+                                    <table class="table statsTable">
+                                        <tr>
+                                            <td>Average Value of invoice <span *ngIf="selectedPeriodValue">IN
+                          {{selectedPeriodValue | underScoreToSpacePipe}} </span>
+                                                <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span>
+                                                <td> {{getVendorName(selectedVendorValue)?.currency}} {{dashboardStats?.summaries?.avgAmount | dashboardStatsPipe : 'number'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Average Value of invoice <span *ngIf="selectedVendorValue"> FOR
+                          {{getVendorName(selectedVendorValue)?.name}}</span> till date
+                                            </td>
+                                            <td> {{getVendorName(selectedVendorValue)?.currency}} {{dashboardStats?.globalAverages?.avgAmount | dashboardStatsPipe : 'number'}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Vendor Summary">
+            <ng-template ngbTabContent>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <h6 mb-2>Vendor summary <span *ngIf="selectedPeriodValue">for
+                {{selectedPeriodValue | underScoreToSpacePipe | lowercase}} </span>
+                            <span *ngIf="selectedVendorValue">for {{getVendorName(selectedVendorValue)?.name}}</span> </h6>
+                        <div class="summary-items grid2">
+
+                            <!-- Manual Time Spent -->
+
+                            <!-- Processing TIME -->
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-invoice.png" width="16" class="float-left mr-2"> Automation Processing
+                                        <div class="card-title float-right">
+                                            {{dashboardStats?.summaries?.totalDocumentsSubmitted | dashboardStatsPipe : 'integer'}}</div>
+                                    </div>
+                                    <table class="table statsTable table-striped">
+                                        <tr>
+                                            <td class="font-weight-bold"> Successfully Processed
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsProcessed | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Invoices with STP
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsAutoProcessed | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td> Manually Processed</td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsManuallyProcessed | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold"> Processing in Progress
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInProcessing | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>In Pre-Processing
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInPreProcessing | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>In Extraction
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInExtraction | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>In Review
+
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInReview | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>In RPA Processing
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInRPAProcessing | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="font-weight-bold">Processing Failed
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.failedDocumentsCount | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Failed in Submission
+                                            </td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsFailedInSubmission | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Failed in Pre-Processing
+                                            </td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsFailedInPreProcessing | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Failed in Extraction
+                                            </td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsFailedInExtraction | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <!-- <tr class="tab">
+                              <td>Failed in Review
+                              </td>
+                              <td>{{dashboardStats?.summaries?.totalDocumentsFailedInReview | dashboardStatsPipe : 'integer'}}
+                              </td>
+                            </tr> -->
+                                        <tr class="tab">
+                                            <td>Failed in RPA Processing
+                                            </td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsFailedInRPAProcessing | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <app-chart [chartData]="threeBarGraphData" [chartConfig]="dashboardConfig.dashboardCharts[6]">
+                                    </app-chart>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <app-chart [chartData]="multipleChartData" [chartConfig]="dashboardConfig.dashboardCharts[0]">
+                                    </app-chart>
+                                </div>
+                            </div>
+
+                            <div class="card ">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-manual.png" width="16" class="float-left mr-2">
+                                        <span class="pointer" ngbTooltip="Calculated for invoices for which posting is successful" tooltipClass="my-custom-tooltip" placement="top"> Manual Time </span>
+                                        <div class="card-title float-right">
+
+
+                                            <!--{{(appConfig.AHT * dashboardStats?.summaries?.totalDocumentsSubmitted) + dashboardStats?.summaries?.totalCorrectionTime | dashboardStatsPipe : 'time' }}
+//-->
+                                        </div>
+                                    </div>
+                                    <table class="table statsTable">
+                                        <tr>
+                                            <td>Total Manual Correction Time Spent <span *ngIf="selectedPeriodValue"> FOR
+                          {{selectedPeriodValue | underScoreToSpacePipe}} </span>
+                                                <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span> </td>
+                                            <td> {{dashboardStats?.summaries?.totalCorrectionTime | dashboardStatsPipe : 'time' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Average Manual Time Spent <span *ngIf="selectedPeriodValue"> FOR
+                          {{selectedPeriodValue | underScoreToSpacePipe}} </span>
+                                                <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span> </td>
+                                            <td>{{dashboardStats?.summaries?.avgCorrectionTime | dashboardStatsPipe : 'time' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Average Manual Time Spent <span *ngIf="selectedVendorValue"> FOR
+                          {{getVendorName(selectedVendorValue)?.name}} </span>till date
+                                            </td>
+                                            <td>{{dashboardStats?.globalAverages?.avgCorrectionTime | dashboardStatsPipe : 'time' }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Extraction Efficiency">
+            <ng-template ngbTabContent>
+                <!-- Extraction Efficiency -->
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Extraction efficiency <span *ngIf="selectedPeriodValue">for
+                {{selectedPeriodValue | underScoreToSpacePipe | lowercase}} </span>
+                            <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span> </h6>
+                        <div class="summary-items grid2">
+                            <!-- Invoices -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-submit.png" width="16" class="float-left mr-2"> Invoices Submitted
+                                        <div class="card-title float-right">
+                                            {{dashboardStats?.summaries?.totalDocumentsSubmitted | dashboardStatsPipe : 'integer' }}</div>
+                                    </div>
+                                    <table class="table statsTable table-striped">
+                                        <tr>
+                                            <td class="font-weight-bold">Invoices Extracted </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsExtracted | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Invoices Manually Corrected
+                                            </td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsManuallyCorrected | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Invoices Extracted with 100% Accuracy </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsNotCorrected | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tab">
+                                            <td>Invoices in Review </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsInReview | dashboardStatsPipe : 'integer'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Invoices yet to be Extracted </td>
+                                            <td>{{dashboardStats?.summaries?.totalDocumentsToBeExtracted | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Invoices Extraction Failed </td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsFailedInExtraction | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold"> Failed outside of Extraction</td>
+                                            <td>
+                                                {{dashboardStats?.summaries?.totalDocumentsFailedOutsideExtraction | dashboardStatsPipe : 'integer'}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <!-- Fields -->
+                            <!-- <div class="card">
+                <div class="card-body">
+                  <div class="text">
+                    <img src="../../../assets/images/icon-manual.png" width="16" class="float-left mr-2"> Total Fields
+                    Manually Corrected
+                    <div class="card-title float-right">
+                      {{dashboardStats?.summaries?.totalErrors | dashboardStatsPipe : 'integer'}}</div>
+                  </div>
+                  <table class="table statsTable">
+                    <tr>
+                      <td>Average number of fields manually corrected <span *ngIf="selectedPeriodValue"
+                          class="text-capitalize"> FOR
+                          {{selectedPeriodValue | underScoreToSpacePipe}} </span>
+                        <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span>
+                      </td>
+                      <td>{{dashboardStats?.summaries?.avgErrors | dashboardStatsPipe : 'number'}}</td>
+                    </tr>
+                    <tr>
+                      <td>Average number of fields manually corrected <span *ngIf="selectedVendorValue"> for
+                          {{getVendorName(selectedVendorValue)?.name}} </span>till date </td>
+                      <td>{{dashboardStats?.globalAverages?.avgErrors | dashboardStatsPipe : 'number'}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div> -->
+
+                            <!-- Fields -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text">
+                                        <img src="../../../assets/images/icon-accuracy.png" width="16" class="float-left mr-2"> Accuracy (in %)
+
+                                        <div class="card-title float-right">&nbsp;</div>
+                                    </div>
+                                    <table class="table statsTable">
+                                        <tr>
+                                            <td>Average Accuracy <span *ngIf="selectedPeriodValue" class="text-capitalize"> FOR
+                          {{selectedPeriodValue | underScoreToSpacePipe}} </span>
+                                                <span *ngIf="selectedVendorValue"> for {{getVendorName(selectedVendorValue)?.name}}</span>
+                                            </td>
+                                            <td>{{dashboardStats?.summaries?.avgAccuracy | dashboardStatsPipe : 'number'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Average Accuracy <span *ngIf="selectedVendorValue"> for
+                          {{getVendorName(selectedVendorValue)?.name}}</span> till date</td>
+                                            <td>{{dashboardStats?.globalAverages?.avgAccuracy | dashboardStatsPipe : 'number'}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="summary-items grid2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <app-chart [chartData]="accuracyVrsInvoicesData" [chartConfig]="dashboardConfig.dashboardCharts[2]">
+                                    </app-chart>
+                                </div>
+                                <div class="text mr-2 card-title pl-3"> Total number of invoices reviewed: {{dashboardStats?.summaries?.totalDocumentsReviewed | dashboardStatsPipe : 'integer' }}
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <app-chart [chartData]="vendorVrsAccuracy" [chartConfig]="dashboardConfig.dashboardCharts[4]">
+                                    </app-chart>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </ngb-tab>
+    </ngb-tabset>
+</div>

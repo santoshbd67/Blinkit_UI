@@ -1,0 +1,9 @@
+<div class="filter flex-wrap d-flex justify-content-evenly">
+  <div *ngFor="let filter of filterOptions">
+    <button type="button" class="btn filter-btn innershadow mb-2 mr-2 px-3">{{filter?.name}}</button>
+    <span class="btn-span-position "><img [src]="'../../../assets/images/'+filter?.icon"width="12px" height="12px"></span>
+  </div>
+</div>
+<div class="clear-btn">
+  <button type="button" class="btn clearall-btn mb-2 mr-2 px-3">Clear All</button>
+</div>

@@ -1,0 +1,217 @@
+// font size
+$ft10: 10px;
+$ft12: 12px;
+$ft14: 14px;
+$ft16: 16px;
+$ft24: 24px;
+$ft32: 32px;
+
+// font weight
+
+$fw400: 400;
+$fw500: 500;
+$fw600: 600;
+$fw700: 700;
+$fw800: 800;
+$fw900: 900;
+$fwbold: bold;
+
+.ft-8 {
+  font-size: 8px !important;
+}
+
+.ft-10 {
+  font-size: 10px !important;
+}
+
+.ft-12 {
+  font-size: 12px !important;
+}
+
+.ft-14 {
+  font-size: 14px !important;
+}
+
+.ft-16 {
+  font-size: 16px !important;
+}
+
+.ft-18 {
+  font-size: 18px !important;
+}
+
+.ft-20 {
+  font-size: 20px !important;
+}
+
+.ft-24 {
+  font-size: 24px !important;
+}
+
+.ft-32 {
+  font-size: 32px !important;
+}
+
+.fw-400 {
+  font-weight: 400 !important;
+}
+.fw-200{
+  font-weight: 200 !important;
+}
+
+.fw-500 {
+  font-weight: 500 !important;
+}
+
+.fw-600 {
+  font-weight: 600 !important;
+}
+
+.fw-bold {
+  font-weight: bold;
+}
+
+//colors
+$light-color: #ced4da;
+$primary: #0db40d;
+$secondary: #0277bd;
+$button-bg: linear-gradient(#fc9220, #df4c24);
+$danger-light: #df4c24;
+$white: #fff;
+$grey: #707070;
+$light-gray-2: #f2f2f2;
+$box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.01);
+$box-shadow2: 0 0px 6px 0 rgba(0, 0, 0, 0.26);
+$btn-color: #fc9220;
+$btn-light: #b2b2b2;
+$blacklight: #333333;
+$black: #000;
+$danger: #f52e2e;
+$cream: #ffffff99;
+$card-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.1);
+$yellow: #cddc39;
+$blue:#64b5f6;
+$border-btn-color: #b6b6b6;
+$login-bg: transparent linear-gradient(179deg, #ffffff05 0%, #fc9220 100%) 0% 0% no-repeat padding-box;
+$border: #dddddd;
+$hover-color: #ffeddb;
+$light-grey:#a3a3a3;
+$red:  #ff0000;
+$orange: #ff7b00;
+$white: #fff;
+$dark-green: darkgreen;
+.orange-bg {
+  color: #df4c24;
+}
+.text-black{
+  color: #000 !important;
+}
+.text-red{
+  color: #ff0000 !important;
+}
+
+.light-gray {
+  color: #999999;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pt-50{
+  padding-top: 50px;
+}
+
+@media screen and (max-width: 1440px) and (min-width: 768px) {
+  .text-overflow {
+    white-space: nowrap;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .text-overflow-2 {
+    white-space: nowrap;
+    width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .text-overflow-3 {
+    white-space: nowrap;
+    width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .text-overflow-4 {
+    white-space: nowrap;
+    width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+
+
+@media screen and (max-width: 1600px) and (min-width: 1367px) {
+  .text-overflow {
+    white-space: nowrap;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .text-overflow-2 {
+    white-space: nowrap;
+    width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .text-overflow-3 {
+    white-space: nowrap;
+    width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .text-overflow-4 {
+    white-space: nowrap;
+    width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.text-overflow {
+  white-space: nowrap;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+// padding css
+
+
+.pl-38 {
+  padding-left: 20px;
+}
+
+.pr-34 {
+  padding-right: 20px;
+}
+
+.pr-48 {
+  padding-right: 48px;
+}
+
+.pt-3 {
+  padding-top: 3px;
+}
+
+
+// margin css
+
+.mt-48{
+  margin-top: 48px !important;
+}
+
+.backgroun-color{
+  background: #f7f7f7;
+}

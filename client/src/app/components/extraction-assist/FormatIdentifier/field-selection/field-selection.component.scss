@@ -1,0 +1,43 @@
+.form-container {
+    overflow: auto;
+    height: calc(100vh - 30vh);
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.form_labels {
+    margin-left: 25px;
+    font-size: small;
+}
+
+.checkbox {
+    margin-top: 10px;
+}
+
+.input_fields {
+    width: -webkit-fill-available !important;
+    margin-left: 10px;
+    display: flex !important;
+}
+
+.extracted_field {
+    background-color: #fff7f7;
+    height: 30px;
+    font-size: small;
+}
+
+.corrected_field {
+    margin-left: 10px;
+    background-color: #d4efdf;
+    height: 30px;
+    font-size: small;
+    
+}
+
+.confidence {
+    margin-top: 1px;
+    margin-left: 10px;
+    font-weight: 700;
+    font-size: small;
+    color: #0db40d;
+}

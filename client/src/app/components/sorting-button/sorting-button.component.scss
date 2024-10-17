@@ -1,0 +1,20 @@
+@import "../../../assets/styles/scss/common.scss";
+
+.btn-menu{
+    box-shadow:none !important;
+    outline:none !important;
+    &:active{
+        box-shadow:none !important;
+        outline:none !important;     
+    }
+}
+
+    .sort-btn__filter-menu{
+        box-shadow: 2px 0px 6px grey;
+        background:#fff;
+    }
+   .calendar-img{
+    position: relative;
+    left: -21px;
+    bottom: 2px;
+   }

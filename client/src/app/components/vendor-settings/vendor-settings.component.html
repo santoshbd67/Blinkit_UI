@@ -1,0 +1,52 @@
+<div class="d-flex w-100 pt-0 justify-content-between">
+  <h5 class="align-self-center fw-500">Vendors</h5>
+  <button class="btn add-list ft-14" type="button" (click)="vendorModal('Add', null)">Add Vendor</button>
+</div>
+<div class="table-list">
+  <table class="table table-white vendor-upload-list table-white-responsive">
+    <thead>
+      <tr>
+        <th class="w-10">Vendor ID</th>
+        <th class="w-10">Logo</th>
+        <th class="w-10">Name</th>
+        <th class="w-30">Address</th>
+        <th class="w-10">Currency </th>
+        <th class="w-20">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vendor of vendorList | paginate
+      : { 
+          itemsPerPage: itemsPerPage,
+          currentPage: pageNumber,
+          totalItems: itemsCount
+        }; let i = index">
+        <td>
+          {{vendor?.vendorId}}
+        </td>
+        <td><!--{{getLogo(vendor?.logo)}}-->
+          <img src="{{vendor?.logo}}" class="setting-logo">
+        </td>
+        <td>
+          {{vendor?.name}}
+        </td>
+        <td>
+          {{vendor?.address}}
+        </td>
+        <td>
+          {{vendor?.currency}}
+        </td>
+        <td>
+          <div class="d-flex flex-wrap">
+            <button type="button" class="btn btn-outline-success px-3 mr-2  mb-1 btn-sm"
+              (click)="vendorModal('Edit',vendor)">Edit</button>
+            <button type="button" class="btn btn-delete btn-sm mb-1"
+              (click)="openDeleteVendorModal(vendor)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <pagination-controls (pageChange)="setPageNumber($event); pageNumber = $event" class="ft-14 font-weight-normal">
+  </pagination-controls>
+</div>

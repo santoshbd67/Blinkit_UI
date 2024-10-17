@@ -1,0 +1,61 @@
+@import "../../../assets/styles/scss/common.scss";
+.filter{
+    width:96%;
+    .filter-btn {
+        background: $white 0% 0% no-repeat padding-box;
+        border: 1px solid #707070;
+        border-radius: 4px;
+        opacity: 1;
+        height: 24px;
+        padding: 0px 5px;
+        font-size: $ft12;
+        box-shadow: inset 0 0 0.2px 0.2px $light-color;
+
+        &:active ,&:hover{
+          background: $danger-light 0% 0% no-repeat padding-box;
+          color: $white;
+        }
+      }
+      .select-btn {
+            background: $danger-light 0% 0% no-repeat padding-box;
+            border-radius: 4px;
+            color: $white;
+            padding: 0px 5px;
+            font-size: $ft12;
+            height: 24px;
+            border: $danger-light;
+            box-shadow: inset 0 0 0.2px 0.2px $light-color;
+          }
+         
+}
+.clear-btn{
+    position: absolute;
+    right: 0;
+    top: 135px;
+    background: $white;
+    .clearall-btn{
+      height: 24px;
+      padding: 0px 5px;
+      font-size: $ft12;
+      color: $danger-light;
+      font-weight:600;
+      text-decoration: underline;
+      &:focus{
+        box-shadow: none;
+        outline: 0; 
+      }
+      &:hover{
+        text-decoration:none; 
+      }
+    }
+}
+
+.btn-span-position {
+    position: relative;
+    right: 14px;
+    bottom: 4px;
+    img {
+        background:$white;
+        border-radius: 50%;
+    }
+}

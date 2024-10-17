@@ -1,0 +1,23 @@
+<div class="d-flex w-100 pt-0 justify-content-between pb-2">
+  <h5 class="align-self-center fw-500">XML Mapping List</h5>
+</div>
+<div class="xml-mapping ml-4">
+  <form>
+    <div class="form-group  " *ngFor=" let field of xmlMapping; let i = index;">
+      <div class="row">
+        <div class="col-3">
+          <label for="field{{i}}">{{field?.key}}</label>
+        </div>
+        <div class="col-6">
+          <!-- {{field?.value}} -->
+          <input [(ngModel)]="field.value" type="text" name="field{{i}}" class="form-control">
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="d-flex justify-content-center mt-4 pb-4 mr-4">
+    <div class="btn btn-save ft-14 mr-1 pl-4 pr-4" (click)="saveForm()"> Save
+    </div>
+  </div>
+</div>

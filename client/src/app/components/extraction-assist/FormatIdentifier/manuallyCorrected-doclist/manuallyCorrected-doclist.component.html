@@ -1,0 +1,68 @@
+<app-header></app-header>
+
+<div class="d-flex">
+
+  <!-- LHS/ Vertical Tabs-->
+  <div class="left-tab sidebar-nav">
+    <ul *ngFor="let tab of verticalTabs; let i= index" class="nav nav-pills
+      nav-fill flex-column"
+      (click)="parentClicked(i); setTabs(tab.tab)">
+      <li class="nav-item">
+        <a class="nav-link ft-12" [ngClass]="{'active':tab.active}">{{tab.tab}}
+          <!-- <img [src]="imgSrc.homeIcon" width="20" height="20" /> -->
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- RHS -->
+  <div class="right-tab">
+
+    <div *ngIf="isDocsFetched">
+
+      <!-- HOME Tab -->
+      <div *ngIf="activeVerticalTab =='HOME'">
+        <div class="upload-scroll m-0">
+          <div class="pt-0 pl-2 pr-2">
+            <app-document-list
+              [selectedFilters]="selectedFilters.horzTab"
+              [horizontalTabs]="horizontalTabs"
+              (onClickHorizontalTab)="onClickHorizontalTab($event)">
+            </app-document-list>
+          </div>
+        </div>
+      </div>
+
+      <!-- RULES Tab -->
+      <div *ngIf="activeVerticalTab =='RULES'" class="content-area">
+        <div class="upload-scroll m-0 p-0">
+          <div class="pt-0 pl-2 pr-2">
+            <app-rules-view
+              [selectedFilters]="selectedFilters.horzTab"
+              [horizontalTabs]="horizontalTabs">
+            </app-rules-view>
+          </div>
+        </div>
+      </div>
+
+      <!-- ML IDENTIFIER Tab -->
+      <div *ngIf="activeVerticalTab =='ML IDENTIFIER'" class="content-area">
+        <div class="upload-scroll m-0 p-0">
+          <div class="pt-0 pl-2 pr-2">
+            <app-ml-identifier-view
+              [selectedFilters]="selectedFilters.horzTab"
+              [horizontalTabs]="horizontalTabs">
+            </app-ml-identifier-view>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div *ngIf="!isDocsFetched" class="center_div list_spinner">
+    <small>Fetching Documents. Please wait..</small>
+  </div>
+
+</div>

@@ -1,0 +1,301 @@
+<div class="review-container">
+    <!-- Header Area -->
+    <div class="review-header">
+        <div class="d-flex justify-content-between align-items-center
+            header-btn">
+            <div class="align-items-center upload-btn" (click)="goBack()">
+                <div class="d-flex cursor-pointer">
+                    <img src="../../../assets/images/left-arrow.svg"
+                        width="14px" />
+                    <span class="upload-btn-text-header ft-14 fw-600 ml-1">Back</span>
+                </div>
+            </div>
+
+            <div class="d-flex
+                justify-content-between">
+                <div class="d-flex analysis-data-row">
+                    <div class="analysis-data text-center">
+                        <div class="large-text ft-20">
+                            Extraction Summary
+                        </div>
+                    </div>
+                    <div class="analysis-data text-center" *ngFor="let stats of
+                        FieldStats; let i=index;"
+                        [ngClass]="{'line-seperator':true}">
+                        <div class="large-text ft-20"
+                            [ngClass]="stats.cssClass">
+                            {{ stats?.value }} {{ stats?.unit }}
+                        </div>
+                        <span class="small-text text-capitalize">{{ stats?.label
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle + Footer Area -->
+    <div class="review-content d-flex" *ngIf="!loading">
+        <div class="review-invoice-view card">
+            <!-- Middle Area -->
+            <div class="review-invoice-content d-flex">
+                <as-split direction="horizontal"
+                    (dragEnd)="currentSize($event)">
+
+                    <!-- Image Area -->
+                    <as-split-area size="65">
+                        <div class="invoice-comp card" id="scrollContainer">
+                            <div class="review-img" *ngFor="let imageItem of
+                                filteredInvoiceImages; let i= index">
+                                <app-image-zoom id="image-zoom_{{i}}"
+                                    [boundingData]="boundingBoxData"
+                                    [fieldsData]="fieldsData"
+                                    [imageUrl]="imageItem.url"
+                                    [pageNumber]="imageItem.index"
+                                    [totalPages]="filteredInvoiceImages.length"
+                                    [scrollParentSelector]="'#scrollContainer'"
+                                    [canvasId]="'cropped-image'"
+                                    [canvasContainer]="'cropped-image-container'"
+                                    [linesVisibility]="linesVisibility"
+                                    [calledFrom]="'ready-for-review'"
+                                    [statusOfEnableZoom]="statusOfEnableZoom"
+                                    [splitSizes]="splitSizes"
+                                    (selectedLineText)="setLineText($event)">
+                                </app-image-zoom>
+                                <div class="page-num">Page {{ i + 1 }}</div>
+                            </div>
+                        </div>
+                    </as-split-area>
+
+                    <!-- Content Area -->
+                    <as-split-area size="35">
+                        <div class="invoice-form-comp card"
+                            style="overflow:hidden;">
+                            <app-invoice-form [documentResult]="documentResult"
+                                [startReviewBtnClickedAt]="startReviewTime"
+                                [submit]="action"
+                                [documentMetadata]="documentMetadata"
+                                [confidenceThreshold]="confidenceThreshold"
+                                [fieldsData]="fieldsData"
+                                (onTabChanged)="closePreview('cropped-image-container')"
+                                [issues]="IssueAction" [issuesPassed]="issues"
+                                (onBoundingBoxDataReady)="onBoundingBoxDataReady($event)"
+                                (submitted)="getLineItem($event)"
+                                (enableZoom)="enableZoom($event)"
+                                (autoPausedForReviewer)="performAutoPause($event)"
+                                (onDoneAndNextClickForReviewer)="docFetchedOnNextForReviewer($event)">
+                            </app-invoice-form>
+                        </div>
+                    </as-split-area>
+                </as-split>
+            </div>
+
+            <!-- Footer Area  -->
+            <div class="footer d-flex justify-content-between">
+
+                <!-- Left Side -->
+                <div class="d-flex align-items-center">
+                    <div class="footer-items">
+                        <!-- REJECT Button -->
+                        <button *ngIf="documentMetadata && documentMetadata.status!=='RPA_PENDING_APPROVAL'" title="Reject this Document"
+                            [disabled]="shouldRejectButtonDisabled"
+                            type="button" (click)="openAlertModel()"
+                            [class]="!shouldRejectButtonDisabled? 'btn
+                            btn-outline-dark ft-12' : 'btn
+                            btn-outline-dark ft-12
+                            not_Allowed'">
+                            REJECT
+                            <img
+                                [src]="imgSrc.deleteIcon"
+                                width="16" height="16"
+                                />
+                        </button>
+                        <!-- REASSIGN Button -->
+                        <button *ngIf="REASSIGN_BUTTON_VISIBILITY === 1 && documentMetadata && documentMetadata.status==='REVIEW'" title="Reassign this Document"
+                            style="margin-left:20px;"
+                            [disabled]="shouldRejectButtonDisabled"
+                            type="button" (click)="openReassignAlertModel()"
+                            [class]="!shouldRejectButtonDisabled? 'btn
+                            btn-outline-dark ft-12' : 'btn
+                            btn-outline-dark ft-12
+                            not_Allowed'">
+                            REASSIGN
+                            <img
+                                [src]="imgSrc.reassignIcon"
+                                width="16" height="16"
+                                />
+                        </button>
+
+                        <!-- Comment Button -->
+                        <button *ngIf="documentMetadata && documentMetadata.status!=='RPA_PENDING_APPROVAL'" title="Add Comments for this Document"
+                            style="margin-left:20px;"
+                            [disabled]="documentMetadata &&
+                            documentMetadata.status !=='REVIEW' &&
+                            documentMetadata.status !=='REVIEW_COMPLETED' &&
+                            documentMetadata.status !== 'REASSIGN' &&
+                            !documentMetadata.status.includes('RPA_')"
+                            type="button" (click)="openCommentModel()"
+                            [class]="documentMetadata &&
+                            (documentMetadata.status
+                            ==='REVIEW' || documentMetadata.status ===
+                            'REVIEW_COMPLETED' || documentMetadata.status.includes('RPA_'))? 'btn
+                            btn-outline-success ft-12' : 'btn
+                            btn-outline-success ft-12
+                            not_Allowed'">
+                            ADD COMMENT
+                            <img
+                                [src]="imgSrc.commentIcon"
+                                width="16" height="16"
+                                [class]="documentMetadata &&
+                                documentMetadata.comment?'comment':''"
+                                />
+                        </button>
+
+                        <!-- Reassign Comment -->
+                        <div 
+                        *ngIf="documentMetadata && documentMetadata.status=='REASSIGN' && (documentMetadata.reassignComment)"
+                        class="reassignComment"
+                        (mouseover)="p.open()"
+                        (mouseleave)="p.close()"
+                        >
+                            <span style="cursor: pointer;">Reassign Comment
+                                <i style="cursor: pointer;" aria-hidden="true"
+                                    popoverTitle="Reassign Comment" ngbPopover="{{documentMetadata.reassignComment}}"
+                                    triggers="manual" placement="top" #p="ngbPopover"
+                                    >
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="d-flex align-items-center">
+
+                    <!-- Issues,ApproverActions,Zoom toggle,Reviewer Actions -->
+                    <div class="footer-items d-flex">
+
+                        <!-- PointAndShoot/Zoom Enable/disable -->
+                        <span *ngIf="POINT_AND_SHOOT_VISIBILITY === 1"
+                            [class]="documentMetadata && documentMetadata.status
+                            =='REVIEW'? 'less_margin' : 'high_margin'">
+                            <span class="ft-12"> Enable {{toggleFunctionality}}
+                            </span>
+                            <mat-slide-toggle color='primary'
+                                (change)="emitEnableZoom($event)">
+                            </mat-slide-toggle>
+                        </span>
+
+                        <!-- Issues, Previous, Next Section -->
+                        <span *ngIf="issues">
+                            <span class="ft-12 mr-1">{{ issues.selected + 1 }}
+                                of {{issues.all }}</span>
+
+                            <!-- Previous Button -->
+                            <button type="button" class="btn
+                                btn-outline-secondary
+                                ft-12" (click)="switchIssue('previous')"
+                                [disabled]="issues.selected <1">
+                                Previous
+                            </button>
+
+                            <!-- Next Button -->
+                            <button type="button" class="btn danger-btn ft-12
+                                issues_margin"
+                                (click)="switchIssue('next')"
+                                [disabled]="issues.selected == issues.all - 1">
+                                Next
+                            </button>
+                        </span>
+
+                        <div *ngIf="isApprover && showApproverActions"
+                            class="footer-items">
+
+                            <!-- Hold Button -->
+                            <button title="Hold" type="button"
+                                class="btn btn-success ft-12 mr-2"
+                                (click)="openModelForApprover('Hold')">
+                                Hold
+                            </button>
+
+                            <!-- Reject Button -->
+                            <button title="Reject" type="button"
+                                class="btn btn-success ft-12 mr-2"
+                                (click)="openModelForApprover('Rejected')">
+                                Reject
+                            </button>
+
+                            <!-- Approve Button -->
+                            <button title="Approve" type="button"
+                                class="btn btn-success ft-12"
+                                (click)="openModelForApprover('Approved')">
+                                Approve
+                            </button>
+                        </div>
+
+                        <!-- Cancel & Pause Buttons for Reviewer-->
+                        <span *ngIf="!showView(documentMetadata) &&!isApprover">
+                            <!-- Cancel Button -->
+                            <button title="Go Back" *ngIf="!isReviewer"
+                                type="button" class="btn
+                                btn-warning ft-12"
+                                (click)="goBack()">
+                                Cancel
+                            </button>
+
+                            <!-- Pause Button -->
+                            <button title="Pause Review Process"
+                                *ngIf="isReviewer" type="button" class="btn
+                                btn-warning ft-12"
+                                (click)="pauseReviewProcess()">
+                                Pause
+                            </button>
+                        </span>
+                    </div>
+
+                    <!-- Save, Done, or Done&Next Section -->
+                    <span class="d-flex" *ngIf="!showView(documentMetadata)
+                        &&!isApprover">
+                        <!-- Save Button -->
+                        <div class="footer-items">
+                            <button title="Save Document" type="button"
+                                class="btn btn-success ft-12"
+                                (click)="openToast()">
+                                Save
+                            </button>
+                        </div>
+
+                        <!-- Done Button -->
+                        <div *ngIf="!isReviewer" class="footer-items">
+                            <button title="Mark As ReviewComplete" type="button"
+                                class="btn btn-success ft-12"
+                                (click)="openToast('status')">
+                                Done
+                            </button>
+                        </div>
+
+                        <!-- Done&Next Button for Reviewer-->
+                        <div *ngIf="isReviewer" class="footer-items">
+                            <button title="Mark this document as ReviewComplete
+                                and Fetch Next Doc" type="button" class="btn
+                                btn-success ft-12"
+                                (click)="openToast('Done & Next')">
+                                Done & Next
+                            </button>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading">
+        Loading please wait...
+    </div>
+</div>
+
+<div class="cropped-image-container" id="cropped-image-container">
+    <a href="javascript:void(0)"
+        (click)="closePreview('cropped-image-container')" class="close">X</a>
+    <canvas id="cropped-image" class="cropped-image"></canvas>
+</div>

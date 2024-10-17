@@ -1,0 +1,58 @@
+<!-- if email verified successfully -->
+<div class="page_bg">
+    <mat-card *ngIf='isEmailVerified' class=" col-md-6" style="margin: 0 auto;">
+        <mat-card-header style="margin-left: 200px;">
+            <a href="javascript:void(0)" class="text-center db">
+                <img src={{logoSrc}} alt="Home" />
+            </a>
+        </mat-card-header>
+
+        <mat-card-content>
+            <h2 class="customFont" style="text-align: center; margin-top: 20px;">{{headerMessage}}</h2>
+            <img style="margin-left: 280px;" src="../../../assets/images/email-verified.png" width="100px"
+                height="100px" alt="email-verified">
+            <h6 style="text-align: center;">Your TAO {{projName}}<sup class="sup ft-12">TM</sup> account is now active!
+            </h6>
+            <p class="customFont" style="text-align: center;margin-top: 20px;">
+                Welcome. Your email has been verified and your account is now active .
+            </p>
+            <p class="customFont" style="text-align: center;margin-top: 20px;">
+                Thank you for choosing {{projName}}<sup class="sup ft-12">TM</sup>
+            </p>
+            <p class="customFont" style="text-align: center;">
+                <a class="customFont" mat-raised-button [routerLink]="['/login']" target="_self">
+                    Login</a> to start using TAO {{projName}}<sup class="sup ft-12">TM</sup> now.
+            </p>
+        </mat-card-content>
+        <!-- <mat-card-actions>
+            <p class="customFont" style="text-align: center;">Thank you for choosing {{projName}}<sup>TM</sup></p>
+        </mat-card-actions> -->
+    </mat-card>
+
+    <!-- if email could not verified -->
+    <mat-card *ngIf='!isEmailVerified' class=" col-md-6" style="margin-left: 350px;">
+        <mat-card-header style="margin-left: 200px;">
+            <a href="javascript:void(0)" class="text-center db">
+                <img src={{logoSrc}} alt="Home" />
+            </a>
+        </mat-card-header>
+
+        <mat-card-content>
+            <h2 class="customFont" style="text-align: center; margin-top: 20px;">{{headerMessage}}</h2>
+            <img style="margin-left: 280px;" src="../../../assets/images/email-unverified.png" width="100px"
+                height="100px" alt="email-verified">
+            <p class="customFont" style="text-align: center;margin-top: 20px;">
+                We're sorry you're having trouble verifying your email address.Unfortunately,<br> this means we can't
+                verify who you are.
+            </p>
+            <a class="customFont" mat-raised-button style="margin-left: 250px;" [routerLink]="['/signup']"
+                target="_self">
+                Go back to SignUp
+            </a>
+        </mat-card-content>
+        <mat-card-actions>
+            <p class="customFont" style="text-align: center;">Thank you for choosing {{projName}}<sup
+                    class="sup ft-12">TM</sup></p>
+        </mat-card-actions>
+    </mat-card>
+</div>

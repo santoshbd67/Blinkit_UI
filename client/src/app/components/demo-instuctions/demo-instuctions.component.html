@@ -1,0 +1,33 @@
+<div>
+    <h3 class="customFont header_text">Welcome to {{projConfigs.projectName}}<sup class="sup ft-14">TM</sup></h3>
+    <h4 *ngIf="LOGO_VISIBILITY==1" class="customFont sub_header_text">
+        Intelligent Document Processing platform </h4>
+    <img *ngIf="LOGO_VISIBILITY==1" class={{projConfigs.clientLogoStyle}}
+        src="../../../assets/images/{{projConfigs.clientLogo}}" alt="logo">
+</div>
+
+
+<!-- <hr> -->
+<div *ngIf="LOGO_VISIBILITY==0" class="static_info">
+    <p class="customFont"> Looking for a solution for high-volume document
+        processing for your business critical processes? </p>
+    <p class="customFont"> Welcome to TAO {{projConfigs.projectName}}<sup class="sup ft-12">TM</sup>
+        - the Intelligent Document Processing platform with the highest
+        Straight-Through-Processing capability. </p>
+    <!-- <p class="customFont"> Sign up for the free trial version of the
+        platform
+        and experience the power of TAO {{projConfigs.projectName}}<sup class="sup ft-12">TM</sup>
+        -
+        first hand.</p> -->
+    <!-- <p> In a demo version you are allowed to upload maximum 10MB file size & maximum of 10 pages will be processed for this day.</p> -->
+</div>
+<!-- <hr> -->
+
+
+<!-- <div class="hiw_link">
+    <p class="ft-14 fw-500 text-capitalize customFont">For more details please visit
+        <button type="button" class="btn tt-header-btn m-0" (click)="howItWorks()">
+          {{projConfigs.projectName}} FAQ
+        </button>
+    </p>
+</div> -->

@@ -1,0 +1,43 @@
+.input-confidence {
+    color: rgb(124, 231, 124);
+}
+.custom-input-rulemasterdata-form {
+    width: 100%;
+    line-height: 2;
+    height: 36px;
+    font-size: 14px !important;
+    border: #ccc solid 1px;
+    border-radius: 0px;
+    outline: none !important;
+}
+
+.field-style {
+    height: 30px !important;
+    font-size: small !important;
+}
+
+.header-labels {
+    font-size: small;
+}
+
+.text_area {
+    height: auto;
+    font-size: small;
+}
+
+.validate_error_msg {
+    color: #dc7633;
+    font-size: small;
+    font-weight: bold;
+}
+
+.helper_text {
+    color: darkslategrey;
+    font-size: small;
+}
+
+.response_msg {
+    color: #dc7633;
+    font-size: small;
+    font-weight: bold;
+}

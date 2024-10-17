@@ -1,0 +1,198 @@
+<div class="main-content" id="layer">
+    <div class="box container-fluid" id="profileDetail">
+     
+        <div class="row ">
+            <div class="col-md-12">
+                <p style="margin-left: 20px;" class="ft-14 font-weight-bold"> All * fields required.</p>
+                <form [formGroup]="myProfileForm" (submit)="onSaveMyProfile()">
+                    <div class="container">
+                        <mat-card style="overflow: auto; max-height: 550px; border: #ced4da 1px solid;">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <!-- <div>
+                                        <div class="image-preview" (click)="filePicker.click()">
+                                            <a href="javascript:void(0)">
+                                                <mat-spinner *ngIf="!imagepreview"></mat-spinner>
+                                                <img class="img" [src]="imagepreview" />
+                                            </a>
+                                        </div>
+                                        <mat-card *ngIf="isloading" style="margin-top: 25px;">
+                                            <mat-card-content>
+                                                <h6 class="example-h6 customFont">Retreiving Profile Picture..</h6>
+                                                <section class="example-section">
+                                                    <mat-progress-bar mode="indeterminate" *ngIf="isloading">
+                                                    </mat-progress-bar>
+                                                </section>
+                                            </mat-card-content>
+                                        </mat-card>
+                                        <mat-card *ngIf="isUpdatingProfilePic" style="margin-top: 25px;">
+                                            <mat-card-content>
+                                                <h6 class="example-h6 customFont">Updating Profile Picture..</h6>
+                                                <section class="example-section">
+                                                    <mat-progress-bar mode="indeterminate" *ngIf="isUpdatingProfilePic">
+                                                    </mat-progress-bar>
+                                                </section>
+                                            </mat-card-content>
+                                        </mat-card>
+                                        <div class="image-picker">
+                                            <button disabled type="button" (click)="filePicker.click()" style="margin-top: 25px; margin-left: 25px" class="fancyFont ft-14">Change
+                                            Avtar</button>
+                                            <input disabled type="file" #filePicker>
+                                        </div>
+                                    </div> -->
+
+                                    <div>
+                                        <p class="profileFont">Created On : {{userDetails?.createdOn | date:'medium'}}</p>
+                                        <p class="profileFont">Last Logged In : {{userDetails?.lastLogin | date:'medium'}}</p>
+                                        <p class="profileFont">Profile Last Updated : {{userDetails?.lastUpdatedOn | date:'medium'}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 " style="display: flex;">
+                                    <div style="padding: inherit;">
+                                        <!-- Email -->
+                                        <div class="form-group">
+                                            <mat-form-field style="cursor: not-allowed; width: 20rem; max-height:65px;" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">Corporate EmailId</mat-label>
+                                                <input class="ft-14 fancyFont customFont" value={{emailId}} formControlName="emailid" type="text" style="color: black" value="{{firstname}}" matInput required>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <!-- Age -->
+                                        <!-- <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">
+                                                    Age:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                </mat-label>
+                                                <mat-select class="ft-14 fancyFont customFont" formControlName="Age" aria-placeholder="Age">
+                                                     <mat-option>None</mat-option>
+                                                    <mat-option value="{{age}}" class="fancyFont customFont" *ngFor="let age of Age">{{age}}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div> -->
+
+                                        <!-- Gender -->
+                                        <!-- <div class="form-group gender_div">
+                                            <mat-label class="ft-14 fancyFont customFont labelclass">Gender:&nbsp;&nbsp;&nbsp;
+                                            </mat-label>
+                                            <mat-radio-group formControlName="Gender">
+                                                <mat-radio-button value="male" color="primary" class="ft-14 fancyFont customFont">
+                                                    Male
+                                                </mat-radio-button>
+                                                <mat-radio-button value="female" color="primary" class="ft-14 fancyFont customFont">Female
+                                                </mat-radio-button>
+                                            </mat-radio-group>
+                                        </div> -->
+                                        <!-- <small class="text-danger fancyFont2 customFont" style="margin-left: 5px;" *ngIf="isGenderEmpty">Gender is required</small> -->
+
+                                        <!-- Country -->
+                                        <!-- <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">Country</mat-label>
+                                                <input class="ft-14 fancyFont customFont" formControlName="Country" type="text" value="India" matInput>
+                                            </mat-form-field>
+                                        </div> -->
+
+                                        <!-- Company -->
+                                        <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <!-- <mat-label class="fancyFont customFont">Income</mat-label> -->
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">Company </mat-label>
+                                                <input tabindex="1" class="ft-14 fancyFont customFont" formControlName="company" type="text" matInput required>
+                                            </mat-form-field>
+                                            <small class="text-danger fancyFont2 customFont" style="margin-left: 5px;" *ngIf="(myProfileForm.get('company').touched || (myProfileForm.get('company').errors && submitted)) && myProfileForm.get('company').errors?.required">Company is required</small>
+
+                                        </div>
+
+                                        <!-- Designation -->
+                                        <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">Designation
+                                                </mat-label>
+                                                <input tabindex="2" class="ft-14 fancyFont customFont" formControlName="designation" type="text" matInput required>
+                                            </mat-form-field>
+                                            <small class="text-danger fancyFont2 customFont" style="margin-left: 5px;" *ngIf="(myProfileForm.get('designation').touched || (myProfileForm.get('designation').errors && submitted)) && myProfileForm.get('designation').errors?.required">Designation is required</small>
+
+                                        </div>
+
+                                        <!-- Phone -->
+                                        <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">Phone
+                                                </mat-label>
+                                                <input tabindex="2" onKeyPress="if(this.value.length==10) return false;" class="ft-14 fancyFont customFont" formControlName="phone" type="number" matInput required>
+                                            </mat-form-field>
+                                            <small class="text-danger fancyFont2 customFont" style="margin-left: 5px;" *ngIf="(myProfileForm.get('phone').touched || (myProfileForm.get('phone').errors && submitted)) && myProfileForm.get('phone').errors?.required">Phone is required</small>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div style="padding: inherit;">
+
+
+
+
+
+                                        <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">
+                                                    Country&nbsp;&nbsp;
+                                                </mat-label>
+                                                <mat-select (selectionChange)="getStates($event.value)" class="ft-14 fancyFont customFont" formControlName="Country" aria-placeholder="Country">
+                                                    <mat-option class="ft-14 fancyFont customFont" disabled>select</mat-option>
+                                                    <!-- <mat-option class="ft-14 fancyFont customFont" value="{{country}}" *ngFor="let country of Country">
+                                                        {{country}}
+                                                    </mat-option> -->
+                                                    <mat-option class="ft-14 fancyFont customFont" value="{{country.code}}" *ngFor="let country of countriesList">
+                                                        {{country.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <!-- state -->
+                                        <div [ngClass]="{
+                                            'disableDiv form-group': isState,
+                                            'enableDiv form-group': !isState
+                                          }">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">
+                                                    State/Province&nbsp;&nbsp;
+                                                </mat-label>
+                                                <mat-select class="ft-14 fancyFont customFont" formControlName="State" aria-placeholder="State/Province">
+                                                    <mat-option class="ft-14 fancyFont customFont" disabled>select</mat-option>
+                                                    <!-- <mat-option class="ft-14 fancyFont customFont" value="{{country}}" *ngFor="let country of Country">
+                                                        {{country}}
+                                                    </mat-option> -->
+                                                    <mat-option class="ft-14 fancyFont customFont" value="{{states}}" *ngFor="let states of statesList">
+                                                        {{states}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <!-- ZIP/Postal Code -->
+                                        <div class="form-group">
+                                            <mat-form-field style="width: 20rem; max-height:65px" appearance="outline">
+                                                <mat-label class="ft-14 fancyFont customFont labelclass">ZIP/Postal Code
+                                                </mat-label>
+                                                <input tabindex="2" onKeyPress="if(this.value.length==6) return false;" class="ft-14 fancyFont customFont" formControlName="ZIPCode" type="number" matInput>
+                                            </mat-form-field>
+
+                                        </div>
+
+                                        <button id="profileUpdateButton" tabindex="3" mat-raised-button color="primary" class="ft-14 update_btn" name="Update Profile" type="submit">
+                                            <i class="fa fa-edit"></i> Update Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-card>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<div class="d-flex w-100 justify-content-between modal-header p-3">
+  <h6 style="color:white;margin-top: 10px !important;"
+    class="modal-title ft-600">Total Files of {{userName}}
+  </h6>
+  <button type="button" class="btn close-button" (click)="dismissModal()">
+    <img alt="" height="14" width="14"
+      src="../../../assets/images/cross-sign.png" />
+  </button>
+</div>
+
+<div class="modal-body p-3 mt-2">
+
+  <table class="table table-white vendor-upload-list table-white-responsive"
+    *ngIf="dataset && dataset.length">
+    <thead>
+      <tr>
+        <th scope="col" class="ft-12 word-wrap">Document Id</th>
+        <th scope="col" class="ft-12 word-wrap">File Name</th>
+        <th scope="col" class="ft-12 word-wrap">Submitted Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-hover-data" *ngFor="let headerItem of dataset
+        | paginate
+        : {
+        id:'view_modal',
+        itemsPerPage: itemsPerPage,
+        currentPage: pageNumber,
+        totalItems: totalItems
+        };
+        let i= index">
+
+        <!-- documentId -->
+        <td class="ft-12">
+          <span *ngIf="headerItem?.documentId; else showNA">{{
+            headerItem?.documentId
+            }}</span>&nbsp;
+          <i style="color: green; cursor: pointer; font-size: 14px;"
+            (click)="dataService.copyToClipboard(headerItem?.documentId)"
+            class="fa
+            fa-clipboard" aria-hidden="true"></i>
+        </td>
+
+        <!-- fileName -->
+        <td class="ft-12">
+          <span *ngIf="headerItem?.fileName; else showNA">
+            {{headerItem?.fileName}}
+          </span>
+        </td>
+
+        <!-- submittedOn -->
+        <td class="ft-12" style="white-space: nowrap;">
+          <span *ngIf="headerItem?.submittedOn; else showNA">
+            {{dataService.epochTsToMili(headerItem.submittedOn)}}
+          </span>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex align-items-end justify-content-start ft-500 p-2 ft-12
+    text-center font-weight-normal" *ngIf="dataset && dataset.length">
+    Showing {{ showingItemCount }} of {{ totalItems }}
+  </div>
+
+  <div class="d-flex align-items-end justify-content-center p-3" *ngIf="dataset
+    && dataset.length">
+    <pagination-controls id="view_modal" (pageChange)="setPageNumber($event);
+      pageNumber= $event" class="ft-14 font-weight-normal">
+    </pagination-controls>
+  </div>
+
+  <!-- Show Loader while getting documents -->
+  <div *ngIf="!isDocsFetched">
+    <ngx-spinner
+      [fullScreen]="false"
+      bdColor="rgba(0, 0, 0, 0.8)"
+      type="ball-beat"
+      color="#fc9221"
+      size="default">
+    </ngx-spinner>
+  </div>
+
+  <div style="text-align: center;"
+    *ngIf="!(dataset && dataset.length) && isDocsFetched">
+    No Files found.
+  </div>
+</div>
+
+<ng-template #showNA>
+  <span class="font-weight-bold">-NA-</span>
+</ng-template>

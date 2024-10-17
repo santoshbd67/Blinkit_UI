@@ -1,0 +1,22 @@
+<app-header></app-header>
+
+<div class="d-flex">
+  <div style="width: 200px;" class="sidebar-nav pt-2">
+
+    <ul class="nav nav-pills nav-fill flex-column">
+      <li class="nav-item">
+        <a class="nav-link settings-container-title" href="javascript:void(0)" tabindex="-1"
+          aria-disabled="true">Settings</a>
+      </li>
+      <li class="nav-item" *ngFor="let setting of settings;let i =index;">
+        <a class="nav-link" href="javascript:void(0)" routerLink="{{setting?.route}}" routerLinkActive="active"
+          [class.disabled]="setting?.disabled">{{setting?.text}}</a>
+        <!--[ngClass]="{'active':setting.active}"-->
+      </li>
+    </ul>
+  </div>
+
+  <div class="page-content py-2 px-3">
+    <router-outlet></router-outlet>
+  </div>
+</div>

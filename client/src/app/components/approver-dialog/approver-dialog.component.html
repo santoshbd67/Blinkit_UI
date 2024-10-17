@@ -1,0 +1,40 @@
+<!-- For Header Message on Popup -->
+<div class="d-flex modal-header p-3">
+  <h6 class="modal-title ft-12 ft-600
+    text-white">{{headerText | uppercase}}
+  </h6>
+</div>
+
+<!-- For body content on Popup -->
+<div class="modal-body p-3 mt-2">
+  <h6 class="modal-title ft-600 ft-12" *ngIf="!bodyContent.showTemplate;else
+    defaultMessage">
+    {{bodyContent.message}}
+  </h6>
+</div>
+
+<!-- For Footer Actions on Popup -->
+<div class="d-flex justify-content-end modal-footer">
+  <button class="btn btn-save ft-12 mr-1 pl-4 pr-4"
+    (click)="onClickYes()">Yes
+  </button>
+
+  <button class="btn btn-delete ft-12 ml-1 pl-4 pr-4"
+    (click)="dismissModal()">No
+  </button>
+</div>
+
+<ng-template #defaultMessage>
+  <!-- For Add Comment Popup -->
+  <div>
+    <h6 class="modal-title ft-600 ft-12">
+      Approver Comment
+    </h6>
+    <br>
+    <textarea required rows="4"
+      class="form-control ft-12"
+      [(ngModel)]="approveComment"
+      placeholder="add approval comments">
+    </textarea>
+  </div>
+</ng-template>

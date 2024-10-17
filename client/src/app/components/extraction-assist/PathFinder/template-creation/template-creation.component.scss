@@ -1,0 +1,286 @@
+.content_div {
+    border: 1px solid #ffeecf;
+    padding: 10px;
+    min-height: 330px;
+    margin: 10px;
+    margin-top: 20px !important;
+}
+
+.fields_label {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.fields_selection {
+    height: 32px !important;
+    background: aliceblue;
+    font-size: small;
+    margin-left: 5px;
+    width: 75%;
+}
+
+.list_div {
+    margin-left: 20px;
+}
+
+.input_field {
+    height: 30px !important;
+    font-size: small !important;
+}
+
+.select_field {
+    height: 32px !important;
+    font-size: small;
+}
+
+.form_labels {
+    font-size: inherit;
+}
+
+.mt-3 {
+    margin-top: 1.5rem !important;
+}
+
+.green_btn {
+    margin-left: 10px;
+    min-width: 130px;
+    border: antiquewhite;
+    background: lightgreen;
+    font-weight: bold;
+}
+
+.default_btn {
+    background: #ebe5e5;
+    min-width: 130px;
+    margin-left: 10px;
+    border: lightgrey;
+    font-weight: bold;
+}
+
+.selected_btn {
+    background: rgb(182, 189, 252);
+    border: aliceblue;
+    margin-left: 10px;
+    min-width: 130px;
+    font-weight: bold;
+}
+
+.tab {
+    background-color: white;
+}
+
+.tab button {
+    background-color: #ebe5e5;
+    float: left;
+    border: none;
+    margin-left: 10px;
+    outline: none;
+    min-width: 136px;
+    cursor: pointer;
+    padding: 2px 4px;
+    transition: 0.3s;
+    font-size: 12px;
+    font-weight: bold;
+    min-height: 25px !important;
+    position: relative;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+.tab button.active {
+    //border-bottom: 2px solid #f3f30c;
+    //background: #4979ff;
+    background: black;
+    color: white;
+    box-sizing: unset;
+}
+
+.tab button span {
+    position: fixed;
+    margin-top: -7px;
+    margin-left: 7px;
+}
+
+.custom_close_icon {
+    position: absolute;
+    top: -5px;
+    right: -4px;
+    float: right;
+    background: #e74c3c;
+    border-radius: 15px;
+    color: white;
+    /* height: 25px; */
+    /* width: 25px; */
+    /* align-items: center; */
+    /* text-align: center; */
+    /* vertical-align: middle; */
+    /* display: inline-block; */
+    /* border-radius: 60px; */
+    /* box-shadow: 0 0 2px #888; */
+    padding: 0.1em 0.2em;
+}
+
+.tabcontent {
+    display: block;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.result_label {
+    min-width: 90px !important;
+    margin-top: 15px;
+}
+
+.result_input {
+    margin-left: 5px;
+    height: 50px !important;
+    border-radius: 0px !important;
+    min-width: 250px !important;
+    background: lightcyan;
+}
+
+.confidence_div {
+    margin-top: 10px;
+}
+
+.confidence_value {
+    // margin-left: 35px;
+    min-width: 65px;
+    margin-left: 15px;
+    margin-top: 35px;
+    color: #0db40d;
+}
+
+.test_btn {
+    // min-width: 52px;
+    // background: #36eb36;
+    // border: yellowgreen;
+    // color: white;
+    // min-height: 25px !important;
+    // font-weight: bold;
+    // font-size: 14px;
+    // // margin-left: 5px;
+    // margin: -15px;
+
+    min-width: 52px;
+    background: #229954;
+    border: yellowgreen;
+    font-weight: bold;
+    font-size: 14px;
+    width: 100px;
+    padding: 1px;
+    color: white;
+}
+
+.scroll_angle {
+    border: none;
+    background: cornsilk;
+}
+
+.col-sm-11 {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+}
+
+.col-sm-12 {
+    padding-right: 10px !important;
+    padding-left: 5px !important;
+}
+
+/* scroll related css */
+.cahgne-list-btn {
+    margin: 15px;
+    padding: 8px 16px;
+}
+
+.list-with-scroll {
+    display: flex;
+    // margin: 5px;
+    margin-left: 8px;
+    //margin-right: 5px;
+}
+
+.list {
+    flex-grow: 1;
+    display: flex;
+    overflow-x: scroll;
+    margin-top: -10px;
+}
+
+.list div {
+    padding: 10px 0px 0px 0px;
+}
+
+.list::-webkit-scrollbar {
+    display: none;
+}
+
+.item {
+    min-width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: lightgray;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.scroll-button,
+.scroll-button:hover {
+    font-size: 15px;
+    border: none;
+    background-color: #229954;
+    color: #fff;
+}
+
+.disable,
+.disable:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.26);
+    border: none;
+}
+
+#scroll-left {
+    order: -1;
+}
+
+.scroll_btn {
+    height: 25px;
+    width: 25px;
+    margin-top: 10px;
+    /* position: absolute; */
+    /* top: 0px; */
+    /* right: 0; */
+    border-radius: 15px;
+}
+
+.left_div {
+    display: flex;
+    padding: 8px 20px;
+    align-items: inherit;
+    position: fixed;
+    bottom: 10px;
+}
+
+.left_div_button {
+    min-width: 100px;
+}
+
+.help_btn {
+    border: none;
+    background: white;
+    align-items: center;
+    color: black;
+    font-size: small;
+    // float: right;
+}
+
+.form-container-div {
+    overflow: auto;
+    height: calc(100vh - 53vh);
+    margin-top: 10px;
+}

@@ -1,0 +1,140 @@
+<!-- Header Area -->
+<div class="header-div">
+  <div class="d-flex justify-content-between align-items-center
+    upload-listname upload-container">
+
+    <!-- Horizontal Tabs -->
+    <div class="d-flex justify-content-start upload-tabs">
+      <div *ngFor="let tab of horizontalTabs; let i= index" class="px-2"
+        (click)="switchTab(tab.tab)">
+        <a class="upload-listname_active" [ngClass]="{active:tab.active}">
+          {{ tab.tab }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Content-Area -->
+<div class="content-area">
+
+  <div class="d-flex align-items-end justify-content-between ft-500 p-2 ft-12
+    text-center font-weight-normal pr-4 pl-0">
+    <div class="ft-14 font-weight-bold">
+      {{ selectedFilters ? statusTextMapping[selectedFilters] : "Vendor Masterdata"}}
+    </div>
+
+    <div *ngIf="mlDataSet && mlDataSet.length">
+      Showing {{ itemsCount }} of {{ itemsCount }}
+    </div>
+  </div>
+
+  <div [class]="(mlDataSet && mlDataSet.length>0) ? 'scrolling-list' :
+    ''">
+    <table class="table table-white manually-doc-list table-white-responsive"
+      *ngIf="mlDataSet && mlDataSet.length">
+      <thead>
+        <tr>
+          <th scope="col" class="ft-12">
+            <div class="custom-check-box list-view-checkbox"
+              *ngIf="selectedFilters == 'READY_FOR_EXTRACTION'">
+              <label class="container">
+                <input type="checkbox" [(ngModel)]="selectAll"
+                  (ngModelChange)="toggleSelect()" />
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </th>
+          <th scope="col" class="ft-12 word-wrap">VENDOR NAME</th>
+          <th scope="col" class="ft-12 word-wrap">ML ID</th>
+          <th scope="col" class="ft-12 word-wrap">IDENTIFIER TEXT </th>
+          <th scope="col" class="ft-12 word-wrap" *ngIf="!multipleSelect">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr [ngStyle]="{backgroundColor: getColor(headerItem?.vendorId)}"
+          class="table-hover-data" *ngFor="let headerItem of mlDataSet;
+          let
+          i= index">
+
+          <!-- select checkbox -->
+          <td>
+            <div class="custom-check-box" *ngIf="selectedFilters ==
+              'READY_FOR_EXTRACTION'">
+              <label class="container">
+                <input type="checkbox"
+                  [(ngModel)]="headerItem.selected"
+                  (ngModelChange)="toggleSelectSingle(i)" />
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            &nbsp;
+          </td>
+
+          <!-- VendorName -->
+          <td style="width: 200px;" class="ft-12">
+            <span *ngIf="headerItem?.VENDOR_NAME; else showNA">
+              {{headerItem?.VENDOR_NAME}}
+            </span>
+          </td>
+
+          <!-- MLID -->
+          <td class="ft-12" style="white-space: nowrap;">
+            <span *ngIf="headerItem?.VENDOR_ID; else showNA">
+              {{headerItem.VENDOR_ID}}
+            </span>
+          </td>
+
+          <!-- IDENTIFIER_TEXT -->
+          <td style="width: 750px;"
+            class="ft-12">
+            <div class="d-inline">
+              <span *ngIf="headerItem?.IDENTIFIER_TEXT; else showNA">{{
+                headerItem?.IDENTIFIER_TEXT}}
+              </span>
+            </div>
+          </td>
+
+          <!-- forwardIcon button  -->
+          <td style="vertical-align: text-top !important;" class="ft-12
+            justify-content-between"
+            *ngIf="!multipleSelect">
+            <button [disabled]="disableAction"
+              [ngClass]="!disableAction ? 'btn mr-1' :'notAllowed'"
+              style="width: 42px"
+              (click)="openMasterDataPage(headerItem)">
+              <img [src]="imgSrc.forwardIcon"
+                width="22" height="auto"
+                title={{actionTooltip}} />
+            </button>
+
+            <!-- info icon -->
+            <button class="btn mr-1 info" title="{{
+              headerItem.documentId
+              }}">
+              <img [src]="imgSrc.infoIcon"
+                class="cursor-pointer"
+                width="16" height="16" title="Info"
+                (click)="dataService.copyToClipboard(headerItem.documentId)"
+                />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex align-items-end justify-content-start ft-500 p-2 ft-12
+    text-center font-weight-normal" *ngIf="mlDataSet && mlDataSet.length">
+    Showing {{ itemsCount }} of {{ itemsCount }}
+  </div>
+
+  <div class="p-5"
+    *ngIf="!(mlDataSet && mlDataSet.length) && isDocsFetched">
+    <h5 class="text-center">No VendorMasterData to Show</h5>
+  </div>
+
+  <div *ngIf="!isDocsFetched" class="center_div list_spinner">
+    <small>Fetching VendorMasterData. Please wait..</small>
+  </div>
+</div>

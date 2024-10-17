@@ -1,0 +1,41 @@
+<div class="masterdata_headers">
+  <h4 class="heading">ML ID Identifier: {{projName}} Suggestion</h4>
+  <div class="row">
+    <h6 class="score_lable_font">score:&nbsp;&nbsp;</h6>
+    <h4 class="score_value_font" [ngStyle]="{color: getColor()}">
+      {{score}}%
+    </h4>
+    <h4 class="close" (click)="close()">X</h4>
+  </div>
+</div>
+
+<form class="p-4">
+  <div class="row">
+
+    <div *ngIf="resultBasicInfo" class="col-sm-12">
+      <div class="form-group">
+        <h6 class="ft-12 d-flex justify-content-between margin-input-custom
+          form_headings1">ID</h6>
+        <input disabled type="text" class="form-control custom-input-rulemasterdata-form
+          field-style" name="VENDOR_ID" [(ngModel)]="resultBasicInfo.VENDOR_ID" [ngbTooltip]="headerContent" />
+
+        <h6 class="ft-12 d-flex justify-content-between margin-input-custom
+          form_headings">NAME</h6>
+        <input disabled type="text" class="form-control custom-input-rulemasterdata-form
+          field-style" name="VENDOR_NAME" [(ngModel)]="resultBasicInfo.VENDOR_NAME" [ngbTooltip]="headerContent" />
+
+        <h6 class="ft-12 d-flex justify-content-between margin-input-custom
+          form_headings">IDENTIFIER TEXT</h6>
+        <textarea disabled type="text" style="height: auto;" rows="5" cols="50"
+          class="form-control custom-input-rulemasterdata-form field-style" name="IDENTIFIER_TEXT"
+          [(ngModel)]="resultBasicInfo.IDENTIFIER_TEXT" [ngbTooltip]="headerContent"></textarea>
+      </div>
+    </div>
+
+    <ng-template #headerContent>
+      <span class="my-custom-class">
+        <b class="tipTitle">Suggestion Value</b>
+      </span>
+    </ng-template>
+  </div>
+</form>

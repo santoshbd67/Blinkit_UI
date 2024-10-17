@@ -1,0 +1,204 @@
+@import "../../../assets/styles/scss/variable.scss";
+@import "../../../assets/styles/scss/common.scss";
+
+.extraction-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  .extraction-header {
+    background: $light-gray-2;
+    box-shadow: 0 2px 6px #8080809c;
+
+    .header-btn {
+      padding: 0.5% 2%;
+
+      .upload-btn {
+        margin: 0 10px;
+        width: 150px;
+        outline: none;
+
+        i {
+          font-size: 28px;
+        }
+      }
+    }
+  }
+
+  .extraction-content {
+    .extraction-invoice-view {
+      height: 94vh;
+      width: calc(100%);
+      border-bottom: 0px;
+      border-bottom-right-radius: 0px;
+      border-bottom-left-radius: 0px;
+
+      .extraction-invoice-content {
+        .extraction-img {
+          border: $blacklight 1px solid;
+          margin-bottom: 10px;
+          position: relative;
+
+          .page-num {
+            font-size: 12px;
+            background: $white;
+            padding: 4px 10px;
+          }
+
+          &:active,
+          &:hover,
+          &:focus {
+            border: 1px solid $btn-color;
+          }
+        }
+
+        .invoice-comp {
+          margin: 10px 10px;
+          height: calc(100vh - 130px);
+          overflow: scroll;
+        }
+
+        .invoice-form-comp {
+          margin: 10px 15px 0px 0px;
+          height: calc(100vh - 130px);
+        }
+      }
+    }
+
+    .card {
+      border-radius: 0px !important;
+    }
+
+    .footer {
+      padding: 10px 9px;
+      border-top: 1px solid #a0a0a066;
+
+      .footer-items {
+        margin: 0 10px;
+
+        .danger-btn {
+          background: $btn-color;
+          border: 1px solid $btn-color;
+          border-radius: 0.25rem;
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+.upload-btn-text-header:active {
+  outline: none;
+}
+
+.danger-text {
+  color: $danger;
+}
+
+.primary-text {
+  color: $primary;
+}
+
+//  css for header items
+
+.analysis-data {
+  padding: 0 15px;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.line-seperator {
+  border-left: 1px solid $grey;
+  margin: 0 5px;
+}
+
+.input-confidence {
+  color: $primary;
+}
+
+.custom-input-correction-form {
+  width: 100%;
+  line-height: 2;
+  height: 24px;
+  font-size: 12px;
+  border: #999999 solid 1px;
+  border-radius: 0px;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.large-text {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .line-seperator {
+    margin: 0 25px;
+  }
+}
+
+@media screen and (min-width: 1335) and (max-width: 1600px) {
+}
+
+.cropped-image-container {
+  position: absolute;
+  padding: 0px 30px 0 0;
+  border: solid 1px black;
+  background: #fff;
+  display: none;
+
+  .close {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    background: #fff;
+  }
+}
+
+.raise_ticket_btn {
+  background: #e74c3c !important;
+  color: white;
+  margin-right: 10px;
+}
+
+.raise_ticket_btn:hover {
+  background: #aa3022 !important;
+  color: white;
+}
+
+.markAsDone_btn {
+  margin-right: 20px;
+  background-color: #000 !important;
+  color: #fff;
+}
+
+.markAsDone_btn:hover {
+  background: rgba(63, 59, 59, 0.859) !important;
+}
+
+.header_area {
+  height: 6vh !important;
+}
+
+.content_area {
+  // height: 90% !important;
+  // overflow-y: scroll !important;
+  overflow: auto !important;
+  height: 84vh !important;
+}
+
+.description_view {
+  overflow: auto;
+}
+
+.footer_area {
+  height: 10vh !important;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

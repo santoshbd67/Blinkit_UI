@@ -1,0 +1,71 @@
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header text-center">
+        <h5 class="w-100 text-center ft-18">PathFinder - Document Details</h5>
+        <button type="button" class="close" title="Close Dialog" aria-label="Close"
+          (click)="onCloseHandled()"><span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="review-content d-flex">
+          <div class="review-invoice-view card">
+            <div class="review-invoice-content d-flex">
+              <as-split direction="horizontal"
+                (dragEnd)="currentSize($event)">
+                <as-split-area size="65">
+                  <div class="invoice-comp card" id="scrollContainer">
+                    <div class="review-img" *ngFor="let imageItem of
+                      filteredInvoiceImages; let i= index">
+                      <app-image-zoom id="image-zoom_{{i}}"
+                        [boundingData]="boundingBoxData"
+                        [imageUrl]="imageItem.url"
+                        [pageNumber]="imageItem.index"
+                        [scrollParentSelector]="'#scrollContainer'"
+                        [canvasId]="'cropped-image'"
+                        [canvasContainer]="'cropped-image-container'">
+                      </app-image-zoom>
+                      <div class="page-num">Page {{ i + 1 }}</div>
+                    </div>
+                  </div>
+                </as-split-area>
+                <as-split-area size="35">
+                  <div class="detail-form-comp">
+                    <app-testing-detail-right-view
+                      [documentDocsList]="documentDocsList"
+                      [currentDocInfo]="currentDocInfo"
+                      (onBoundingBoxDataReady)="onBoundingBoxDataReady($event)">
+                    </app-testing-detail-right-view>
+                  </div>
+                </as-split-area>
+              </as-split>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="footer_space">
+          <button (click)="previousRecord()" title="Previous Document" [disabled]="isPrevDisabled"
+            class="btn
+            btn-warning ft-12 mr-4 margin_top"><i class="fa
+              fa-arrow-circle-left"
+              aria-hidden="true"></i> Previous </button>
+          <button (click)="nextRecord()" title="Next Document" [disabled]="isNextDisabled" class="btn
+            btn-warning ft-12 mr-4 margin_top">Next <i class="fa
+              fa-arrow-circle-right"
+              aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cropped-image-container" id="cropped-image-container">
+  <a href="javascript:void(0)"
+    (click)="closePreview('cropped-image-container')" class="close">X</a>
+  <canvas id="cropped-image" class="cropped-image"></canvas>
+</div>
